@@ -1,0 +1,108 @@
+@import '../../style/abstracts/colors';
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  border-right: 1px solid rgba($color: #ffffff, $alpha: 0.1);
+
+  .logo {
+    padding: 20px;
+    max-width: 100%;
+    width: 200px;
+  }
+  .board-list {
+    h5 {
+      text-transform: uppercase;
+      padding: 10px 20px;
+    }
+
+    h5.active {
+    }
+
+    ul {
+      list-style-type: none;
+      li {
+        margin-right: 20px;
+
+        button {
+          background-color: transparent;
+          border: none;
+          outline: none;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          height: 100%;
+          width: 100%;
+          padding: 10px 20px;
+          font-weight: bold;
+
+          &.active {
+            background-color: $primary;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+          }
+
+          &.active .text-static {
+            color: #fff !important;
+          }
+        }
+        .icon {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      background-color: transparent;
+      border: none;
+      padding: 10px 20px;
+      text-transform: capitalize;
+      font-weight: bold;
+      cursor: pointer;
+
+      .icon {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .bottom {
+    margin: 20px;
+    .theme {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      color: $text-static;
+      background-color: rgba($color: #000000, $alpha: 0.2);
+      padding: 10px;
+
+      .icon {
+      }
+
+      .mode {
+      }
+    }
+    button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: none;
+      background-color: transparent;
+      color: $text-static;
+      padding: 20px 0;
+      .icon {
+      }
+
+      .text {
+        text-transform: capitalize;
+        font-weight: bold;
+        color: $text-static;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+.layout-main {
+  display: flex;
+
+  .left {
+    min-height: 100vh;
+    min-width: 300px;
+    flex: 1;
+  }
+
+  .right {
+    min-height: 100vh;
+    flex: 5;
+  }
+}

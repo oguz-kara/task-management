@@ -1,0 +1,61 @@
+@use '../abstracts/colors' as *;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.light {
+  .text {
+    color: $text-dark;
+  }
+
+  .background-primary {
+    background-color: $primary;
+  }
+
+  .background {
+    background-color: $background-light;
+  }
+
+  .background-2 {
+    background-color: $background-light-2;
+  }
+
+  .text-static {
+    background-color: $text-static;
+  }
+}
+
+.dark {
+  .text {
+    color: $text-light;
+  }
+
+  .background-primary {
+    background-color: $primary;
+  }
+
+  .background {
+    background-color: $background-dark;
+  }
+
+  .background-2 {
+    background-color: $background-dark-2;
+  }
+
+  .text-static {
+    color: $text-static;
+  }
+}
+
+.primary-background {
+  background-color: $primary;
+}
+
+.primary-color {
+  color: $primary;
+}

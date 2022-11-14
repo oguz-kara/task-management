@@ -1,0 +1,32 @@
+@import '../../style/abstracts/colors';
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 50px;
+  min-height: 25px;
+  border-radius: 20px;
+  background-color: aliceblue;
+  transition: all 500ms ease-out;
+  .switch-ball {
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 50%;
+    margin: 3px;
+  }
+}
+
+.switch-container.justify-start {
+  justify-content: flex-start;
+
+  .switch-ball {
+    background-color: #000;
+  }
+}
+
+.switch-container.justify-end {
+  justify-content: flex-end;
+  background-color: $primary;
+}

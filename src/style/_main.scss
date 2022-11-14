@@ -1,0 +1,10 @@
+@import './base/reset';
+@import './abstracts/fonts';
+
+html {
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
