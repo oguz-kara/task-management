@@ -1,4 +1,4 @@
-import React from 'react';
+import { useContext } from 'react';
 import taskManagerLogo from '../../assets/images/task_manager.png';
 import './side-bar.scss';
 import Switch from '../Switch/Switch';
@@ -6,8 +6,10 @@ import { UilClipboardAlt } from '@iconscout/react-unicons';
 import { UilBrightnessHalf } from '@iconscout/react-unicons';
 import { UilMoon } from '@iconscout/react-unicons';
 import { UilEyeSlash } from '@iconscout/react-unicons';
+import { ThemeContext } from './../../context/themeContext';
 
 function Sidebar({ boardList = [] }) {
+  const value = useContext(ThemeContext);
   return (
     <aside className="sidebar">
       <div className="top">
@@ -15,16 +17,17 @@ function Sidebar({ boardList = [] }) {
         <div className="board-list">
           <h5 className="text-static">all boards (5)</h5>
           <ul>
-            {boardList.map((board, index) => (
-              <li key={index}>
-                <button className={index === 0 ? 'active' : ''}>
-                  <span className="icon">
-                    <UilClipboardAlt className="text-static" />
-                  </span>
-                  <span className="text-static">{board.name}</span>
-                </button>
-              </li>
-            ))}
+            {boardList &&
+              boardList.map((board, index) => (
+                <li key={index}>
+                  <button className={index === 0 ? 'active' : ''}>
+                    <span className="icon">
+                      <UilClipboardAlt className="list-icon text-static" />
+                    </span>
+                    <span className="text-static">{board.name}</span>
+                  </button>
+                </li>
+              ))}
           </ul>
           <button>
             <span className="icon">
@@ -40,7 +43,7 @@ function Sidebar({ boardList = [] }) {
             <UilBrightnessHalf />
           </span>
           <span className="mode">
-            <Switch />
+            <Switch onClick={() => value.setDark(!value.dark)} />
           </span>
           <span>
             <UilMoon />

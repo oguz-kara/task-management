@@ -2,7 +2,7 @@ import { useState } from 'react';
 import classnames from 'classnames';
 import './switch.scss';
 
-function Switch() {
+function Switch({ onClick, ...props }) {
   const [left, setLeft] = useState(true);
   return (
     <div
@@ -10,7 +10,11 @@ function Switch() {
         'switch-container',
         left ? 'justify-start' : 'justify-end'
       )}
-      onClick={() => setLeft(!left)}
+      onClick={() => {
+        onClick();
+        setLeft(!left);
+      }}
+      {...props}
     >
       <div className="switch-ball"></div>
     </div>

@@ -18,11 +18,6 @@ export const boardList = [
         name: 'done',
         color: 'green',
       },
-      {
-        id: 4,
-        name: 'test',
-        color: 'red',
-      },
     ],
     taskList: [
       {
@@ -238,48 +233,6 @@ export const boardList = [
         id: 11,
         title: 'Create wireframe prototype',
         status: 'done',
-        description:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
-        subtasks: [
-          {
-            name: 'subtask',
-            description: 'subtask description',
-            done: false,
-          },
-        ],
-      },
-      {
-        id: 12,
-        title: 'Create wireframe prototype',
-        status: 'test',
-        description:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
-        subtasks: [
-          {
-            name: 'subtask',
-            description: 'subtask description',
-            done: false,
-          },
-        ],
-      },
-      {
-        id: 13,
-        title: 'Create wireframe prototype',
-        status: 'test',
-        description:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
-        subtasks: [
-          {
-            name: 'subtask',
-            description: 'subtask description',
-            done: false,
-          },
-        ],
-      },
-      {
-        id: 14,
-        title: 'Create wireframe prototype',
-        status: 'test',
         description:
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [

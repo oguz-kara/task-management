@@ -1,0 +1,30 @@
+.modal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  transition: all 250ms ease-out;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+
+  & > * {
+    border-radius: 10px;
+  }
+}
+
+.modal--active {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal--deactive {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(50px);
+}
