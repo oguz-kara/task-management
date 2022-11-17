@@ -3,21 +3,23 @@ import { useLayoutEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import Modal from '../../components/Modal/Modal';
 import { UilEllipsisV } from '@iconscout/react-unicons';
-import './board.scss';
 import { BoardContext } from './../../context/BoardContext';
+import './board.scss';
+import { useSetDoc } from './../../hooks/useSetDoc';
 
 function Board(props) {
   const [columnList, setColumnList] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const { user } = useContext(AuthContext);
-  const { currentBoard } = useContext(BoardContext);
+  const { currentBoard, dispatch } = useContext(BoardContext);
+  const { user, dispatch: dispatchAuth } = useContext(AuthContext);
+  const [currentTask, setCurrentTask] = useState({});
+  const { result, refetch } = useSetDoc('users', user.uid);
 
   const buildColumnList = (board) => {
     if (!board || !board.columnList) {
       setColumnList([]);
       return;
     }
-    console.log('passed');
     let list = [...board.columnList];
     board.taskList &&
       board.taskList.forEach((task) => {
@@ -41,6 +43,85 @@ function Board(props) {
     setIsOpen(false);
   }
 
+  function handleTaskClick(task) {
+    openModal();
+    setCurrentTask(task);
+  }
+
+  function countDoneSubtasks(task) {
+    let counter = 0;
+    task?.subtasks?.forEach((item) => {
+      if (item.done === true) counter++;
+    });
+    return counter;
+  }
+
+  function getSubTaskCount(task) {
+    return task?.subtasks?.length;
+  }
+
+  function updateBoardListData(updatedTask) {
+    // make ready board object for update the state
+    const updatedBoard = {
+      ...currentBoard,
+      taskList: currentBoard?.taskList.map((task) => {
+        if (task.id === updatedTask.id) return updatedTask;
+        return task;
+      })
+    };
+
+    // make ready board list object for update the state
+    const updatedBoardList = {
+      boardList: [
+        ...user?.userData?.boardList.map((board) => {
+          if (board.id === updatedBoard.id) {
+            return updatedBoard;
+          }
+          return board;
+        })
+      ]
+    };
+
+    refetch(updatedBoardList)
+      .then(() => {
+        dispatch({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        setCurrentTask(updatedTask);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function handleSubtaskChange(id, checked) {
+    const updatedSubtasks = currentTask?.subtasks?.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          done: checked
+        };
+      }
+      return task;
+    });
+
+    // make ready current task object for update the state
+    const updatedCurrentTask = {
+      ...currentTask,
+      subtasks: updatedSubtasks
+    };
+
+    updateBoardListData(updatedCurrentTask);
+  }
+
+  function handleStatusChange(value) {
+    const updatedCurrentTask = {
+      ...currentTask,
+      status: value
+    };
+
+    updateBoardListData(updatedCurrentTask);
+  }
+
   useLayoutEffect(() => {
     buildColumnList(currentBoard);
   }, [currentBoard]);
@@ -49,9 +130,8 @@ function Board(props) {
     <>
       <div className="board text-static" {...props}>
         {currentBoard &&
-          columnList &&
-          columnList.map((column, i) => (
-            <div key={i} className="column">
+          columnList?.map((column, i) => (
+            <div key={column.id} className="column">
               <div className="title">
                 <div className="circle" style={{ backgroundColor: column.color }}></div>
                 <h4>
@@ -62,13 +142,17 @@ function Board(props) {
                 </h4>
               </div>
               <ul>
-                {column.taskList &&
-                  column.taskList.map((task, i) => (
-                    <li onClick={openModal} key={i} className="text background-2">
-                      <h4>{task.title}</h4>
-                      <p className="text-static">0 of {task.subtasks.length} subtasks</p>
-                    </li>
-                  ))}
+                {column?.taskList?.map((task, i) => (
+                  <li
+                    key={task.id}
+                    onClick={() => handleTaskClick(task)}
+                    className="text background-2">
+                    <h4>{task.title}</h4>
+                    <p className="text-static">
+                      {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
+                    </p>
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
@@ -77,49 +161,45 @@ function Board(props) {
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
         <div onClick={(e) => e.stopPropagation()} className="task-details text background-2">
           <div className="header">
-            <h3>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur aperiam,
-              consequatur Lorem ipsum dolor sit amet.
-            </h3>
+            <h3>{currentTask?.title}</h3>
             <button className="elp-icon text-static">
               <UilEllipsisV />
             </button>
           </div>
-          <p className="text-static">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem quisquam eligendi fuga
-            eos soluta deleniti nesciunt beatae distinctio consectetur consequatur. Lorem ipsum
-            dolor sit amet consectetur adipisicing elit. Laborum suscipit eum autem dignissimos
-            recusandae dolores aliquid beatae consequuntur maiores veniam?
-          </p>
+          <p className="text-static">{currentTask?.description}</p>
           <div className="subtasks">
-            <h4>Subtasks (2 of 3)</h4>
+            <h4>
+              Subtasks ({countDoneSubtasks(currentTask)} of {getSubTaskCount(currentTask)})
+            </h4>
             <ul className="subtask-list">
-              <li className="background text">
-                <input type="checkbox" />
-                <span className="subtask-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, nostrum.
-                </span>
-              </li>
-              <li className="background text">
-                <input type="checkbox" />
-                <span className="subtask-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, nostrum.
-                </span>
-              </li>
-              <li className="background text">
-                <input type="checkbox" />
-                <span className="subtask-description">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt, nostrum.
-                </span>
-              </li>
+              {currentTask?.subtasks?.map((task) => (
+                <li key={task.id} className="background text">
+                  <input
+                    id={task.id}
+                    name={task.id}
+                    type="checkbox"
+                    checked={task.done}
+                    onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
+                  />
+                  <label htmlFor={task.id} className={`${task.done && 'subtask-done text-static'}`}>
+                    {task.description}
+                  </label>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="status">
             <label htmlFor="status">Status</label>
-            <select className="text-static" name="status" id="status">
-              <option value="todo">Todo</option>
-              <option value="doing">Doing</option>
-              <option value="done">Done</option>
+            <select
+              onChange={(e) => handleStatusChange(e.target.value)}
+              className="text-static"
+              name="status"
+              id="status">
+              {currentBoard?.columnList?.map((column) => (
+                <option key={column.id} value={column.name}>
+                  {column.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>

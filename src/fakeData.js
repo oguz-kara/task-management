@@ -28,16 +28,19 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -52,16 +55,19 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -76,16 +82,19 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -100,6 +109,7 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -114,11 +124,13 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -141,16 +153,19 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -165,11 +180,13 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -184,16 +201,19 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -208,21 +228,25 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 2,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 3,
             name: 'subtask',
             description: 'subtask description',
             done: false
           },
           {
+            id: 4,
             name: 'subtask',
             description: 'subtask description',
             done: false
@@ -237,6 +261,7 @@ export const boardList = [
           'Lorem ipsum dolor sit amet consectetur adipisicing elit. Non, asperiores, vel maxime quod laborum amet aspernatur molestiae illo consequuntur ducimus magnam blanditiis ab. Alias eos, veritatis, eum est quis quae nobis impedit fugiat ea sequi amet, explicabo ipsa officiis soluta modi itaque quo magnam nostrum accusamus quibusdam. Distinctio neque sequi aliquid quas reprehenderit iste ad sint, esse repudiandae laborum ab ipsum harum dolor, reiciendis similique nobis mollitia magnam fuga est eum non quae facere illum quidem. Quos accusamus, ducimus, eligendi perferendis provident omnis dolorum debitis animi perspiciatis fugit ipsa obcaecati nisi suscipit aliquid quisquam unde? Cumque ut voluptatum quasi molestiae.',
         subtasks: [
           {
+            id: 1,
             name: 'subtask',
             description: 'subtask description',
             done: false

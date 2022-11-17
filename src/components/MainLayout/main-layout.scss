@@ -5,6 +5,14 @@
     min-height: 100vh;
     min-width: 300px;
     flex: 1;
+    transition: all 200ms ease-out;
+  }
+
+  .left--close {
+    flex: inherit;
+    min-width: 0;
+    width: 0;
+    overflow: hidden;
   }
 
   .right {

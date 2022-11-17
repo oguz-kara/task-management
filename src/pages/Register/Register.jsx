@@ -34,7 +34,30 @@ function Register() {
       try {
         const res = await createUserWithEmailAndPassword(auth, email, password);
         await setDoc(doc(db, 'users', res.user.uid), {
-          boardList: []
+          boardList: [
+            {
+              id: 1,
+              name: 'Starter',
+              columnList: [
+                {
+                  id: 1,
+                  name: 'todo',
+                  color: '#48C0E2'
+                },
+                {
+                  id: 2,
+                  name: 'doing',
+                  color: 'rebeccapurple'
+                },
+                {
+                  id: 3,
+                  name: 'done',
+                  color: 'green'
+                }
+              ],
+              taskList: []
+            }
+          ]
         });
       } catch (err) {
         if (isEmailAlreadyInUse(err.message)) {

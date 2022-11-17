@@ -6,6 +6,7 @@
   justify-content: space-between;
   height: 100vh;
   border-right: 1px solid rgba($color: #ffffff, $alpha: 0.1);
+  min-width: 300px;
 
   .logo {
     padding: 20px;
@@ -104,6 +105,7 @@
       background-color: transparent;
       color: $text-static;
       padding: 20px 0;
+      cursor: pointer;
       .icon {
       }
 

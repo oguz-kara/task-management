@@ -4,10 +4,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100vw - 300px);
+  width: 100%;
   padding: 20px;
   border-bottom: 1px solid rgba($color: #ffffff, $alpha: 0.1);
   max-height: 100px;
+  h2 {
+    display: flex;
+    align-items: center;
+    button {
+      margin-right: 20px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+  }
   .actions {
     display: flex;
     gap: 10px;
@@ -33,107 +43,3 @@
 }
 
 // FOR NEW TASK MODAL, YOU SHOULD MOVE THESE CODES TO A SEPERATE COMPONENT LATER
-
-.add-new-task-form {
-  min-width: 400px;
-  padding: 20px;
-  h3 {
-    text-transform: capitalize;
-    font-size: 16px;
-  }
-
-  & > * {
-    margin-bottom: 20px;
-  }
-
-  .input-container {
-    display: flex;
-    flex-direction: column;
-
-    label {
-      font-size: 14px;
-      margin-bottom: 7px;
-      text-transform: capitalize;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    input {
-      background-color: transparent;
-      border: 1px solid $text-static;
-      padding: 10px;
-      color: $text-static;
-      width: 100%;
-      font-size: 12px;
-
-      &::placeholder {
-        color: #656875;
-      }
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    textarea {
-      background-color: transparent;
-      border: 1px solid gray;
-      padding: 10px;
-      color: $text-static;
-
-      &::placeholder {
-        color: #656875;
-      }
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    select {
-      background-color: transparent;
-      border: 1px solid gray;
-      padding: 5px;
-      color: $text-static;
-    }
-
-    button {
-      padding: 10px;
-      border-radius: 20px;
-      outline: none;
-      border: none;
-      font-size: 12px;
-      color: $primary;
-      background-color: white;
-      text-transform: capitalize;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .input-list {
-      margin-bottom: 10px;
-      .input-icon-container {
-        display: flex;
-        align-items: center;
-
-        input {
-          margin-right: 5px;
-        }
-      }
-    }
-  }
-
-  .submit-form-button {
-    padding: 10px;
-    border-radius: 20px;
-    outline: none;
-    border: none;
-    font-size: 12px;
-    background-color: $primary;
-    color: white;
-    text-transform: capitalize;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-  }
-}

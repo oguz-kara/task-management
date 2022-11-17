@@ -20,9 +20,18 @@ function App() {
   const { user } = useContext(AuthContext);
   const { dark } = useContext(ThemeContext);
   const { currentBoard, dispatch } = useContext(BoardContext);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  function openSidebar() {
+    if (!sidebarOpen) setSidebarOpen(true);
+  }
+
+  function closeSidebar() {
+    if (sidebarOpen) setSidebarOpen(false);
+  }
 
   useEffect(() => {
-    dispatch({ type: 'SET_CURRENT_BOARD', payload: user && user.userData.boardList[0] });
+    dispatch({ type: 'SET_CURRENT_BOARD', payload: user?.userData?.boardList[0] });
   }, []);
 
   const router = createBrowserRouter([
@@ -38,9 +47,10 @@ function App() {
       path: '/',
       element: (
         <MainLayout
-          left={<Sidebar boardList={user && user.userData.boardList} />}
-          top={<Topbar />}
+          left={<Sidebar closeSidebar={closeSidebar} boardList={user && user.userData.boardList} />}
+          top={<Topbar openSidebar={openSidebar} hideMenuIcon={!sidebarOpen} />}
           main={Main}
+          leftOpen={sidebarOpen}
         />
       ),
       children: [

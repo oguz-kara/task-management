@@ -12,7 +12,7 @@ import { BoardContext } from './../../context/BoardContext';
 import NewBoard from '../NewBoard/NewBoard';
 import Modal from '../Modal/Modal';
 
-function Sidebar({ boardList = [] }) {
+function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const { currentBoard, dispatch } = useContext(BoardContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
@@ -69,7 +69,7 @@ function Sidebar({ boardList = [] }) {
               <UilMoon />
             </span>
           </div>
-          <button>
+          <button onClick={closeSidebar}>
             <span className="icon">
               <UilEyeSlash />
             </span>

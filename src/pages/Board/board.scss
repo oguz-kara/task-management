@@ -102,6 +102,9 @@
         input[type='checkbox'] {
           margin-right: 10px;
         }
+        .subtask-done {
+          text-decoration: line-through;
+        }
       }
     }
   }
