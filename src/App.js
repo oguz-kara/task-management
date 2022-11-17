@@ -7,8 +7,9 @@ import Login from './pages/Login/Login';
 import Sidebar from './components/Sidebar/Sidebar';
 import Topbar from './components/Topbar/Topbar';
 import Main from './components/Main/Main';
-import { ThemeContext } from './context/themeContext';
-import { AuthContextProvider, AuthContext } from './context/AuthContext';
+import { ThemeContext } from './context/ThemeContext.jsx';
+import { AuthContext } from './context/AuthContext';
+import { BoardContext } from './context/BoardContext';
 
 const RequireAuth = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -16,8 +17,13 @@ const RequireAuth = ({ children }) => {
 };
 
 function App() {
-  const [dark, setDark] = useState(true);
   const { user } = useContext(AuthContext);
+  const { dark } = useContext(ThemeContext);
+  const { currentBoard, dispatch } = useContext(BoardContext);
+
+  useEffect(() => {
+    dispatch({ type: 'SET_CURRENT_BOARD', payload: user && user.userData.boardList[0] });
+  }, []);
 
   const router = createBrowserRouter([
     {
@@ -42,7 +48,7 @@ function App() {
           path: '/',
           element: (
             <RequireAuth>
-              <Board board={user && user.userData.boardList[0]} />
+              <Board board={currentBoard} />
             </RequireAuth>
           )
         }
@@ -50,13 +56,9 @@ function App() {
     }
   ]);
   return (
-    <ThemeContext.Provider value={{ dark: dark, setDark: setDark }}>
-      <AuthContextProvider>
-        <div className={dark ? 'App dark' : 'App light'}>
-          <RouterProvider router={router} />
-        </div>
-      </AuthContextProvider>
-    </ThemeContext.Provider>
+    <div className={dark ? 'App dark' : 'App light'}>
+      <RouterProvider router={router} />
+    </div>
   );
 }
 

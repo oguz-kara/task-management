@@ -1,28 +1,35 @@
-import './board.scss';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useLayoutEffect } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import Modal from '../../components/Modal/Modal';
 import { UilEllipsisV } from '@iconscout/react-unicons';
+import './board.scss';
+import { BoardContext } from './../../context/BoardContext';
 
-function Board({ board, ...props }) {
+function Board(props) {
   const [columnList, setColumnList] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
-  // const [selectedTask, setSelectedTask] = useState({});
+  const { user } = useContext(AuthContext);
+  const { currentBoard } = useContext(BoardContext);
 
-  const updateColumnList = () => {
-    if (!board) return;
+  const buildColumnList = (board) => {
+    if (!board || !board.columnList) {
+      setColumnList([]);
+      return;
+    }
     console.log('passed');
     let list = [...board.columnList];
-    board.taskList.forEach((task) => {
-      list = list.map((item) => {
-        if (item.name === task.status) {
-          return item.taskList
-            ? { ...item, taskList: [...item.taskList, task] }
-            : { ...item, taskList: [task] };
-        }
-        return item;
+    board.taskList &&
+      board.taskList.forEach((task) => {
+        list = list.map((item) => {
+          if (item.name === task.status) {
+            return item.taskList
+              ? { ...item, taskList: [...item.taskList, task] }
+              : { ...item, taskList: [task] };
+          }
+          return item;
+        });
       });
-    });
     setColumnList(list);
   };
 
@@ -35,29 +42,33 @@ function Board({ board, ...props }) {
   }
 
   useLayoutEffect(() => {
-    updateColumnList();
-  }, []);
+    buildColumnList(currentBoard);
+  }, [currentBoard]);
 
   return (
     <>
       <div className="board text-static" {...props}>
-        {board &&
+        {currentBoard &&
           columnList &&
           columnList.map((column, i) => (
             <div key={i} className="column">
               <div className="title">
                 <div className="circle" style={{ backgroundColor: column.color }}></div>
                 <h4>
-                  {column.name} ({column.taskList && column.taskList.length})
+                  {column.name}
+                  {column.taskList && column.taskList.length > 0
+                    ? `(${column.taskList.length})`
+                    : ''}
                 </h4>
               </div>
               <ul>
-                {column.taskList.map((task, i) => (
-                  <li onClick={openModal} key={i} className="text background-2">
-                    <h4>{task.title}</h4>
-                    <p className="text-static">0 of {task.subtasks.length} subtasks</p>
-                  </li>
-                ))}
+                {column.taskList &&
+                  column.taskList.map((task, i) => (
+                    <li onClick={openModal} key={i} className="text background-2">
+                      <h4>{task.title}</h4>
+                      <p className="text-static">0 of {task.subtasks.length} subtasks</p>
+                    </li>
+                  ))}
               </ul>
             </div>
           ))}
