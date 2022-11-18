@@ -14,7 +14,7 @@ import Modal from '../Modal/Modal';
 
 function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const { currentBoard, dispatch } = useContext(BoardContext);
+  const { boardState, dispatch } = useContext(BoardContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
 
   function openModal() {
@@ -39,8 +39,8 @@ function Sidebar({ boardList = [], closeSidebar }) {
             <ul>
               {boardList &&
                 boardList.map((board, index) => (
-                  <li key={index} onClick={() => handleBoardClick(board)}>
-                    <button className={currentBoard.id === board.id ? 'active' : ''}>
+                  <li key={board.id} onClick={() => handleBoardClick(board)}>
+                    <button className={boardState?.currentBoard?.id === board.id ? 'active' : ''}>
                       <span className="icon">
                         <UilClipboardAlt className="list-icon text-static" />
                       </span>

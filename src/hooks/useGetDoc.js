@@ -18,10 +18,8 @@ export function useGetDoc(collectionName, id) {
           setTimeout(() => {
             setLoading(false);
           }, 1000);
-          console.log({ boardList: data.boardList, result });
           return data;
         } else {
-          console.log('No such document!');
           setError({ message: 'No such document!' });
           setTimeout(() => {
             setLoading(false);

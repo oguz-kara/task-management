@@ -21,10 +21,10 @@ export function useSetDoc(collectionName, id) {
     });
     Promise.all([set, get])
       .then((values) => {
-        console.log({ values });
         setResult(values[1]);
         setLoading(false);
         error && setError(false);
+        return values;
       })
       .catch((err) => {
         console.log(err);

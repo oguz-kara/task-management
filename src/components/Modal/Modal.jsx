@@ -7,7 +7,6 @@ function Modal({ isOpen, onAfterOpen, onRequestClose, children }) {
   }
 
   function handleModalClick(e) {
-    console.log('clicked');
     onRequestClose();
   }
 

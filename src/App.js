@@ -19,7 +19,7 @@ const RequireAuth = ({ children }) => {
 function App() {
   const { user } = useContext(AuthContext);
   const { dark } = useContext(ThemeContext);
-  const { currentBoard, dispatch } = useContext(BoardContext);
+  const { boardState, dispatch } = useContext(BoardContext);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   function openSidebar() {
@@ -58,7 +58,7 @@ function App() {
           path: '/',
           element: (
             <RequireAuth>
-              <Board board={currentBoard} />
+              <Board board={boardState.currentBoard} />
             </RequireAuth>
           )
         }

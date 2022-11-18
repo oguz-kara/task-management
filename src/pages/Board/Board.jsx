@@ -6,34 +6,13 @@ import { UilEllipsisV } from '@iconscout/react-unicons';
 import { BoardContext } from './../../context/BoardContext';
 import './board.scss';
 import { useSetDoc } from './../../hooks/useSetDoc';
+import { useTask } from './../../api/task';
 
 function Board(props) {
-  const [columnList, setColumnList] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const { currentBoard, dispatch } = useContext(BoardContext);
-  const { user, dispatch: dispatchAuth } = useContext(AuthContext);
+  const { boardState, dispatch } = useContext(BoardContext);
   const [currentTask, setCurrentTask] = useState({});
-  const { result, refetch } = useSetDoc('users', user.uid);
-
-  const buildColumnList = (board) => {
-    if (!board || !board.columnList) {
-      setColumnList([]);
-      return;
-    }
-    let list = [...board.columnList];
-    board.taskList &&
-      board.taskList.forEach((task) => {
-        list = list.map((item) => {
-          if (item.name === task.status) {
-            return item.taskList
-              ? { ...item, taskList: [...item.taskList, task] }
-              : { ...item, taskList: [task] };
-          }
-          return item;
-        });
-      });
-    setColumnList(list);
-  };
+  const { updateTask } = useTask();
 
   function openModal() {
     setIsOpen(true);
@@ -60,39 +39,6 @@ function Board(props) {
     return task?.subtasks?.length;
   }
 
-  function updateBoardListData(updatedTask) {
-    // make ready board object for update the state
-    const updatedBoard = {
-      ...currentBoard,
-      taskList: currentBoard?.taskList.map((task) => {
-        if (task.id === updatedTask.id) return updatedTask;
-        return task;
-      })
-    };
-
-    // make ready board list object for update the state
-    const updatedBoardList = {
-      boardList: [
-        ...user?.userData?.boardList.map((board) => {
-          if (board.id === updatedBoard.id) {
-            return updatedBoard;
-          }
-          return board;
-        })
-      ]
-    };
-
-    refetch(updatedBoardList)
-      .then(() => {
-        dispatch({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
-        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        setCurrentTask(updatedTask);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   function handleSubtaskChange(id, checked) {
     const updatedSubtasks = currentTask?.subtasks?.map((task) => {
       if (task.id === id) {
@@ -110,7 +56,11 @@ function Board(props) {
       subtasks: updatedSubtasks
     };
 
-    updateBoardListData(updatedCurrentTask);
+    updateTask(updatedCurrentTask)
+      .then(({ task }) => {
+        setCurrentTask(task);
+      })
+      .catch((err) => console.log(err));
   }
 
   function handleStatusChange(value) {
@@ -119,19 +69,21 @@ function Board(props) {
       status: value
     };
 
-    updateBoardListData(updatedCurrentTask);
+    updateTask(updatedCurrentTask)
+      .then(({ task }) => setCurrentTask(task))
+      .catch((err) => console.log(err));
   }
 
   useLayoutEffect(() => {
-    buildColumnList(currentBoard);
-  }, [currentBoard]);
+    dispatch({ type: 'BUILD_BOARD' });
+  }, [boardState.currentBoard]);
 
   return (
     <>
       <div className="board text-static" {...props}>
-        {currentBoard &&
-          columnList?.map((column, i) => (
-            <div key={column.id} className="column">
+        {boardState.currentBoard &&
+          boardState.columnList?.map((column, i) => (
+            <div key={i} className="column">
               <div className="title">
                 <div className="circle" style={{ backgroundColor: column.color }}></div>
                 <h4>
@@ -191,11 +143,12 @@ function Board(props) {
           <div className="status">
             <label htmlFor="status">Status</label>
             <select
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className="text-static"
               name="status"
-              id="status">
-              {currentBoard?.columnList?.map((column) => (
+              id="status"
+              value={currentTask.status}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              className="text-static">
+              {boardState.currentBoard?.columnList?.map((column) => (
                 <option key={column.id} value={column.name}>
                   {column.name}
                 </option>
