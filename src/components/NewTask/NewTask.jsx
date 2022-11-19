@@ -1,16 +1,18 @@
 import uniqid from 'uniqid';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { UilMultiply } from '@iconscout/react-unicons';
 import './new-task.scss';
 
 import { useTask } from './../../api/task';
+import { BoardContext } from './../../context/BoardContext';
 
-function NewTask({ closeModal }) {
+function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
   const [status, setStatus] = useState('todo');
-  const { addTask } = useTask();
+  const { addTask, updateTask } = useTask();
+  const { boardState, dispatch } = useContext(BoardContext);
 
   function isNewSubtaskAddable() {
     let addable = true;
@@ -56,29 +58,55 @@ function NewTask({ closeModal }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const newTask = {
-      id: uniqid(),
-      title,
-      description: desc,
-      subtasks: subtaskList,
-      status
-    };
+    if (type === 'update-task') {
+      const updatedTask = {
+        ...boardState.currentTask,
+        title,
+        description: desc,
+        subtasks: subtaskList,
+        status
+      };
 
-    addTask(newTask).then(() => {
-      setTitle('');
-      setDesc('');
-      setSubtaskList([]);
-      setStatus('todo');
-      closeModal();
-    });
+      console.log({ updatedTask });
+
+      updateTask(updatedTask)
+        .then(({ task }) => {
+          dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+          closeModal();
+        })
+        .catch((err) => console.log(err));
+    } else {
+      const newTask = {
+        id: uniqid(),
+        title,
+        description: desc,
+        subtasks: subtaskList,
+        status
+      };
+
+      addTask(newTask).then(() => {
+        setTitle('');
+        setDesc('');
+        setSubtaskList([]);
+        setStatus('todo');
+        closeModal();
+      });
+    }
   }
+
+  useEffect(() => {
+    setTitle(boardState.currentTask.title);
+    setDesc(boardState.currentTask.description);
+    setSubtaskList(boardState.currentTask.subtasks);
+    setStatus(boardState.currentTask.status);
+  }, [boardState.currentTask]);
 
   return (
     <form
       className="add-new-task-form background text"
       onClick={(e) => e.stopPropagation()}
       onSubmit={handleSubmit}>
-      <h3>add new task</h3>
+      <h3>{heading}</h3>
       <div className="input-container">
         <label htmlFor="title">title</label>
         <input

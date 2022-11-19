@@ -122,7 +122,6 @@ export function useTask() {
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
         dispatchBoard({ type: 'BUILD_BOARD' });
         return {
-          task: newTask,
           result: resultSet,
           error: errorSet,
           loading: loadingSet

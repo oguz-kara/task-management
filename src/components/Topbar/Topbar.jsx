@@ -37,7 +37,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
         </div>
       </header>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-        <NewTask closeModal={closeModal} />
+        <NewTask heading="add new task" closeModal={closeModal} />
       </Modal>
     </>
   );

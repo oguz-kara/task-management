@@ -4,32 +4,51 @@ import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
 import './board.scss';
 import { useTask } from './../../api/task';
-
 import TaskView from '../../components/TaskView/TaskView';
-import SubMenu from './../../components/SubMenu/SubMenu';
-import List from './../../components/List/List';
+import NewTask from './../../components/NewTask/NewTask';
 
 function Board(props) {
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
+  const [taskUpdateModalOpen, setTaskUpdateModalOpen] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
-  const [currentTask, setCurrentTask] = useState({});
-  const { updateTask } = useTask();
+  const { updateTask, removeTask } = useTask();
 
-  function openModal() {
-    setIsOpen(true);
+  function openTaskViewModal() {
+    setTaskViewModalOpen(true);
   }
 
-  function closeModal() {
-    setIsOpen(false);
+  function closeTaskViewModal() {
+    setTaskViewModalOpen(false);
+  }
+
+  function openTaskUpdateModal() {
+    setTaskUpdateModalOpen(true);
+  }
+
+  function closeTaskUpdateModal() {
+    setTaskUpdateModalOpen(false);
+  }
+
+  function handleUpdateTaskClick() {
+    openTaskUpdateModal();
+    closeTaskViewModal();
+  }
+
+  function handleRemoveTaskClick() {
+    removeTask(boardState.currentTask.id)
+      .then(() => {
+        closeTaskViewModal();
+      })
+      .catch((err) => console.log(err));
   }
 
   function handleTaskClick(task) {
-    openModal();
-    setCurrentTask(task);
+    openTaskViewModal();
+    dispatch({ type: 'SET_CURRENT_TASK', payload: task });
   }
 
   function handleSubtaskChange(id, checked) {
-    const updatedSubtasks = currentTask?.subtasks?.map((task) => {
+    const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
       if (task.id === id) {
         return {
           ...task,
@@ -41,25 +60,25 @@ function Board(props) {
 
     // make ready current task object for update the state
     const updatedCurrentTask = {
-      ...currentTask,
+      ...boardState.currentTask,
       subtasks: updatedSubtasks
     };
 
     updateTask(updatedCurrentTask)
       .then(({ task }) => {
-        setCurrentTask(task);
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
       })
       .catch((err) => console.log(err));
   }
 
   function handleStatusChange(value) {
     const updatedCurrentTask = {
-      ...currentTask,
+      ...boardState.currentTask,
       status: value
     };
 
     updateTask(updatedCurrentTask)
-      .then(({ task }) => setCurrentTask(task))
+      .then(({ task }) => dispatch({ type: 'SET_CURRENT_TASK', payload: task }))
       .catch((err) => console.log(err));
   }
 
@@ -77,6 +96,9 @@ function Board(props) {
 
   return (
     <>
+      <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
+        <NewTask type="update-task" heading="update task" closeModal={closeTaskUpdateModal} />
+      </Modal>
       <div className="board text-static" {...props}>
         {boardState.currentBoard &&
           boardState.columnList?.map((column, i) => (
@@ -107,8 +129,14 @@ function Board(props) {
           ))}
         <button className="create-new-column text background-primary">+ new column</button>
       </div>
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-        <TaskView currentTask={currentTask} />
+      <Modal isOpen={taskViewModalOpen} onRequestClose={closeTaskViewModal}>
+        <TaskView
+          currentTask={boardState.currentTask}
+          handleStatusChange={handleStatusChange}
+          handleSubtaskChange={handleSubtaskChange}
+          handleRemoveTaskClick={handleRemoveTaskClick}
+          handleUpdateTaskClick={handleUpdateTaskClick}
+        />
       </Modal>
     </>
   );

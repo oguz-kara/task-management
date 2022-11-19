@@ -27,6 +27,13 @@ export const BoardReducer = (state, action) => {
         columnList: list
       };
     }
+
+    case 'SET_CURRENT_TASK': {
+      return {
+        ...state,
+        currentTask: action.payload
+      };
+    }
     default:
       return state;
   }

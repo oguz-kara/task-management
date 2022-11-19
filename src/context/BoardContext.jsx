@@ -3,7 +3,8 @@ import { BoardReducer } from './BoardReducer';
 
 const INITIAL_STATE = {
   currentBoard: {},
-  columnList: []
+  columnList: [],
+  currentTask: {}
 };
 
 export const BoardContext = createContext(INITIAL_STATE);

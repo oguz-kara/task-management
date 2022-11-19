@@ -4,6 +4,9 @@ import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
 import { BoardContext } from './../../context/BoardContext';
 import './task-view.scss';
+import Modal from './../Modal/Modal';
+import NewTask from './../NewTask/NewTask';
+import { useTask } from './../../api/task';
 
 function countDoneSubtasks(task) {
   let counter = 0;
@@ -17,7 +20,13 @@ function getSubTaskCount(task) {
   return task?.subtasks?.length;
 }
 
-function TaskView({ currentTask }) {
+function TaskView({
+  currentTask,
+  handleStatusChange,
+  handleSubtaskChange,
+  handleRemoveTaskClick,
+  handleUpdateTaskClick
+}) {
   const { boardState } = useContext(BoardContext);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
 
@@ -33,8 +42,10 @@ function TaskView({ currentTask }) {
           }
           bodyComp={
             <List>
-              <List.Item>update</List.Item>
-              <List.Item className="hover-danger">delete</List.Item>
+              <List.Item onClick={handleUpdateTaskClick}>update</List.Item>
+              <List.Item onClick={handleRemoveTaskClick} className="hover-danger">
+                delete
+              </List.Item>
             </List>
           }
           onRequestClose={() => setSubMenuOpen(false)}
