@@ -10,6 +10,8 @@ import Main from './components/Main/Main';
 import { ThemeContext } from './context/ThemeContext.jsx';
 import { AuthContext } from './context/AuthContext';
 import { BoardContext } from './context/BoardContext';
+import SubMenu from './components/SubMenu/SubMenu';
+import List from './components/List/List';
 
 const RequireAuth = ({ children }) => {
   const { user } = useContext(AuthContext);
@@ -21,6 +23,7 @@ function App() {
   const { dark } = useContext(ThemeContext);
   const { boardState, dispatch } = useContext(BoardContext);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [open, setOpen] = useState(true);
 
   function openSidebar() {
     if (!sidebarOpen) setSidebarOpen(true);

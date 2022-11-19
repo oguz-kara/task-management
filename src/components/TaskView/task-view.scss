@@ -1,0 +1,67 @@
+.task-details {
+  min-width: 400px;
+  padding: 30px;
+  max-width: 500px;
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    h3 {
+      font-size: 16px;
+      margin-right: 20px;
+    }
+    .elp-icon {
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  }
+
+  p {
+    margin-bottom: 25px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .subtasks {
+    h4 {
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    ul.subtask-list {
+      list-style-type: none;
+      li {
+        font-size: 14px;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        input[type='checkbox'] {
+          margin-right: 10px;
+        }
+        .subtask-done {
+          text-decoration: line-through;
+        }
+      }
+    }
+  }
+
+  .status {
+    display: flex;
+    flex-direction: column;
+    label {
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    select {
+      background-color: transparent;
+      border: 1px solid gray;
+      padding: 5px;
+      option {
+      }
+    }
+  }
+}

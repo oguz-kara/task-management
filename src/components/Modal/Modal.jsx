@@ -1,11 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './modal.scss';
 
 function Modal({ isOpen, onAfterOpen, onRequestClose, children }) {
-  function modalClasses() {
-    return isOpen ? 'modal modal--active' : 'modal modal--deactive';
-  }
-
   function handleModalClick(e) {
     onRequestClose();
   }
@@ -16,10 +12,19 @@ function Modal({ isOpen, onAfterOpen, onRequestClose, children }) {
     }
   }
 
+  useEffect(() => {
+    checkChildren(children);
+  }, [children]);
+
   return (
-    <div className={modalClasses()} onClick={(e) => handleModalClick(e)}>
-      {checkChildren(children)}
-      {children}
+    <div
+      className={`overlay${isOpen ? ' overlay--active' : ''}`}
+      onClick={(e) => handleModalClick(e)}>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`modal ${isOpen ? 'modal--active' : ''}`}>
+        {children}
+      </div>
     </div>
   );
 }

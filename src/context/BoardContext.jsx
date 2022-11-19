@@ -1,4 +1,4 @@
-import { createContext, useReducer } from 'react';
+import { createContext, useReducer, useEffect } from 'react';
 import { BoardReducer } from './BoardReducer';
 
 const INITIAL_STATE = {

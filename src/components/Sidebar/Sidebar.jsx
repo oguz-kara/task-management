@@ -38,7 +38,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
             <h5 className="text-static">all boards (5)</h5>
             <ul>
               {boardList &&
-                boardList.map((board, index) => (
+                boardList.map((board) => (
                   <li key={board.id} onClick={() => handleBoardClick(board)}>
                     <button className={boardState?.currentBoard?.id === board.id ? 'active' : ''}>
                       <span className="icon">

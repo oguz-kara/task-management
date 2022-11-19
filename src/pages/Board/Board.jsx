@@ -1,12 +1,13 @@
 import { useState, useContext } from 'react';
 import { useLayoutEffect } from 'react';
-import { AuthContext } from '../../context/AuthContext';
 import Modal from '../../components/Modal/Modal';
-import { UilEllipsisV } from '@iconscout/react-unicons';
 import { BoardContext } from './../../context/BoardContext';
 import './board.scss';
-import { useSetDoc } from './../../hooks/useSetDoc';
 import { useTask } from './../../api/task';
+
+import TaskView from '../../components/TaskView/TaskView';
+import SubMenu from './../../components/SubMenu/SubMenu';
+import List from './../../components/List/List';
 
 function Board(props) {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -25,18 +26,6 @@ function Board(props) {
   function handleTaskClick(task) {
     openModal();
     setCurrentTask(task);
-  }
-
-  function countDoneSubtasks(task) {
-    let counter = 0;
-    task?.subtasks?.forEach((item) => {
-      if (item.done === true) counter++;
-    });
-    return counter;
-  }
-
-  function getSubTaskCount(task) {
-    return task?.subtasks?.length;
   }
 
   function handleSubtaskChange(id, checked) {
@@ -72,6 +61,14 @@ function Board(props) {
     updateTask(updatedCurrentTask)
       .then(({ task }) => setCurrentTask(task))
       .catch((err) => console.log(err));
+  }
+
+  function countDoneSubtasks(task) {
+    let counter = 0;
+    task?.subtasks?.forEach((item) => {
+      if (item.done === true) counter++;
+    });
+    return counter;
   }
 
   useLayoutEffect(() => {
@@ -111,51 +108,7 @@ function Board(props) {
         <button className="create-new-column text background-primary">+ new column</button>
       </div>
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-        <div onClick={(e) => e.stopPropagation()} className="task-details text background-2">
-          <div className="header">
-            <h3>{currentTask?.title}</h3>
-            <button className="elp-icon text-static">
-              <UilEllipsisV />
-            </button>
-          </div>
-          <p className="text-static">{currentTask?.description}</p>
-          <div className="subtasks">
-            <h4>
-              Subtasks ({countDoneSubtasks(currentTask)} of {getSubTaskCount(currentTask)})
-            </h4>
-            <ul className="subtask-list">
-              {currentTask?.subtasks?.map((task) => (
-                <li key={task.id} className="background text">
-                  <input
-                    id={task.id}
-                    name={task.id}
-                    type="checkbox"
-                    checked={task.done}
-                    onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
-                  />
-                  <label htmlFor={task.id} className={`${task.done && 'subtask-done text-static'}`}>
-                    {task.description}
-                  </label>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="status">
-            <label htmlFor="status">Status</label>
-            <select
-              name="status"
-              id="status"
-              value={currentTask.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className="text-static">
-              {boardState.currentBoard?.columnList?.map((column) => (
-                <option key={column.id} value={column.name}>
-                  {column.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <TaskView currentTask={currentTask} />
       </Modal>
     </>
   );

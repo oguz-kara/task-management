@@ -34,9 +34,7 @@ function Login() {
       userData
     };
     dispatch({ type: 'LOGIN', payload: userWithUserData });
-    setTimeout(() => {
-      navigate('/');
-    }, 100);
+    navigate('/');
   }
 
   return (

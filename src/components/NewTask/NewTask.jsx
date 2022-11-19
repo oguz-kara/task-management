@@ -65,6 +65,10 @@ function NewTask({ closeModal }) {
     };
 
     addTask(newTask).then(() => {
+      setTitle('');
+      setDesc('');
+      setSubtaskList([]);
+      setStatus('todo');
       closeModal();
     });
   }

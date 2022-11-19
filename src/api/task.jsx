@@ -12,13 +12,13 @@ export function useTask() {
     error: errorSet,
     loading: loadingSet,
     refetch: refetchSet
-  } = useSetDoc('users', user.uid);
+  } = useSetDoc('users', user?.uid);
   const {
     result: resultGet,
     error: errorGet,
     loading: loadingGet,
     refetch: refetchGet
-  } = useGetDoc('users', user.uid);
+  } = useGetDoc('users', user?.uid);
 
   async function updateTask(updatedTask) {
     // make ready board object for update the state
@@ -62,7 +62,7 @@ export function useTask() {
     // make ready board object for update the state
     const updatedBoard = {
       ...boardState.currentBoard,
-      taskList: [...boardState.currentBoard?.taskList, newTask]
+      taskList: [...boardState?.currentBoard?.taskList, newTask]
     };
 
     // make ready board list object for update the state

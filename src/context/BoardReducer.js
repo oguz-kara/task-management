@@ -8,7 +8,7 @@ export const BoardReducer = (state, action) => {
     }
     case 'BUILD_BOARD': {
       if (!state?.currentBoard || !state?.currentBoard.columnList) {
-        return;
+        return state;
       }
       let list = [...state.currentBoard.columnList];
       state.currentBoard?.taskList?.forEach((task) => {
