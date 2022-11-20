@@ -63,7 +63,10 @@ function Sidebar({ boardList = [], closeSidebar }) {
               <UilBrightnessHalf />
             </span>
             <span className="mode">
-              <Switch onClick={() => themeDispatch({ type: 'SET_THEME', payload: !dark })} />
+              <Switch
+                value={dark}
+                onChange={() => themeDispatch({ type: 'SET_THEME', payload: !dark })}
+              />
             </span>
             <span>
               <UilMoon />

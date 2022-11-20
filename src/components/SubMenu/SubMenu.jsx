@@ -1,5 +1,5 @@
 import './sub-menu.scss';
-import { useEffect } from 'react';
+import React, { Children, useEffect } from 'react';
 import { useRef } from 'react';
 
 function SubMenu({
@@ -8,7 +8,8 @@ function SubMenu({
   onRequestOpen,
   onRequestClose,
   isOpen = true,
-  bodyPosition = 'right-align-out'
+  bodyPosition = 'right-align-out',
+  children
 }) {
   const ref = useRef(null);
 
@@ -28,11 +29,24 @@ function SubMenu({
   return (
     <div ref={ref} className="sub-menu">
       <div className="header" onClick={onRequestOpen}>
-        {headerComp}
+        {children.find(({ type }) => type === Header)}
       </div>
-      <div className={`body ${bodyPosition}${isOpen ? ' body--active' : ''}`}>{bodyComp}</div>
+      <div className={`body ${bodyPosition}${isOpen ? ' body--active' : ''}`}>
+        {children.find(({ type }) => type === Body)}
+      </div>
     </div>
   );
 }
+
+function Header({ children }) {
+  return <div>{children}</div>;
+}
+
+function Body({ children }) {
+  return <div>{children}</div>;
+}
+
+SubMenu.Header = Header;
+SubMenu.Body = Body;
 
 export default SubMenu;

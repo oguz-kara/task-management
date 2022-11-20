@@ -10,7 +10,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
-  const [status, setStatus] = useState('todo');
+  const [status, setStatus] = useState('');
   const { addTask, updateTask } = useTask();
   const { boardState, dispatch } = useContext(BoardContext);
 
@@ -55,6 +55,20 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
     setSubtaskList(newSubtaskList);
   }
 
+  function removeEmptySubtasks(subtaskList) {
+    return subtaskList.filter((subtask) => {
+      if (subtask.description === '') return false;
+      return true;
+    });
+  }
+
+  function resetState() {
+    setTitle('');
+    setDesc('');
+    setSubtaskList([]);
+    setStatus('todo');
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -63,16 +77,15 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         ...boardState.currentTask,
         title,
         description: desc,
-        subtasks: subtaskList,
+        subtasks: removeEmptySubtasks(subtaskList),
         status
       };
-
-      console.log({ updatedTask });
 
       updateTask(updatedTask)
         .then(({ task }) => {
           dispatch({ type: 'SET_CURRENT_TASK', payload: task });
           closeModal();
+          resetState();
         })
         .catch((err) => console.log(err));
     } else {
@@ -80,25 +93,35 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         id: uniqid(),
         title,
         description: desc,
-        subtasks: subtaskList,
+        subtasks: removeEmptySubtasks(subtaskList),
         status
       };
 
       addTask(newTask).then(() => {
-        setTitle('');
-        setDesc('');
-        setSubtaskList([]);
-        setStatus('todo');
         closeModal();
+        resetState();
       });
     }
   }
 
   useEffect(() => {
-    setTitle(boardState.currentTask.title);
-    setDesc(boardState.currentTask.description);
-    setSubtaskList(boardState.currentTask.subtasks);
-    setStatus(boardState.currentTask.status);
+    if (
+      type === 'update-task' &&
+      boardState.currentTask &&
+      Object.keys(boardState.currentTask).length > 0
+    ) {
+      setTitle(boardState.currentTask.title);
+      setDesc(boardState.currentTask.description);
+      setSubtaskList(boardState.currentTask.subtasks);
+      setStatus(boardState.currentTask.status);
+    }
+    if (
+      type === 'new-task' &&
+      boardState.currentTask &&
+      Object.keys(boardState.currentTask).length > 0
+    ) {
+      setStatus(boardState.columnList[0].name);
+    }
   }, [boardState.currentTask]);
 
   return (
@@ -130,10 +153,10 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         />
       </div>
       <div className="input-container">
-        {subtaskList.length > 0 && (
+        {subtaskList?.length > 0 && (
           <>
             <label>subtasks</label>
-            {subtaskList.map((subtask) => (
+            {subtaskList?.map((subtask) => (
               <div key={subtask.id} className="input-list">
                 <div className="input-icon-container">
                   <input
@@ -161,9 +184,11 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           onChange={(e) => setStatus(e.target.value)}
           name="status"
           id="status">
-          <option value="todo">Todo</option>
-          <option value="doing">Doing</option>
-          <option value="done">Done</option>
+          {boardState?.columnList?.map((column) => (
+            <option key={column.id} value={column.name}>
+              {column.name}
+            </option>
+          ))}
         </select>
       </div>
       <button type="submit" className="submit-form-button">

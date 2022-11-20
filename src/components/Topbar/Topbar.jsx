@@ -28,7 +28,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
           Platform Launch
         </h2>
         <div className="actions">
-          <button onClick={openModal} className="new-task-button background-primary text">
+          <button onClick={openModal} className="new-task-button background-primary">
             + add new task
           </button>
           <button className="menu-icon text-static">

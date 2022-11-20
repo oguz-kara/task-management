@@ -47,21 +47,4 @@
       }
     }
   }
-
-  .status {
-    display: flex;
-    flex-direction: column;
-    label {
-      margin-bottom: 10px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    select {
-      background-color: transparent;
-      border: 1px solid gray;
-      padding: 5px;
-      option {
-      }
-    }
-  }
 }

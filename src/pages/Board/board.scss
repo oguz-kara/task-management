@@ -1,9 +1,11 @@
+@import '../../style/abstracts/colors';
 .board {
   display: flex;
   gap: 30px;
   padding: 20px;
   position: relative;
-  min-height: 100vh;
+  overflow: auto;
+  min-height: calc(100vh - 77px);
   .column {
     .title {
       display: flex;
@@ -47,14 +49,16 @@
   }
 
   .create-new-column {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    padding: 10px 20px;
-    border: none;
+    margin-top: 35px;
+    padding: 20px;
+    min-width: 300px;
+    font-weight: 600;
+    border: 1px solid rgba($color: $primary, $alpha: 0.3);
+    background: transparent;
     border-radius: 10px;
     text-transform: capitalize;
     font-size: 18px;
     cursor: pointer;
+    color: #fff;
   }
 }

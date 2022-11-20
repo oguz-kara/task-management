@@ -35,23 +35,23 @@ function TaskView({
       <div className="title">
         <h3>{currentTask?.title}</h3>
         <SubMenu
-          headerComp={
+          onRequestClose={() => setSubMenuOpen(false)}
+          onRequestOpen={() => setSubMenuOpen(true)}
+          isOpen={subMenuOpen}>
+          <SubMenu.Header>
             <button className="elp-icon text-static">
               <UilEllipsisV />
             </button>
-          }
-          bodyComp={
+          </SubMenu.Header>
+          <SubMenu.Body>
             <List>
               <List.Item onClick={handleUpdateTaskClick}>update</List.Item>
               <List.Item onClick={handleRemoveTaskClick} className="hover-danger">
                 delete
               </List.Item>
             </List>
-          }
-          onRequestClose={() => setSubMenuOpen(false)}
-          onRequestOpen={() => setSubMenuOpen(true)}
-          isOpen={subMenuOpen}
-        />
+          </SubMenu.Body>
+        </SubMenu>
       </div>
       <p className="text-static">{currentTask?.description}</p>
       <div className="subtasks">
@@ -77,7 +77,7 @@ function TaskView({
           ))}
         </ul>
       </div>
-      <div className="status">
+      <div className="input-container">
         <label htmlFor="status">Status</label>
         <select
           name="status"

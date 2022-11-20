@@ -6,12 +6,22 @@ import './board.scss';
 import { useTask } from './../../api/task';
 import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
+import NewColumn from '../../components/NewColumn/NewColumn';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
   const [taskUpdateModalOpen, setTaskUpdateModalOpen] = useState(false);
+  const [addColumnModalOpen, setAddColumnModalOpen] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { updateTask, removeTask } = useTask();
+
+  function openAddColumnModal() {
+    setAddColumnModalOpen(true);
+  }
+
+  function closeAddColumnModal() {
+    setAddColumnModalOpen(false);
+  }
 
   function openTaskViewModal() {
     setTaskViewModalOpen(true);
@@ -78,7 +88,10 @@ function Board(props) {
     };
 
     updateTask(updatedCurrentTask)
-      .then(({ task }) => dispatch({ type: 'SET_CURRENT_TASK', payload: task }))
+      .then(({ task }) => {
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+        closeTaskViewModal();
+      })
       .catch((err) => console.log(err));
   }
 
@@ -98,6 +111,18 @@ function Board(props) {
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
         <NewTask type="update-task" heading="update task" closeModal={closeTaskUpdateModal} />
+      </Modal>
+      <Modal isOpen={addColumnModalOpen} onRequestClose={closeAddColumnModal}>
+        <NewColumn closeModal={closeAddColumnModal} />
+      </Modal>
+      <Modal isOpen={taskViewModalOpen} onRequestClose={closeTaskViewModal}>
+        <TaskView
+          currentTask={boardState.currentTask}
+          handleStatusChange={handleStatusChange}
+          handleSubtaskChange={handleSubtaskChange}
+          handleRemoveTaskClick={handleRemoveTaskClick}
+          handleUpdateTaskClick={handleUpdateTaskClick}
+        />
       </Modal>
       <div className="board text-static" {...props}>
         {boardState.currentBoard &&
@@ -127,17 +152,10 @@ function Board(props) {
               </ul>
             </div>
           ))}
-        <button className="create-new-column text background-primary">+ new column</button>
+        <button className="create-new-column text background" onClick={openAddColumnModal}>
+          + new column
+        </button>
       </div>
-      <Modal isOpen={taskViewModalOpen} onRequestClose={closeTaskViewModal}>
-        <TaskView
-          currentTask={boardState.currentTask}
-          handleStatusChange={handleStatusChange}
-          handleSubtaskChange={handleSubtaskChange}
-          handleRemoveTaskClick={handleRemoveTaskClick}
-          handleUpdateTaskClick={handleUpdateTaskClick}
-        />
-      </Modal>
     </>
   );
 }

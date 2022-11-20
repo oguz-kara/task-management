@@ -23,7 +23,6 @@ function App() {
   const { dark } = useContext(ThemeContext);
   const { boardState, dispatch } = useContext(BoardContext);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [open, setOpen] = useState(true);
 
   function openSidebar() {
     if (!sidebarOpen) setSidebarOpen(true);
@@ -34,7 +33,8 @@ function App() {
   }
 
   useEffect(() => {
-    dispatch({ type: 'SET_CURRENT_BOARD', payload: user?.userData?.boardList[0] });
+    if (!(boardState.currentBoard && Object.keys(boardState.currentBoard).length > 0))
+      dispatch({ type: 'SET_CURRENT_BOARD', payload: user?.userData?.boardList[0] });
   }, []);
 
   const router = createBrowserRouter([
