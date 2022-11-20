@@ -1,3 +1,5 @@
+import uniqid from 'uniqid';
+
 export const BoardReducer = (state, action) => {
   switch (action.type) {
     case 'SET_CURRENT_BOARD': {
@@ -15,8 +17,8 @@ export const BoardReducer = (state, action) => {
         list = list.map((item) => {
           if (item.name === task.status) {
             return item.taskList
-              ? { ...item, taskList: [...item.taskList, task] }
-              : { ...item, taskList: [task] };
+              ? { ...item, id: uniqid(), taskList: [...item.taskList, task] }
+              : { ...item, id: uniqid(), taskList: [task] };
           }
           return item;
         });

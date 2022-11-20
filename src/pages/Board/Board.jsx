@@ -2,11 +2,12 @@ import { useState, useContext } from 'react';
 import { useLayoutEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
-import './board.scss';
 import { useTask } from './../../api/task';
 import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
+import './board.scss';
+import Fade from '../../animations/Fade';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -126,28 +127,32 @@ function Board(props) {
       </Modal>
       <div className="board text-static" {...props}>
         {boardState.currentBoard &&
-          boardState.columnList?.map((column, i) => (
-            <div key={i} className="column">
-              <div className="title">
-                <div className="circle" style={{ backgroundColor: column.color }}></div>
-                <h4>
-                  {column.name}
-                  {column.taskList && column.taskList.length > 0
-                    ? `(${column.taskList.length})`
-                    : ''}
-                </h4>
-              </div>
+          boardState.columnList?.map((column) => (
+            <div key={column.id} className="column">
+              {column?.taskList?.length > 0 && (
+                <div className="title">
+                  <div className="circle" style={{ backgroundColor: column.color }}></div>
+                  <h4>
+                    {column.name}
+                    {column.taskList && column.taskList.length > 0
+                      ? `(${column.taskList.length})`
+                      : ''}
+                  </h4>
+                </div>
+              )}
               <ul>
-                {column?.taskList?.map((task, i) => (
-                  <li
-                    key={task.id}
-                    onClick={() => handleTaskClick(task)}
-                    className="text background-2">
-                    <h4>{task.title}</h4>
-                    <p className="text-static">
-                      {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
-                    </p>
-                  </li>
+                {column?.taskList?.map((task, index) => (
+                  <Fade delayIndex={index} ms={100}>
+                    <li
+                      key={task.id}
+                      onClick={() => handleTaskClick(task)}
+                      className="text background-2">
+                      <h4>{task.title}</h4>
+                      <p className="text-static">
+                        {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
+                      </p>
+                    </li>
+                  </Fade>
                 ))}
               </ul>
             </div>

@@ -37,6 +37,7 @@
         min-width: 300px;
         padding: 15px;
         border-radius: 10px;
+
         h4 {
           padding-bottom: 10px;
         }
@@ -60,5 +61,11 @@
     font-size: 18px;
     cursor: pointer;
     color: #fff;
+    margin-left: auto;
   }
+}
+
+.rise-animation {
+  animation-name: example;
+  animation-duration: 500ms;
 }
