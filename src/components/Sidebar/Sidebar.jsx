@@ -27,6 +27,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
 
   function handleBoardClick(board) {
     dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
+    dispatch({ type: 'SET_CURRENT_TASK', payload: {} });
   }
 
   return (

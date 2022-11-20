@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useLayoutEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
@@ -142,7 +142,14 @@ function Board(props) {
               )}
               <ul>
                 {column?.taskList?.map((task, index) => (
-                  <Fade delayIndex={index} ms={100}>
+                  <Fade
+                    key={task.id}
+                    delayIndex={index}
+                    ms={task.id === boardState?.currentTask.id ? 0 : 100}
+                    active={
+                      !Object.keys(boardState?.currentTask).length > 0 ||
+                      task.id === boardState?.currentTask.id
+                    }>
                     <li
                       key={task.id}
                       onClick={() => handleTaskClick(task)}
