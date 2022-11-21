@@ -5,6 +5,7 @@ import './new-task.scss';
 
 import { useTask } from './../../api/task';
 import { BoardContext } from './../../context/BoardContext';
+import Loader from './../Loader/Loader';
 
 function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
@@ -81,7 +82,8 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         status
       };
 
-      updateTask(updatedTask)
+      updateTask
+        .invoke(updatedTask)
         .then(({ task }) => {
           dispatch({ type: 'SET_CURRENT_TASK', payload: task });
           closeModal();
@@ -97,9 +99,10 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         status
       };
 
-      addTask(newTask).then(() => {
+      addTask.invoke(newTask).then(({ task }) => {
         closeModal();
         resetState();
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
       });
     }
   }
@@ -192,8 +195,10 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         </select>
       </div>
       <button type="submit" className="submit-form-button">
-        create task
+        add task
       </button>
+      {addTask.loading ? <Loader /> : ''}
+      {updateTask.loading ? <Loader /> : ''}
     </form>
   );
 }

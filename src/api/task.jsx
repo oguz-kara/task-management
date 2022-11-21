@@ -59,13 +59,10 @@ export function useTask() {
   }
 
   async function addTask(newTask) {
-    // make ready board object for update the state
     const updatedBoard = {
       ...boardState.currentBoard,
       taskList: [...boardState?.currentBoard?.taskList, newTask]
     };
-
-    // make ready board list object for update the state
     const updatedBoardList = {
       boardList: [
         ...user?.userData?.boardList.map((board) => {
@@ -76,17 +73,13 @@ export function useTask() {
         })
       ]
     };
-
     return refetchSet(updatedBoardList)
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
         dispatchBoard({ type: 'BUILD_BOARD' });
         return {
-          task: newTask,
-          result: resultSet,
-          error: errorSet,
-          loading: loadingSet
+          task: newTask
         };
       })
       .catch((err) => {
@@ -98,10 +91,11 @@ export function useTask() {
     // make ready board object for update the state
     const updatedBoard = {
       ...boardState.currentBoard,
-      taskList: boardState.currentBoard.taskList.filter((task) => {
-        if (task.id === taskId) return false;
-        return true;
-      })
+      taskList:
+        boardState.currentBoard.taskList.filter((task) => {
+          if (task.id === taskId) return false;
+          return true;
+        }) || []
     };
 
     // make ready board list object for update the state
@@ -146,5 +140,20 @@ export function useTask() {
     });
   }
 
-  return { addTask, getTaskById, getAllTasks, updateTask, removeTask };
+  return {
+    addTask: {
+      invoke: addTask,
+      loading: loadingSet
+    },
+    getTaskById,
+    getAllTasks,
+    updateTask: {
+      invoke: updateTask,
+      loading: loadingSet
+    },
+    removeTask: {
+      invoke: removeTask,
+      loading: loadingSet
+    }
+  };
 }

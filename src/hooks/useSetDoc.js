@@ -19,17 +19,23 @@ export function useSetDoc(collectionName, id) {
       if (docSnap.exists()) return docSnap.data();
       return null;
     });
-    Promise.all([set, get])
+    return Promise.all([set, get])
       .then((values) => {
         setResult(values[1]);
-        setLoading(false);
         error && setError(false);
-        return values;
+        return {
+          values,
+          loading,
+          result,
+          error
+        };
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false);
         setError(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 

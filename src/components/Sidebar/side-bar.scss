@@ -15,9 +15,12 @@
   }
   .board-list {
     h5 {
+      font-size: 14px;
       text-transform: uppercase;
       padding: 10px 20px;
       background-color: transparent;
+      letter-spacing: 1px;
+      text-decoration: underline;
     }
 
     h5.active {
@@ -56,6 +59,8 @@
 
           span {
             background-color: transparent;
+            font-size: 12px;
+            font-weight: 500;
           }
         }
         .icon {

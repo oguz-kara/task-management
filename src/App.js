@@ -12,6 +12,7 @@ import { AuthContext } from './context/AuthContext';
 import { BoardContext } from './context/BoardContext';
 import SubMenu from './components/SubMenu/SubMenu';
 import List from './components/List/List';
+import Loader from './components/Loader/Loader';
 
 const RequireAuth = ({ children }) => {
   const { user } = useContext(AuthContext);

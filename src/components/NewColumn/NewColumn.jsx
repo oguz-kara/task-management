@@ -17,7 +17,8 @@ function NewColumn({ closeModal }) {
       color: color.hex
     };
 
-    addColumn(newColumn)
+    addColumn
+      .invoke(newColumn)
       .then(() => {
         closeModal();
       })

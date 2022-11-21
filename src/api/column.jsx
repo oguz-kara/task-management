@@ -36,16 +36,20 @@ export function useColumn() {
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
         dispatchBoard({ type: 'BUILD_BOARD' });
         return {
-          column: newColumn,
-          result: resultSet,
-          error: errorSet,
-          loading: loadingSet
+          column: newColumn
         };
       })
       .catch((err) => {
-        console.log(err);
+        console.log({ err });
       });
   }
 
-  return { addColumn };
+  return {
+    addColumn: {
+      invoke: addColumn,
+      loading: loadingSet,
+      error: errorSet,
+      result: resultSet
+    }
+  };
 }

@@ -11,10 +11,12 @@ import { ThemeContext } from './../../context/ThemeContext';
 import { BoardContext } from './../../context/BoardContext';
 import NewBoard from '../NewBoard/NewBoard';
 import Modal from '../Modal/Modal';
+import { AuthContext } from './../../context/AuthContext';
 
 function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
+  const { user } = useContext(AuthContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
 
   function openModal() {
@@ -36,7 +38,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
         <div className="top">
           <img className="logo" src={taskManagerLogo} alt="task manager" />
           <div className="board-list">
-            <h5 className="text-static">all boards (5)</h5>
+            <h5 className="text-static">all boards ({user?.userData?.boardList.length})</h5>
             <ul>
               {boardList &&
                 boardList.map((board) => (

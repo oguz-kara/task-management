@@ -4,9 +4,8 @@ import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
 import { BoardContext } from './../../context/BoardContext';
 import './task-view.scss';
-import Modal from './../Modal/Modal';
-import NewTask from './../NewTask/NewTask';
 import { useTask } from './../../api/task';
+import Loader from './../Loader/Loader';
 
 function countDoneSubtasks(task) {
   let counter = 0;
@@ -20,20 +19,68 @@ function getSubTaskCount(task) {
   return task?.subtasks?.length;
 }
 
-function TaskView({
-  currentTask,
-  handleStatusChange,
-  handleSubtaskChange,
-  handleRemoveTaskClick,
-  handleUpdateTaskClick
-}) {
-  const { boardState } = useContext(BoardContext);
+function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
+  const { boardState, dispatch } = useContext(BoardContext);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
+  const { updateTask, removeTask } = useTask();
+
+  function handleSubtaskChange(id, checked) {
+    const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          done: checked
+        };
+      }
+      return task;
+    });
+
+    const updatedCurrentTask = {
+      ...boardState.currentTask,
+      subtasks: updatedSubtasks
+    };
+
+    updateTask
+      .invoke(updatedCurrentTask)
+      .then(({ task }) => {
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function handleStatusChange(value) {
+    const updatedCurrentTask = {
+      ...boardState.currentTask,
+      status: value
+    };
+
+    updateTask
+      .invoke(updatedCurrentTask)
+      .then(({ task }) => {
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+        closeTaskViewModal();
+      })
+      .catch((err) => console.log(err));
+  }
+
+  function handleUpdateTaskClick() {
+    openTaskUpdateModal();
+    closeTaskViewModal();
+  }
+
+  function handleRemoveTaskClick() {
+    removeTask
+      .invoke(boardState.currentTask.id)
+      .then(() => {
+        closeTaskViewModal();
+      })
+      .catch((err) => console.log(err));
+  }
 
   return (
     <div className="task-details text background-2">
       <div className="title">
-        <h3>{currentTask?.title}</h3>
+        <h3>{boardState?.currentTask?.title}</h3>
         <SubMenu
           onRequestClose={() => setSubMenuOpen(false)}
           onRequestOpen={() => setSubMenuOpen(true)}
@@ -53,15 +100,16 @@ function TaskView({
           </SubMenu.Body>
         </SubMenu>
       </div>
-      <p className="text-static">{currentTask?.description}</p>
+      <p className="text-static">{boardState.currentTask?.description}</p>
       <div className="subtasks">
         {getSubTaskCount() && (
           <h4>
-            Subtasks ({countDoneSubtasks(currentTask)} of {getSubTaskCount(currentTask)})
+            Subtasks ({countDoneSubtasks(boardState?.currentTask)} of{' '}
+            {getSubTaskCount(boardState?.currentTask)})
           </h4>
         )}
         <ul className="subtask-list">
-          {currentTask?.subtasks?.map((task) => (
+          {boardState?.currentTask?.subtasks?.map((task) => (
             <li key={task.id} className="background text">
               <input
                 id={task.id}
@@ -82,7 +130,7 @@ function TaskView({
         <select
           name="status"
           id="status"
-          value={currentTask.status}
+          value={boardState?.currentTask.status}
           onChange={(e) => handleStatusChange(e.target.value)}
           className="text-static">
           {boardState.currentBoard?.columnList?.map((column) => (
@@ -92,6 +140,8 @@ function TaskView({
           ))}
         </select>
       </div>
+      {updateTask.loading ? <Loader /> : ''}
+      {removeTask.loading ? <Loader /> : ''}
     </div>
   );
 }

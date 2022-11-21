@@ -15,15 +15,9 @@ export function useGetDoc(collectionName, id) {
         if (docSnap.exists()) {
           const data = docSnap.data();
           setResult(data);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
           return data;
         } else {
           setError({ message: 'No such document!' });
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
           return { message: 'No such document!' };
         }
       })
@@ -33,6 +27,11 @@ export function useGetDoc(collectionName, id) {
           setLoading(false);
         }, 1000);
         return err;
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setLoading(false);
+        }, 5000);
       });
   }
 
