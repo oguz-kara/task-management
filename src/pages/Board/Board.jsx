@@ -1,20 +1,18 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useLayoutEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
-import { useTask } from './../../api/task';
 import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
-import './board.scss';
 import Fade from '../../animations/Fade';
+import './board.scss';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
   const [taskUpdateModalOpen, setTaskUpdateModalOpen] = useState(false);
   const [addColumnModalOpen, setAddColumnModalOpen] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
-  const { updateTask, removeTask } = useTask();
 
   function openAddColumnModal() {
     setAddColumnModalOpen(true);
@@ -108,7 +106,7 @@ function Board(props) {
                   ))}
                 </ul>
               ) : (
-                <h5>No task yet</h5>
+                <h5 className="text">No task</h5>
               )}
             </div>
           ))}
