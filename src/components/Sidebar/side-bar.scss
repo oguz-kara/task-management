@@ -10,8 +10,7 @@
 
   .logo {
     padding: 20px;
-    max-width: 100%;
-    width: 200px;
+    width: 100%;
   }
   .board-list {
     h5 {
@@ -30,7 +29,6 @@
       list-style-type: none;
       li {
         margin-right: 20px;
-
         button {
           background-color: transparent;
           border: none;
@@ -42,27 +40,32 @@
           width: 100%;
           padding: 10px 20px;
           font-weight: bold;
+          border-top-right-radius: 30px;
+          border-bottom-right-radius: 30px;
+          transition: background-color 100ms ease-in;
 
-          &.active {
-            background-color: $primary;
-            border-top-right-radius: 30px;
-            border-bottom-right-radius: 30px;
+          &:not(.active) {
+            &:hover {
+              background-color: white;
+            }
           }
-
           &.active .text-static {
             color: #fff !important;
+          }
+          &.active {
+            background-color: $primary;
           }
 
           .list-icon {
             background-color: transparent;
           }
-
           span {
             background-color: transparent;
             font-size: 12px;
             font-weight: 500;
           }
         }
+
         .icon {
           margin-right: 10px;
         }

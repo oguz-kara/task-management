@@ -44,6 +44,37 @@ export function useColumn() {
       });
   }
 
+  async function removeColumn(id) {
+    const updatedBoard = {
+      ...boardState.currentBoard,
+      columnList: boardState.columnList
+    };
+
+    const updatedBoardList = {
+      boardList: [
+        ...user?.userData?.boardList.map((board) => {
+          if (board.id === updatedBoard.id) {
+            return updatedBoard;
+          }
+          return board;
+        })
+      ]
+    };
+
+    return refetchSet(updatedBoardList)
+      .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        dispatchBoard({ type: 'BUILD_BOARD' });
+        return {
+          column: newColumn
+        };
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
+  }
+
   return {
     addColumn: {
       invoke: addColumn,

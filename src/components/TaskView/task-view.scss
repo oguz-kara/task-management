@@ -33,6 +33,8 @@
     ul.subtask-list {
       list-style-type: none;
       li {
+        display: flex;
+        align-items: center;
         font-size: 14px;
         padding: 10px;
         margin-bottom: 10px;

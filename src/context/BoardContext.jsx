@@ -1,9 +1,9 @@
 import { createContext, useReducer, useEffect } from 'react';
 import { BoardReducer } from './BoardReducer';
 
-const INITIAL_STATE = {
-  currentBoard: JSON.parse(localStorage.getItem('currentBoard'))?.currentBoard || {},
-  columnList: JSON.parse(localStorage.getItem('currentBoard'))?.columnList || [],
+const INITIAL_STATE = JSON.parse(localStorage.getItem('currentBoard')) || {
+  currentBoard: {},
+  columnList: [],
   currentTask: {}
 };
 

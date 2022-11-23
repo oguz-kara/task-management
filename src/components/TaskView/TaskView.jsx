@@ -6,6 +6,7 @@ import { BoardContext } from './../../context/BoardContext';
 import './task-view.scss';
 import { useTask } from './../../api/task';
 import Loader from './../Loader/Loader';
+import Checkbox from '../Checkbox/Checkbox';
 
 function countDoneSubtasks(task) {
   let counter = 0;
@@ -111,10 +112,16 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
         <ul className="subtask-list">
           {boardState?.currentTask?.subtasks?.map((task) => (
             <li key={task.id} className="background text">
-              <input
+              {/* <input
                 id={task.id}
                 name={task.id}
                 type="checkbox"
+                checked={task.done}
+                onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
+              /> */}
+              <Checkbox
+                id={task.id}
+                name={task.id}
                 checked={task.done}
                 onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
               />

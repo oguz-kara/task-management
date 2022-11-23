@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
-import taskManagerLogo from '../../assets/images/task_manager.png';
+import taskManagerLogoLight from '../../assets/images/task_manager_light.png';
+import taskManagerLogoDark from '../../assets/images/task_manager_dark.png';
 import './side-bar.scss';
 import Switch from '../Switch/Switch';
 import { UilClipboardAlt } from '@iconscout/react-unicons';
@@ -36,14 +37,18 @@ function Sidebar({ boardList = [], closeSidebar }) {
     <>
       <aside className="sidebar">
         <div className="top">
-          <img className="logo" src={taskManagerLogo} alt="task manager" />
+          <img
+            className="logo"
+            src={dark ? taskManagerLogoDark : taskManagerLogoLight}
+            alt="task manager"
+          />
           <div className="board-list">
             <h5 className="text-static">all boards ({user?.userData?.boardList.length})</h5>
             <ul>
               {boardList &&
                 boardList.map((board) => (
                   <li key={board.id} onClick={() => handleBoardClick(board)}>
-                    <button className={boardState?.currentBoard?.id === board.id ? 'active' : ''}>
+                    <button className={boardState?.currentBoard?.id === board.id ? ' active' : ''}>
                       <span className="icon">
                         <UilClipboardAlt className="list-icon text-static" />
                       </span>
