@@ -11,7 +11,13 @@
 
 ![app_show](./public/app_view.gif)
 
-## Screenshoots
+# Screenshoots
+
+## Updated logo
+
+![ss](./public/screentshoots/0.png)
+
+## Old Screenshoots
 
 ![ss](./public/screentshoots/1.png)
 ![ss](./public/screentshoots/2.png)
