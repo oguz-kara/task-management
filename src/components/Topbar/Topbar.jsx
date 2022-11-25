@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { UilEllipsisV } from '@iconscout/react-unicons';
 import './topbar.scss';
 import Modal from '../Modal/Modal';
 import { UilBars } from '@iconscout/react-unicons';
 import NewTask from '../NewTask/NewTask';
+import { ThemeContext } from './../../context/ThemeContext';
 
 function Topbar({ openSidebar, hideMenuIcon = true }) {
   const [modalIsOpen, setIsOpen] = useState(false);
+  const { dark } = useContext(ThemeContext);
 
   function openModal() {
     setIsOpen(true);
@@ -18,7 +20,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
 
   return (
     <>
-      <header className="topbar text background-2">
+      <header className={`topbar text background-2 ${dark ? 'line-light' : 'line-dark'}`}>
         <h2>
           {hideMenuIcon && (
             <button onClick={openSidebar} className="text">

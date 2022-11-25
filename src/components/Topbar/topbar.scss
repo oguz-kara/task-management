@@ -1,5 +1,13 @@
 @import '../../style/abstracts/colors';
 
+.topbar.line-light {
+  border-bottom: 1px solid rgba($color: $background-light-2, $alpha: 0.1);
+}
+
+.topbar.line-dark {
+  border-bottom: 1px solid rgba($color: $background-dark-2, $alpha: 0.1);
+}
+
 .topbar {
   display: inline-flex;
   align-items: center;
@@ -7,7 +15,6 @@
   max-width: calc(100vw - 300px);
   width: 100%;
   padding: 20px;
-  border-bottom: 1px solid rgba($color: #ffffff, $alpha: 0.1);
   max-height: 100px;
   h2 {
     display: flex;

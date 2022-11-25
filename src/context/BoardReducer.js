@@ -17,8 +17,8 @@ export const BoardReducer = (state, action) => {
         list = list.map((item) => {
           if (item.name === task.status) {
             return item.taskList
-              ? { ...item, id: uniqid(), taskList: [...item.taskList, task] }
-              : { ...item, id: uniqid(), taskList: [task] };
+              ? { ...item, id: uniqid(), taskList: [...item.taskList, task], selected: false }
+              : { ...item, id: uniqid(), taskList: [task], selected: false };
           }
           return item;
         });
@@ -30,12 +30,34 @@ export const BoardReducer = (state, action) => {
       };
     }
 
+    case 'SET_COLUMN_SELECTED_BY_ID': {
+      console.log({ payload: action.payload });
+      return {
+        ...state,
+        columnList: state.columnList.map((column) => {
+          if (column.id === action.payload.id)
+            return { ...column, selected: action.payload.checked };
+          return column;
+        })
+      };
+    }
+
     case 'SET_CURRENT_TASK': {
       return {
         ...state,
         currentTask: action.payload
       };
     }
+
+    case 'DELETE_SELECTED_COLUMNS': {
+      return {
+        ...state,
+        currentBoard: {
+          ...state.currentBoard
+        }
+      };
+    }
+
     default:
       return state;
   }

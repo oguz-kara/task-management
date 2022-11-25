@@ -4,7 +4,7 @@ import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
 import { BoardContext } from './../../context/BoardContext';
 import './task-view.scss';
-import { useTask } from './../../api/task';
+import { useBoard } from '../../api/board';
 import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
 
@@ -23,7 +23,7 @@ function getSubTaskCount(task) {
 function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
   const { boardState, dispatch } = useContext(BoardContext);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
-  const { updateTask, removeTask } = useTask();
+  const { updateTask, removeTask } = useBoard();
 
   function handleSubtaskChange(id, checked) {
     const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {

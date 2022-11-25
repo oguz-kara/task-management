@@ -19,15 +19,13 @@
       padding: 10px 20px;
       background-color: transparent;
       letter-spacing: 1px;
-      text-decoration: underline;
-    }
-
-    h5.active {
     }
 
     ul {
       list-style-type: none;
       li {
+        position: relative;
+        z-index: 100;
         margin-right: 20px;
         button {
           background-color: transparent;
@@ -46,16 +44,23 @@
 
           &:not(.active) {
             &:hover {
-              background-color: white;
+              background-color: $primary-light;
+            }
+
+            &:hover .board-name {
+              color: #fff !important;
             }
           }
-          &.active .text-static {
+          &.active .board-name {
             color: #fff !important;
+            font-weight: 700;
           }
           &.active {
-            background-color: $primary;
+            background-color: $primary-light;
           }
-
+          &.active span svg {
+            color: white !important;
+          }
           .list-icon {
             background-color: transparent;
           }
@@ -84,6 +89,7 @@
 
       .icon {
         margin-right: 10px;
+        color: #fff !important;
       }
     }
   }

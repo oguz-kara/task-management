@@ -3,10 +3,9 @@ import React, { Children, useEffect } from 'react';
 import { useRef } from 'react';
 
 function SubMenu({
-  headerComp,
-  bodyComp,
   onRequestOpen,
   onRequestClose,
+  onRequestOpenRight,
   isOpen = true,
   bodyPosition = 'right-align-out',
   children
@@ -28,7 +27,7 @@ function SubMenu({
   }, [ref]);
   return (
     <div ref={ref} className="sub-menu">
-      <div className="header" onClick={onRequestOpen}>
+      <div className="header" onClick={onRequestOpen} onContextMenu={onRequestOpenRight}>
         {children.find(({ type }) => type === Header)}
       </div>
       <div className={`body ${bodyPosition}${isOpen ? ' body--active' : ''}`}>
@@ -38,8 +37,8 @@ function SubMenu({
   );
 }
 
-function Header({ children }) {
-  return <div>{children}</div>;
+function Header({ children, ...props }) {
+  return <div {...props}>{children}</div>;
 }
 
 function Body({ children }) {

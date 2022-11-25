@@ -1,8 +1,6 @@
 .sub-menu {
   position: relative;
-  display: inline-flex;
   .header {
-    display: inline-flex;
   }
   .body {
     position: absolute;
@@ -10,6 +8,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
+    z-index: 100 !important;
   }
 
   .body--active {

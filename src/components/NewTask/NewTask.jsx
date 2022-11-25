@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react';
 import { UilMultiply } from '@iconscout/react-unicons';
 import './new-task.scss';
 
-import { useTask } from './../../api/task';
+import { useBoard } from '../../api/board';
 import { BoardContext } from './../../context/BoardContext';
 import Loader from './../Loader/Loader';
 
@@ -12,7 +12,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
   const [status, setStatus] = useState('');
-  const { addTask, updateTask } = useTask();
+  const { addTask, updateTask } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
 
   function isNewSubtaskAddable() {
