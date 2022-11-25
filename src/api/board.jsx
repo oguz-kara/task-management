@@ -262,7 +262,9 @@ export function useBoard() {
 
     return refetchSet(updatedBoardList)
       .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: {} });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           result: resultSet,
           error: errorSet,
@@ -275,20 +277,20 @@ export function useBoard() {
   }
 
   async function updateBoard(updatedBoard) {
-    const updatedBoardList = {
-      boardList: [
-        ...user?.userData?.boardList.map((board) => {
-          if (board.id === updatedBoard.id) {
-            return updatedBoard;
-          }
-          return board;
-        })
-      ]
-    };
+    const updatedBoardList = user?.userData?.boardList.map((board) => {
+      if (board.id === updatedBoard.id) {
+        return updatedBoard;
+      }
+      return board;
+    });
+    console.log({ updatedBoardList });
 
     return refetchSet(updatedBoardList)
       .then(() => {
-        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList });
+        dispatchBoard({ type: 'BUILD_BOARD' });
+        console.log({ resultSet });
         return {
           result: resultSet,
           error: errorSet,

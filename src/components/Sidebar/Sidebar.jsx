@@ -15,16 +15,18 @@ import Modal from '../Modal/Modal';
 import { AuthContext } from './../../context/AuthContext';
 import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
+import { useBoard } from './../../api/board';
+import ConfirmAction from './../ConfirmAction/ConfirmAction';
 
 function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [boardActions, setBoardActions] = useState(false);
-  const [clickedBoard, setClickedBoard] = useState({});
-  const [updateBoard, setUpdateBoard] = useState('');
-  const [updateBoardMode, setUpdateBoardMode] = useState(false);
+  const [updateBoardModal, setUpdateBoardModal] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
+  const [deleteBoard, setDeleteBoard] = useState(false);
   const { user } = useContext(AuthContext);
+  const { removeBoard } = useBoard();
 
   function openModal() {
     setIsOpen(true);
@@ -32,6 +34,22 @@ function Sidebar({ boardList = [], closeSidebar }) {
 
   function closeModal() {
     setIsOpen(false);
+  }
+
+  function openUpdateBoardModal() {
+    setUpdateBoardModal(true);
+  }
+
+  function closeUpdateBoardModal() {
+    setUpdateBoardModal(false);
+  }
+
+  function openDeleteBoardModal() {
+    setDeleteBoard(true);
+  }
+
+  function closeDeleteBoardModal() {
+    setDeleteBoard(false);
   }
 
   function handleBoardClick(board) {
@@ -43,37 +61,57 @@ function Sidebar({ boardList = [], closeSidebar }) {
 
   function handleListRightClick(board, e) {
     e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'contextmenu') setClickedBoard(board);
+    if (e.type === 'contextmenu' && boardState.currentBoard.id !== board.id) {
+      dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
+      setBoardActions(true);
+    }
   }
 
   function handleUpdateBoardClick() {
-    setUpdateBoard(clickedBoard.name);
-    setUpdateBoardMode(true);
+    openUpdateBoardModal();
   }
 
-  function handleRemoveBoardClick() {}
+  function handleRemoveBoardClick() {
+    removeBoard
+      .invoke(boardState.currentBoard.id)
+      .then(() => {
+        closeDeleteBoardModal();
+      })
+      .then((err) => console.log({ err }));
+  }
 
   function onSubMenuClose() {
     setBoardActions(false);
-    setUpdateBoardMode(false);
   }
 
   function onSubMenuOpen(board) {
-    setClickedBoard(board);
     setBoardActions(true);
   }
 
-  useEffect(() => {
-    setBoardActions(true);
-  }, [clickedBoard]);
-
-  useEffect(() => {
-    console.log({ updateBoard });
-  }, [updateBoard]);
-
   return (
     <>
+      <Modal type="add-board" isOpen={modalIsOpen} onRequestClose={closeModal}>
+        <NewBoard closeModal={closeModal} />
+      </Modal>
+      <Modal isOpen={updateBoardModal} onRequestClose={closeUpdateBoardModal}>
+        <NewBoard type="update-board" title="update board" closeModal={closeUpdateBoardModal} />
+      </Modal>
+      <ConfirmAction
+        isOpen={deleteBoard}
+        onRequestClose={closeDeleteBoardModal}
+        onConfirm={handleRemoveBoardClick}
+        message={
+          <span>
+            Are you sure to remove
+            <b>
+              {` `}
+              <u>{boardState.currentBoard.name}</u>
+            </b>
+            {` `}
+            board?
+          </span>
+        }
+      />
       <aside className="sidebar">
         <div className="top">
           <img
@@ -90,7 +128,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
                     <SubMenu
                       onRequestClose={onSubMenuClose}
                       onRequestOpenRight={() => onSubMenuOpen(board)}
-                      isOpen={boardActions && clickedBoard.id === board.id}>
+                      isOpen={boardActions && boardState.currentBoard.id === board.id}>
                       <SubMenu.Header>
                         <button
                           className={boardState?.currentBoard?.id === board.id ? ' active' : ''}
@@ -98,23 +136,13 @@ function Sidebar({ boardList = [], closeSidebar }) {
                           <span className="icon">
                             <UilClipboardAlt className="list-icon text-static" />
                           </span>
-                          {updateBoardMode && board.id === clickedBoard.id ? (
-                            <input
-                              defaultValue={board.name}
-                              type="text"
-                              value={updateBoard}
-                              onChange={(e) => setUpdateBoard(e.target.value)}
-                              style={{ backgroundColor: 'transparent' }}
-                            />
-                          ) : (
-                            <span className="board-name text-static">{board.name}</span>
-                          )}
+                          <span className="board-name text-static">{board.name}</span>
                         </button>
                       </SubMenu.Header>
                       <SubMenu.Body>
                         <List>
                           <List.Item onClick={handleUpdateBoardClick}>update</List.Item>
-                          <List.Item onClick={handleRemoveBoardClick} className="hover-danger">
+                          <List.Item onClick={openDeleteBoardModal} className="hover-danger">
                             delete
                           </List.Item>
                         </List>
@@ -154,9 +182,6 @@ function Sidebar({ boardList = [], closeSidebar }) {
           </button>
         </div>
       </aside>
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-        <NewBoard closeModal={closeModal} />
-      </Modal>
     </>
   );
 }

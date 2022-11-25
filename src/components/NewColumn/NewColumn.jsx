@@ -47,7 +47,6 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
   }
 
   useEffect(() => {
-    console.log({ type, boardState });
     if (
       type === 'update-column' &&
       boardState.currentBoard &&

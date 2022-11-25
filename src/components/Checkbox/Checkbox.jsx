@@ -32,14 +32,14 @@ function Checkbox({
   };
 
   return (
-    <label style={styles.containerStyles || {}} class="container" name={name} htmlFor={name}>
+    <label style={styles.containerStyles || {}} className="container" name={name} htmlFor={name}>
       {labelPosition === 'left' && (
         <span style={styles.labelStyles || {}} className="checkbox-label">
           {label}
         </span>
       )}
       <input onChange={getOnChange()} type="checkbox" checked={getChecked()} name={name} id={id} />
-      <span style={{ backgroundColor: background }} class="checkmark"></span>
+      <span style={{ backgroundColor: background }} className="checkmark"></span>
       {labelPosition === 'right' && (
         <span style={styles.labelStyles || {}} className="checkbox-label label-right">
           {label}
