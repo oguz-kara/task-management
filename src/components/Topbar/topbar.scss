@@ -8,11 +8,15 @@
   border-bottom: 1px solid rgba($color: $background-dark-2, $alpha: 0.1);
 }
 
+// .topbar.full-width {
+//   max-width: 100% !important;
+// }
+
 .topbar {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  max-width: calc(100vw - 300px);
+  max-width: 100%;
   width: 100%;
   padding: 20px;
   max-height: 100px;

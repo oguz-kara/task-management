@@ -1,3 +1,4 @@
+import format from 'date-fns/format';
 import { useState, useContext, useEffect } from 'react';
 import { useLayoutEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
@@ -76,7 +77,6 @@ function Board(props) {
   // column functions
   function getValueByColumnId(id) {
     const column = boardState.columnList.find((column) => column.id === id);
-    console.log({ column, selected: column.selected });
     if (column) return column.selected;
     return false;
   }
@@ -123,6 +123,12 @@ function Board(props) {
     dispatch({ type: 'BUILD_BOARD' });
   }, [boardState.currentBoard]);
 
+  useEffect(() => {
+    const date = new Date();
+    const formattedDate1 = format(date, 'MM/dd/yyyy');
+    console.log({ formattedDate1 });
+  });
+
   return (
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
@@ -154,8 +160,7 @@ function Board(props) {
           <Checkbox
             styles={{
               labelStyles: {
-                fontSize: '16px',
-                color: 'white',
+                fontSize: '12px',
                 fontWeight: 300
               }
             }}

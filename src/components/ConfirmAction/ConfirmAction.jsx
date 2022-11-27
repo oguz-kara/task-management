@@ -8,10 +8,10 @@ function ConfirmAction({ isOpen, onRequestClose, onConfirm, message = 'Are you s
       <div className="confirm-action background">
         <p className="confirm-message text">{message}</p>
         <div className="confirm-actions">
-          <button className="reject text" onClick={onRequestClose}>
+          <button className="reject" onClick={onRequestClose}>
             Reject
           </button>
-          <button className="confirm text" onClick={onConfirm}>
+          <button className="confirm" onClick={onConfirm}>
             Approve
           </button>
         </div>

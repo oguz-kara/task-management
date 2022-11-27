@@ -226,6 +226,7 @@ export function useBoard() {
       ...boardState.currentBoard,
       columnList: boardState.columnList
         .map(({ id, name, color, selected }) => {
+          console.log({ name, selected });
           return {
             id,
             name,
@@ -238,7 +239,7 @@ export function useBoard() {
         })
     };
 
-    console.log({ updatedBoard });
+    console.log({ columnList: updatedBoard.columnList });
 
     const updatedBoardList = {
       boardList: [
@@ -327,7 +328,6 @@ export function useBoard() {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList });
         dispatchBoard({ type: 'BUILD_BOARD' });
-        console.log({ resultSet });
         return {
           result: resultSet,
           error: errorSet,

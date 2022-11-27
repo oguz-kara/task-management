@@ -39,7 +39,8 @@ body {
     padding: 10px;
     color: $text-static;
     width: 100%;
-    font-size: 12px;
+    font-size: 14px;
+    border-radius: 5px;
 
     &::placeholder {
       color: #656875;
@@ -55,6 +56,8 @@ body {
     border: 1px solid gray;
     padding: 10px;
     color: $text-static;
+    font-size: 14px;
+    border-radius: 5px;
 
     &::placeholder {
       color: #656875;
@@ -70,6 +73,7 @@ body {
     border: 1px solid gray;
     padding: 5px;
     color: $text-static;
+    font-size: 14px;
   }
 
   button {
@@ -125,6 +129,12 @@ body {
 button {
   font-family: Inter, 'sans-serif';
   text-transform: uppercase !important;
+}
+
+button:disabled {
+  background-color: #656875 !important;
+  opacity: 0.8;
+  cursor: initial !important;
 }
 
 input {
