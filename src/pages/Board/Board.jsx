@@ -1,4 +1,3 @@
-import format from 'date-fns/format';
 import { useState, useContext, useEffect } from 'react';
 import { useLayoutEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
@@ -7,13 +6,13 @@ import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
 import Fade from '../../animations/Fade';
-import Grow from '../../animations/Grow';
 import './board.scss';
 import Checkbox from './../../components/Checkbox/Checkbox';
 import ConfirmAction from '../../components/ConfirmAction/ConfirmAction';
 import { useBoard } from './../../api/board';
 import { UilPen } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
+import { getDateOfCreation } from './../../helpers/format-date';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -124,9 +123,7 @@ function Board(props) {
   }, [boardState.currentBoard]);
 
   useEffect(() => {
-    const date = new Date();
-    const formattedDate1 = format(date, 'MM/dd/yyyy');
-    console.log({ formattedDate1 });
+    console.log(getDateOfCreation(new Date()));
   });
 
   return (
@@ -192,6 +189,7 @@ function Board(props) {
           {boardState.currentBoard &&
             boardState.columnList?.map((column) => (
               <div
+                key={column.id}
                 className={`column ${
                   Date.now() - column.updatedAt < 3500 && !column?.taskList ? 'deactive' : ''
                 } ${
@@ -241,7 +239,10 @@ function Board(props) {
                             ? 'deactive'
                             : ''
                         }`}>
-                        <h4>{task.title}</h4>
+                        <div className="task-header">
+                          <h4>{task.title}</h4>
+                          <h6 className="text-static">{getDateOfCreation(task.createdAt)}</h6>
+                        </div>
                         <p className="text-static">
                           {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
                         </p>
