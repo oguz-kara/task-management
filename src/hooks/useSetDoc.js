@@ -1,5 +1,5 @@
 import React from 'react';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export function useSetDoc(collectionName, id) {

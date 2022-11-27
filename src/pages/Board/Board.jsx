@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useLayoutEffect } from 'react';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
@@ -6,10 +6,13 @@ import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
 import Fade from '../../animations/Fade';
+import Grow from '../../animations/Grow';
 import './board.scss';
 import Checkbox from './../../components/Checkbox/Checkbox';
 import ConfirmAction from '../../components/ConfirmAction/ConfirmAction';
 import { useBoard } from './../../api/board';
+import { UilPen } from '@iconscout/react-unicons';
+import { UilTimesCircle } from '@iconscout/react-unicons';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -73,17 +76,13 @@ function Board(props) {
   // column functions
   function getValueByColumnId(id) {
     const column = boardState.columnList.find((column) => column.id === id);
+    console.log({ column, selected: column.selected });
     if (column) return column.selected;
     return false;
   }
 
   function isColumnSelected() {
     return boardState.columnList.find((column) => column.selected) || false;
-  }
-
-  function getSelectedColumnIdList() {
-    const selectedColumnList = boardState.columnList.filter((column) => column.selected);
-    return selectedColumnList.map((column) => column.id);
   }
 
   function countSelectedColumn() {
@@ -94,7 +93,6 @@ function Board(props) {
     return counter;
   }
 
-  // handle events
   function handleTaskClick(task) {
     openTaskViewModal();
     dispatch({ type: 'SET_CURRENT_TASK', payload: task });
@@ -106,12 +104,15 @@ function Board(props) {
 
   function handleAllColumnChecked(e) {
     setAsAllColumnChecked(e.target.checked);
-    dispatch({ type: 'SET_ALL_COLUMN_CHECKED', payload: e.target.checked });
+    dispatch({
+      type: 'SET_ALL_COLUMN_SELECTED_BY_VALUE',
+      payload: { checked: e.target.checked }
+    });
   }
 
   function handleColumnDelete() {
     removeColumnList
-      .invoke(getSelectedColumnIdList())
+      .invoke()
       .then(() => {
         closeDeleteColumnModal();
       })
@@ -168,18 +169,31 @@ function Board(props) {
           <div className="column-actions">
             {countSelectedColumn() === 1 && (
               <button onClick={openUpdateColumnModal} className="update-column action-button">
-                update
+                <span>
+                  <UilPen />
+                </span>
+                <span>update</span>
               </button>
             )}
             <button onClick={openDeleteColumnModal} className="delete-column action-button">
-              delete
+              <span>
+                <UilTimesCircle />
+              </span>
+              <span>delete</span>
             </button>
           </div>
         </div>
         <div className="board-content">
           {boardState.currentBoard &&
             boardState.columnList?.map((column) => (
-              <div key={column.id} className="column">
+              <div
+                className={`column ${
+                  Date.now() - column.updatedAt < 3500 && !column?.taskList ? 'deactive' : ''
+                } ${
+                  Date.now() - (column?.updatedAt ? column.updatedAt : 1) > 3500 && !column.taskList
+                    ? 'none'
+                    : ''
+                }`}>
                 <div className="title">
                   <Checkbox
                     checked={getValueByColumnId(column.id)}
@@ -189,39 +203,47 @@ function Board(props) {
                     label={
                       <>
                         {column.name}
-                        {column.taskList && column.taskList.length > 0
+                        {column.taskList && column.taskList?.length > 0
                           ? `(${column.taskList.length})`
                           : ''}
                       </>
                     }
                   />
                 </div>
-                {column?.taskList ? (
-                  <ul>
-                    {column?.taskList?.map((task, index) => (
-                      <Fade
+                <ul>
+                  {column?.taskList?.map((task, index) => (
+                    <Fade
+                      key={task.id}
+                      delayIndex={index}
+                      ms={task.id === boardState?.currentTask.id ? 0 : 100}
+                      active={
+                        !Object.keys(boardState?.currentTask).length > 0 ||
+                        (task.id === boardState?.currentTask.id &&
+                          !(
+                            column?.taskList?.length === 1 &&
+                            Date.now() - column?.taskList[0].createdAt < 3000
+                          ))
+                      }>
+                      <li
                         key={task.id}
-                        delayIndex={index}
-                        ms={task.id === boardState?.currentTask.id ? 0 : 100}
-                        active={
-                          !Object.keys(boardState?.currentTask).length > 0 ||
-                          task.id === boardState?.currentTask.id
-                        }>
-                        <li
-                          key={task.id}
-                          onClick={() => handleTaskClick(task)}
-                          className="text background-2">
-                          <h4>{task.title}</h4>
-                          <p className="text-static">
-                            {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
-                          </p>
-                        </li>
-                      </Fade>
-                    ))}
-                  </ul>
-                ) : (
-                  <h5 className="text">No task</h5>
-                )}
+                        onClick={() => handleTaskClick(task)}
+                        className={`task text background-2 ${
+                          Date.now() - task.createdAt < 3500 && column?.taskList?.length === 1
+                            ? 'active'
+                            : ''
+                        } ${
+                          Date.now() - column.updatedAt < 3500 && !column?.taskList
+                            ? 'deactive'
+                            : ''
+                        }`}>
+                        <h4>{task.title}</h4>
+                        <p className="text-static">
+                          {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
+                        </p>
+                      </li>
+                    </Fade>
+                  ))}
+                </ul>
               </div>
             ))}
           <button className="create-new-column text background" onClick={openAddColumnModal}>

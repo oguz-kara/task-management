@@ -17,6 +17,7 @@ import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
 import { useBoard } from './../../api/board';
 import ConfirmAction from './../ConfirmAction/ConfirmAction';
+import Loader from '../Loader/Loader';
 
 function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -105,7 +106,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
             Are you sure to remove
             <b>
               {` `}
-              <u>{boardState.currentBoard.name}</u>
+              <u>{boardState?.currentBoard?.name}</u>
             </b>
             {` `}
             board?
@@ -134,15 +135,21 @@ function Sidebar({ boardList = [], closeSidebar }) {
                           className={boardState?.currentBoard?.id === board.id ? ' active' : ''}
                           onContextMenu={(e) => handleListRightClick(board, e)}>
                           <span className="icon">
-                            <UilClipboardAlt className="list-icon text-static" />
+                            {removeBoard.loading && boardState.currentBoard.id === board.id ? (
+                              <Loader type="inline" />
+                            ) : (
+                              <UilClipboardAlt className="list-icon text-static" />
+                            )}
                           </span>
                           <span className="board-name text-static">{board.name}</span>
                         </button>
                       </SubMenu.Header>
                       <SubMenu.Body>
                         <List>
-                          <List.Item onClick={handleUpdateBoardClick}>update</List.Item>
-                          <List.Item onClick={openDeleteBoardModal} className="hover-danger">
+                          <List.Item background="background-2" onClick={handleUpdateBoardClick}>
+                            update
+                          </List.Item>
+                          <List.Item background="background-2" onClick={openDeleteBoardModal}>
                             delete
                           </List.Item>
                         </List>

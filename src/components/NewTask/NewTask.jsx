@@ -11,7 +11,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState('todo');
   const { addTask, updateTask } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
 
@@ -118,13 +118,6 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       setSubtaskList(boardState.currentTask.subtasks);
       setStatus(boardState.currentTask.status);
     }
-    if (
-      type === 'new-task' &&
-      boardState.currentTask &&
-      Object.keys(boardState.currentTask).length > 0
-    ) {
-      setStatus(boardState.columnList[0].name);
-    }
   }, [boardState.currentTask]);
 
   return (
@@ -187,7 +180,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           onChange={(e) => setStatus(e.target.value)}
           name="status"
           id="status">
-          {boardState?.columnList?.map((column) => (
+          {boardState?.columnList?.map((column, index) => (
             <option key={column.id} value={column.name}>
               {column.name}
             </option>

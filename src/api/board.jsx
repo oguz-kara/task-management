@@ -3,6 +3,7 @@ import { BoardContext } from '../context/BoardContext';
 import { AuthContext } from '../context/AuthContext';
 import { useSetDoc } from '../hooks/useSetDoc';
 import { useGetDoc } from '../hooks/useGetDoc';
+import { serverTimestamp } from 'firebase/firestore';
 
 export function useBoard() {
   const { boardState, dispatch: dispatchBoard } = useContext(BoardContext);
@@ -61,7 +62,10 @@ export function useBoard() {
   async function addTask(newTask) {
     const updatedBoard = {
       ...boardState.currentBoard,
-      taskList: [...boardState?.currentBoard?.taskList, newTask]
+      taskList:
+        boardState?.currentBoard?.taskList.length > 0
+          ? [...boardState.currentBoard.taskList, { ...newTask, createdAt: Date.now() }]
+          : [{ ...newTask, createdAt: Date.now() }]
     };
     const updatedBoardList = {
       boardList: [
@@ -89,13 +93,25 @@ export function useBoard() {
 
   async function removeTask(taskId) {
     // make ready board object for update the state
+    const taskToRemove = boardState.currentBoard.taskList.find((task) => {
+      if (task.id === taskId) return true;
+    });
     const updatedBoard = {
       ...boardState.currentBoard,
       taskList:
         boardState.currentBoard.taskList.filter((task) => {
           if (task.id === taskId) return false;
           return true;
-        }) || []
+        }) || [],
+      columnList: boardState.currentBoard.columnList.map((column) => {
+        if (column.name === taskToRemove.status) {
+          return {
+            ...column,
+            updatedAt: Date.now()
+          };
+        }
+        return column;
+      })
     };
 
     // make ready board list object for update the state
@@ -205,18 +221,21 @@ export function useBoard() {
       });
   }
 
-  async function removeColumnList(columnIdList) {
-    console.log({ columnIdList });
+  async function removeColumnList() {
     const updatedBoard = {
       ...boardState.currentBoard,
-      columnList: boardState.columnList.filter((column) => {
-        let isChecked = false;
-        columnIdList.forEach((item) => {
-          if (item === column.id) isChecked = true;
-          console.log({ condition: item.id === column.id, column, item });
-        });
-        return !isChecked;
-      })
+      columnList: boardState.columnList
+        .map(({ id, name, color, selected }) => {
+          return {
+            id,
+            name,
+            color,
+            selected
+          };
+        })
+        .filter(({ selected }) => {
+          return !selected;
+        })
     };
 
     console.log({ updatedBoard });
@@ -236,6 +255,25 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        dispatchBoard({ type: 'BUILD_BOARD' });
+        return {
+          result: resultSet,
+          error: errorSet,
+          loading: loadingSet
+        };
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  async function addBoard(newBoard) {
+    const updatedBoardList = [...user?.userData?.boardList, newBoard];
+
+    return refetchSet(updatedBoardList)
+      .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: newBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList });
         dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           result: resultSet,
@@ -283,7 +321,6 @@ export function useBoard() {
       }
       return board;
     });
-    console.log({ updatedBoardList });
 
     return refetchSet(updatedBoardList)
       .then(() => {
@@ -327,6 +364,10 @@ export function useBoard() {
     },
     removeColumnList: {
       invoke: removeColumnList,
+      loading: loadingSet
+    },
+    addBoard: {
+      invoke: addBoard,
       loading: loadingSet
     },
     updateBoard: {

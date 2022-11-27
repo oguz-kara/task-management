@@ -31,13 +31,21 @@ export const BoardReducer = (state, action) => {
     }
 
     case 'SET_COLUMN_SELECTED_BY_ID': {
-      console.log({ payload: action.payload });
       return {
         ...state,
         columnList: state.columnList.map((column) => {
           if (column.id === action.payload.id)
             return { ...column, selected: action.payload.checked };
           return column;
+        })
+      };
+    }
+
+    case 'SET_ALL_COLUMN_SELECTED_BY_VALUE': {
+      return {
+        ...state,
+        columnList: state.columnList.map((column) => {
+          return { ...column, selected: action.payload.checked };
         })
       };
     }

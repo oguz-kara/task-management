@@ -8,13 +8,12 @@ import { db } from '../../firebase';
 import { useGetDoc } from './../../hooks/useGetDoc';
 import { BoardContext } from './../../context/BoardContext';
 import { useBoard } from './../../api/board';
+import Loader from './../Loader/Loader';
 
 function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
   const [name, setName] = useState('');
-  const { user, dispatch } = useContext(AuthContext);
-  const { loading, refetch } = useGetDoc('users', user?.uid);
-  const { boardState, dispatch: dispatchBoard } = useContext(BoardContext);
-  const { updateBoard } = useBoard();
+  const { boardState } = useContext(BoardContext);
+  const { addBoard, updateBoard } = useBoard();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,54 +30,35 @@ function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
         })
         .catch((err) => console.log({ err }));
     } else {
-      console.log('else');
-      try {
-        await setDoc(doc(db, 'users', user.uid), {
-          boardList: [
-            ...user.userData.boardList,
-            {
-              id: uniqid(),
-              name,
-              columnList: [
-                {
-                  id: 1,
-                  name: 'todo',
-                  color: '#48C0E2'
-                },
-                {
-                  id: 2,
-                  name: 'doing',
-                  color: 'rebeccapurple'
-                },
-                {
-                  id: 3,
-                  name: 'done',
-                  color: 'green'
-                }
-              ],
-              taskList: []
-            }
-          ]
-        });
-
-        // refetch the user data which includes board list.
-        const data = await refetch();
-
-        // set updated user board list, in authcontext
-        dispatch({ type: 'SET_BOARD_LIST', payload: data.boardList });
-
-        // set current board with last item of the board list which means newly created board.
-        dispatchBoard({
-          type: 'SET_CURRENT_BOARD',
-          payload: data.boardList[data.boardList.length - 1]
-        });
-        if (!loading) {
-          closeModal();
+      const newBoard = {
+        id: uniqid(),
+        name,
+        columnList: [
+          {
+            id: 1,
+            name: 'todo',
+            color: '#48C0E2'
+          },
+          {
+            id: 2,
+            name: 'doing',
+            color: 'rebeccapurple'
+          },
+          {
+            id: 3,
+            name: 'done',
+            color: 'green'
+          }
+        ],
+        taskList: []
+      };
+      addBoard
+        .invoke(newBoard)
+        .then(() => {
           setName('');
-        }
-      } catch (err) {
-        console.log(err);
-      }
+          closeModal();
+        })
+        .catch((err) => console.log({ err }));
     }
   }
 
@@ -110,11 +90,9 @@ function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
         />
       </div>
       <div className="input-container">
-        <button type="submit">
-          create new board
-          {loading && <p>loading</p>}
-        </button>
+        <button type="submit">create new board</button>
       </div>
+      {updateBoard.loading || addBoard.loading ? <Loader /> : ''}
     </form>
   );
 }

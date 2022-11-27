@@ -17,46 +17,65 @@
     opacity: 0;
     transition: all 150ms ease-in;
     overflow: hidden;
+    padding: 10px 20px;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-  }
-  .board-column-actions-container.active {
-    min-height: 50px;
-    opacity: 1;
-    overflow: auto;
 
     .action-button {
-      padding: 2px 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 12px;
       border: none;
       cursor: pointer;
       border-radius: 5px;
       margin: 0 5px;
       color: #fff;
       background-color: transparent;
+      font-weight: 700;
 
       &:hover {
-        background-color: $primary;
         color: #fff !important;
-        border-color: $primary;
+      }
+
+      span {
+        :last-child {
+          margin-right: 10px;
+        }
       }
     }
 
     .update-column {
-      border: 1px solid #5bc0de;
-      color: #5bc0de;
+      border: 1px solid $primary;
+      color: $primary;
+
+      &:hover {
+        background-color: $primary;
+        border-color: $primary;
+      }
     }
 
     .delete-column {
       border: 1px solid $danger;
       color: $danger;
+
+      &:hover {
+        background-color: $danger;
+        border-color: $danger;
+      }
     }
+  }
+
+  .board-column-actions-container.active {
+    min-height: 50px;
+    opacity: 1;
+    overflow: auto;
   }
   .column {
     height: 40rem;
     min-width: 350px;
+    transition: width, min-width 400ms ease-in-out;
     .title {
       display: flex;
       align-items: center;
@@ -87,7 +106,7 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
-      li {
+      .task {
         cursor: pointer;
         padding: 15px;
         border-radius: 10px;
@@ -103,7 +122,17 @@
           background-color: transparent;
           font-size: 14px;
         }
+        &.active {
+          display: block;
+          min-width: 350px;
+          overflow: auto;
+        }
       }
+    }
+    &.deactive {
+      min-width: 0;
+      width: 0;
+      overflow: hidden !important;
     }
   }
 
@@ -120,5 +149,20 @@
     cursor: pointer;
     color: #fff;
     margin-left: auto;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    pointer-events: all;
+    width: 350px;
+    overflow: auto;
   }
 }

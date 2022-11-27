@@ -8,9 +8,9 @@ function List({ children, ...props }) {
   );
 }
 
-function ListItem({ children, className, ...props }) {
+function ListItem({ children, className, background = 'background', ...props }) {
   return (
-    <li className={`list-item text background ${className}`} {...props}>
+    <li className={`list-item text ${className} ${background}`} {...props}>
       {children}
     </li>
   );

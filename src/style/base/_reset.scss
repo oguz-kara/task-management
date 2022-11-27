@@ -13,10 +13,6 @@
     color: $text-dark;
   }
 
-  .background-primary {
-    background-color: $primary;
-  }
-
   .background {
     background-color: $background-light;
   }
@@ -33,10 +29,6 @@
 .dark {
   .text {
     color: $text-light;
-  }
-
-  .background-primary {
-    background-color: $primary;
   }
 
   .background {
@@ -58,4 +50,12 @@
 
 .primary-color {
   color: $primary;
+}
+
+.hover--bg-danger {
+  background-color: $danger !important;
+}
+
+.bg-danger {
+  background-color: $danger !important;
 }
