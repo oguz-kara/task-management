@@ -122,10 +122,6 @@ function Board(props) {
     dispatch({ type: 'BUILD_BOARD' });
   }, [boardState.currentBoard]);
 
-  useEffect(() => {
-    console.log(getDateOfCreation(new Date()));
-  });
-
   return (
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>

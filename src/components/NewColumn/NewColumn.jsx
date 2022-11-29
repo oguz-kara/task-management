@@ -11,6 +11,11 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
   const { addColumn, updateColumn } = useBoard();
   const { boardState } = useContext(BoardContext);
 
+  function resetInputs() {
+    setName('');
+    setColor('');
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -27,19 +32,24 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
       updateColumn
         .invoke(updatedColumn)
         .then(() => {
+          resetInputs();
           closeModal();
         })
         .catch((err) => console.log({ err }));
-    } else {
+    }
+
+    if ('add-column') {
       const newColumn = {
         id: uniqid(),
         name,
-        color: color.hex
+        color: color.hex,
+        selected: false
       };
 
       addColumn
         .invoke(newColumn)
         .then(() => {
+          resetInputs();
           closeModal();
         })
         .catch((err) => console.log(err));

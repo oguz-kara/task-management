@@ -226,7 +226,6 @@ export function useBoard() {
       ...boardState.currentBoard,
       columnList: boardState.columnList
         .map(({ id, name, color, selected }) => {
-          console.log({ name, selected });
           return {
             id,
             name,
@@ -236,10 +235,12 @@ export function useBoard() {
         })
         .filter(({ selected }) => {
           return !selected;
-        })
+        }),
+      taskList: boardState.columnList
+        .filter((column) => !column.selected)
+        .map((column) => column.taskList)
+        .flat(1)
     };
-
-    console.log({ columnList: updatedBoard.columnList });
 
     const updatedBoardList = {
       boardList: [
@@ -251,6 +252,8 @@ export function useBoard() {
         })
       ]
     };
+
+    console.log({ updatedBoardList });
 
     return refetchSet(updatedBoardList)
       .then(() => {

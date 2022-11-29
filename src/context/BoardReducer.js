@@ -35,7 +35,7 @@ export const BoardReducer = (state, action) => {
         ...state,
         columnList: state.columnList.map((column) => {
           if (column.id === action.payload.id)
-            return { ...column, selected: action.payload.checked };
+            return { ...column, selected: action.payload.checked ? true : false };
           return column;
         })
       };
@@ -45,7 +45,7 @@ export const BoardReducer = (state, action) => {
       return {
         ...state,
         columnList: state.columnList.map((column) => {
-          return { ...column, selected: action.payload.checked };
+          return { ...column, selected: action.payload.checked ? true : false };
         })
       };
     }
