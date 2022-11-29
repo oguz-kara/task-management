@@ -12,6 +12,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
   const [status, setStatus] = useState('todo');
+  const [error, setError] = useState(false);
   const { addTask, updateTask } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
 
@@ -85,11 +86,12 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       updateTask
         .invoke(updatedTask)
         .then(({ task }) => {
+          if (error) setError(false);
           dispatch({ type: 'SET_CURRENT_TASK', payload: task });
           closeModal();
           resetState();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => setError(err));
     } else {
       const newTask = {
         id: uniqid(),
@@ -99,11 +101,15 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         status
       };
 
-      addTask.invoke(newTask).then(({ task }) => {
-        closeModal();
-        resetState();
-        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-      });
+      addTask
+        .invoke(newTask)
+        .then(({ task }) => {
+          if (error) setError(false);
+          closeModal();
+          resetState();
+          dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+        })
+        .catch((err) => setError(err));
     }
   }
 
@@ -122,7 +128,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
 
   return (
     <form
-      className="add-new-task-form background text"
+      className={`${error ? 'flash-error' : ''} add-new-task-form background text `}
       onClick={(e) => e.stopPropagation()}
       onSubmit={handleSubmit}>
       <h3>{heading}</h3>
@@ -190,6 +196,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       <button type="submit" className="submit-form-button">
         add task
       </button>
+      <div className="error-text">{error && error.message}</div>
       {addTask.loading ? <Loader /> : ''}
       {updateTask.loading ? <Loader /> : ''}
     </form>

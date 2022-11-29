@@ -22,6 +22,8 @@ export function useBoard() {
   } = useGetDoc('users', user?.uid);
 
   async function updateTask(updatedTask) {
+    const isTaskTitleEmpty = updatedTask.title.trim().length < 1;
+    if (isTaskTitleEmpty) throw new Error('Task title cannot be empty!');
     // make ready board object for update the state
     const updatedBoard = {
       ...boardState.currentBoard,
@@ -60,6 +62,8 @@ export function useBoard() {
   }
 
   async function addTask(newTask) {
+    const isTaskTitleEmpty = newTask.title.trim().length < 1;
+    if (isTaskTitleEmpty) throw new Error('Task title cannot be empty!');
     const updatedBoard = {
       ...boardState.currentBoard,
       taskList:
@@ -157,6 +161,8 @@ export function useBoard() {
   }
 
   async function addColumn(newColumn) {
+    const isColumnExists = boardState.columnList.find((column) => column.name === newColumn.name);
+    if (isColumnExists) throw new Error('Column name is already exists!');
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: [...boardState?.currentBoard?.columnList, newColumn]
@@ -188,6 +194,11 @@ export function useBoard() {
   }
 
   async function updateColumn(updatedColumn) {
+    const isColumnExists = boardState.columnList.find(
+      (column) => column.name === updatedColumn.name
+    );
+    if (isColumnExists) throw new Error('Column name is already exists!');
+
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: boardState?.currentBoard?.columnList.map((column) => {

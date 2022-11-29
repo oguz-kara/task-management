@@ -110,7 +110,8 @@
         cursor: pointer;
         padding: 15px;
         border-radius: 10px;
-        max-width: 400px;
+        max-width: 350px;
+        width: 100%;
 
         .task-header {
           display: flex;
@@ -135,14 +136,15 @@
         }
         &.active {
           display: block;
-          min-width: 350px;
+          max-width: 350px !important;
+          width: 100% !important;
           overflow: auto;
         }
       }
     }
     &.deactive {
-      min-width: 0;
-      width: 0;
+      max-width: 0 !important;
+      width: 0 !important;
       overflow: hidden !important;
     }
   }

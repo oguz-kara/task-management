@@ -7,7 +7,8 @@ import { BoardContext } from './../../context/BoardContext';
 
 function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' }) {
   const [name, setName] = useState('');
-  const [color, setColor] = useState('#ffffff');
+  const [error, setError] = useState(false);
+  const [color, setColor] = useState({ background: '#fff' });
   const { addColumn, updateColumn } = useBoard();
   const { boardState } = useContext(BoardContext);
 
@@ -32,10 +33,11 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
       updateColumn
         .invoke(updatedColumn)
         .then(() => {
+          error && setError(false);
           resetInputs();
           closeModal();
         })
-        .catch((err) => console.log({ err }));
+        .catch((err) => setError(err.message));
     }
 
     if ('add-column') {
@@ -45,14 +47,14 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
         color: color.hex,
         selected: false
       };
-
       addColumn
         .invoke(newColumn)
         .then(() => {
+          error && setError(false);
           resetInputs();
           closeModal();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => setError(err.message));
     }
   }
 
@@ -72,7 +74,7 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
   }, [boardState]);
 
   return (
-    <div className="new-column background-2 text">
+    <div className={`new-column background-2 text ${error ? 'flash-error' : ''}`}>
       <h3>{title}</h3>
       <form onSubmit={handleSubmit}>
         <div className="input-container">
@@ -92,6 +94,7 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
         <button type="submit" className="submit-form-button">
           create column
         </button>
+        <div className="error-text">{error && error}</div>
       </form>
     </div>
   );
