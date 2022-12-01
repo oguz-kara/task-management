@@ -1,6 +1,6 @@
 import { useSpring, animated } from 'react-spring';
 
-function Fade({ children, delayIndex = 1, ms = 0, active = true }) {
+function Fade({ children, delayIndex = 1, ms = 0, active = true, innerRef, ...rest }) {
   const props = useSpring({
     to: {
       opacity: 1,

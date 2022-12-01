@@ -1,19 +1,18 @@
-import { useState, useContext, useEffect } from 'react';
-import { useLayoutEffect } from 'react';
+import { useState, useContext, useLayoutEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
 import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
 import Fade from '../../animations/Fade';
-import './board.scss';
 import Checkbox from './../../components/Checkbox/Checkbox';
 import ConfirmAction from '../../components/ConfirmAction/ConfirmAction';
 import { useBoard } from './../../api/board';
 import { UilPen } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
-import { getDateOfCreation } from './../../helpers/format-date';
 import Task from '../../components/Task/Task';
+import './board.scss';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -111,6 +110,53 @@ function Board(props) {
       .catch((err) => console.log({ err }));
   }
 
+  // DRAG DROP FUNCTIONS
+  function onDragEnd(result, columns, setColumns) {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (source.droppableId !== destination.droppableId) {
+      const sourceColumn = columns.find((item) => item.id === source.droppableId);
+      const destColumn = columns.find((item) => item.id === destination.droppableId);
+      const sourceItems = [...sourceColumn.taskList];
+      const destItems = [...destColumn.taskList];
+      console.log({ sourceColumn, destColumn, sourceItems });
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, { ...removed, status: destColumn.name });
+      console.log({ destItems, removed });
+      const updatedColumns = columns.map((item) => {
+        if (item.id === destination.droppableId) {
+          return {
+            ...item,
+            taskList: destItems
+          };
+        }
+        if (item.id === source.droppableId)
+          return {
+            ...item,
+            taskList: sourceItems
+          };
+        return item;
+      });
+      console.log({ updatedColumns });
+      setColumns({ type: 'SET_COLUMNS', payload: updatedColumns });
+    } else {
+      const column = columns.find((item) => item.id === source.droppableId);
+      const copiedItems = [...column.taskList];
+      const [removed] = copiedItems.splice(source.index, 1);
+      copiedItems.splice(destination.index, 0, removed);
+      const updatedColumns = columns.map((item) => {
+        if (item.id === source.droppableId)
+          return {
+            ...item,
+            taskList: copiedItems
+          };
+        return item;
+      });
+
+      setColumns({ type: 'SET_COLUMNS', payload: updatedColumns });
+    }
+  }
+
   useLayoutEffect(() => {
     dispatch({ type: 'BUILD_BOARD' });
   }, [boardState.currentBoard]);
@@ -176,53 +222,83 @@ function Board(props) {
           </div>
         </div>
         <div className="board-content">
-          {boardState.currentBoard &&
-            boardState.columnList?.map((column) => (
-              <div
-                key={column.id}
-                className={`column ${
-                  Date.now() - column.updatedAt < 3500 && !column?.taskList ? 'deactive' : ''
-                } ${
-                  Date.now() - (column?.updatedAt ? column.updatedAt : 1) > 3500 &&
-                  !(column.taskList.length > 0)
-                    ? 'none'
-                    : ''
-                }`}>
-                <div className="title">
-                  <Checkbox
-                    className="background-2"
-                    checked={getValueByColumnId(column.id)}
-                    onChange={(e) => handleColumnSelectedChange(column.id, e.target.checked)}
-                    background={column.color}
-                    labelPosition="right"
-                    label={
-                      <>
-                        {column.name}
-                        {column.taskList.length > 0 ? `(${column.taskList.length})` : ''}
-                      </>
-                    }
-                  />
-                </div>
-                <ul>
-                  {column?.taskList?.map((task, index) => (
-                    <Fade
-                      key={task.id}
-                      delayIndex={index}
-                      ms={task.id === boardState?.currentTask.id ? 0 : 100}
-                      active={
-                        !Object.keys(boardState?.currentTask).length > 0 ||
-                        (task.id === boardState?.currentTask.id &&
-                          !(
-                            column?.taskList?.length === 1 &&
-                            Date.now() - column?.taskList[0].createdAt < 3000
-                          ))
-                      }>
-                      <Task task={task} onClick={handleTaskClick} />
-                    </Fade>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          <DragDropContext
+            onDragEnd={(result) => onDragEnd(result, boardState?.columnList, dispatch)}>
+            {boardState.currentBoard &&
+              boardState.columnList?.map(({ id, taskList, updatedAt, color, name }) => (
+                <Droppable droppableId={id} key={id}>
+                  {(provided, snapshot) => (
+                    <div
+                      className={`column ${
+                        Date.now() - updatedAt < 3500 && !taskList ? 'deactive' : ''
+                      } ${
+                        Date.now() - (updatedAt ? updatedAt : 1) > 3500 && !(taskList.length > 0)
+                          ? 'none'
+                          : ''
+                      }`}
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}>
+                      <div className="title">
+                        <Checkbox
+                          className="background-2"
+                          checked={getValueByColumnId(id)}
+                          onChange={(e) => handleColumnSelectedChange(id, e.target.checked)}
+                          background={color}
+                          labelPosition="right"
+                          label={
+                            <>
+                              {name}
+                              {taskList.length > 0 ? `(${taskList.length})` : ''}
+                            </>
+                          }
+                        />
+                      </div>
+                      <ul>
+                        {taskList?.map((task, index) => (
+                          <Draggable key={task.id} draggableId={task.id} index={index}>
+                            {(provided, snapshot) => (
+                              <div
+                                className="task-container"
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={{
+                                  userSelect: 'none',
+                                  padding: '6px 3px',
+                                  ...provided.draggableProps.style
+                                }}>
+                                <Fade
+                                  key={task.id}
+                                  delayIndex={index}
+                                  ms={task.id === boardState?.currentTask.id ? 0 : 100}
+                                  active={
+                                    !Object.keys(boardState?.currentTask).length > 0 ||
+                                    (task.id === boardState?.currentTask.id &&
+                                      !(
+                                        taskList?.length === 1 &&
+                                        Date.now() - taskList[0].createdAt < 3000
+                                      ))
+                                  }>
+                                  <Task
+                                    style={{
+                                      backgroundColor: snapshot.isDragging ? 'rgba(0,0,0,0.1)' : '',
+                                      color: 'white'
+                                    }}
+                                    task={task}
+                                    onClick={handleTaskClick}
+                                  />
+                                </Fade>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      </ul>
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              ))}
+          </DragDropContext>
           <button className="create-new-column text background" onClick={openAddColumnModal}>
             + new column
           </button>

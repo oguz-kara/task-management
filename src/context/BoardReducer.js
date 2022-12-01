@@ -70,6 +70,13 @@ export const BoardReducer = (state, action) => {
       };
     }
 
+    case 'SET_COLUMNS': {
+      return {
+        ...state,
+        columnList: action.payload
+      };
+    }
+
     default:
       return state;
   }
