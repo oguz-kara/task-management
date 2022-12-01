@@ -11,7 +11,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
-  const [status, setStatus] = useState('todo');
+  const [status, setStatus] = useState('');
   const [error, setError] = useState(false);
   const { addTask, updateTask } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
@@ -68,7 +68,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
     setTitle('');
     setDesc('');
     setSubtaskList([]);
-    setStatus('todo');
+    setStatus('');
   }
 
   async function handleSubmit(e) {
@@ -126,6 +126,10 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
     }
   }, [boardState.currentTask]);
 
+  useEffect(() => {
+    setStatus(boardState?.currentBoard?.columnList[0]?.name);
+  }, [title]);
+
   return (
     <form
       className={`${error ? 'flash-error' : ''} add-new-task-form background text `}
@@ -175,7 +179,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
             ))}
           </>
         )}
-        <button type="button" onClick={handleAddSubtask}>
+        <button className="background-1" type="button" onClick={handleAddSubtask}>
           + add new subtask
         </button>
       </div>
@@ -186,7 +190,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           onChange={(e) => setStatus(e.target.value)}
           name="status"
           id="status">
-          {boardState?.columnList?.map((column, index) => (
+          {boardState?.columnList?.map((column) => (
             <option key={column.id} value={column.name}>
               {column.name}
             </option>
@@ -196,7 +200,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       <button type="submit" className="submit-form-button">
         add task
       </button>
-      <div className="error-text">{error && error.message}</div>
+      {error && <div className="error-text">{error.message}</div>}
       {addTask.loading ? <Loader /> : ''}
       {updateTask.loading ? <Loader /> : ''}
     </form>

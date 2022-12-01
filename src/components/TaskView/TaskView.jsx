@@ -120,6 +120,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
                 onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
               /> */}
               <Checkbox
+                className="background-2"
                 id={task.id}
                 name={task.id}
                 checked={task.done}

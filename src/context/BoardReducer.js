@@ -12,13 +12,17 @@ export const BoardReducer = (state, action) => {
       if (!state?.currentBoard || !state?.currentBoard.columnList) {
         return state;
       }
-      let list = [...state.currentBoard.columnList];
+      let list = state.currentBoard.columnList.map((column) => {
+        return {
+          ...column,
+          selected: column.selected ? true : false,
+          taskList: []
+        };
+      });
       state.currentBoard?.taskList?.forEach((task) => {
         list = list.map((item) => {
           if (item.name === task.status) {
-            return item.taskList
-              ? { ...item, id: uniqid(), taskList: [...item.taskList, task], selected: false }
-              : { ...item, id: uniqid(), taskList: [task], selected: false };
+            return { ...item, id: uniqid(), taskList: [...item.taskList, task], selected: false };
           }
           return item;
         });

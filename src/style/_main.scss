@@ -32,11 +32,16 @@ body {
     text-transform: capitalize;
     font-size: 12px;
     font-weight: 500;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
   }
 
   input {
     background-color: transparent;
-    border: 1px solid $text-static;
+    border: 1px solid rgba(150, 150, 150, 0.5) !important;
     padding: 10px;
     color: $text-static;
     width: 100%;
@@ -54,11 +59,13 @@ body {
 
   textarea {
     background-color: transparent;
-    border: 1px solid gray;
+    border: 1px solid rgba(150, 150, 150, 0.5) !important;
     padding: 10px;
     color: $text-static;
     font-size: 14px;
     border-radius: 5px;
+    resize: none;
+    height: 150px;
 
     &::placeholder {
       color: #656875;
@@ -71,7 +78,7 @@ body {
 
   select {
     background-color: transparent;
-    border: 1px solid gray;
+    border: 1px solid rgba(150, 150, 150, 0.5) !important;
     padding: 5px;
     color: $text-static;
     font-size: 14px;
@@ -84,7 +91,6 @@ body {
     border: none;
     font-size: 12px;
     color: $primary;
-    background-color: white;
     text-transform: capitalize;
     font-weight: 600;
     cursor: pointer;

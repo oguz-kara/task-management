@@ -23,7 +23,9 @@ export function useBoard() {
 
   async function updateTask(updatedTask) {
     const isTaskTitleEmpty = updatedTask.title.trim().length < 1;
+    const isTaskStatusEmpty = updatedTask.status.trim().length < 1;
     if (isTaskTitleEmpty) throw new Error('Task title cannot be empty!');
+    if (isTaskStatusEmpty) throw new Error('Task status cannot be empty!');
     // make ready board object for update the state
     const updatedBoard = {
       ...boardState.currentBoard,
@@ -63,7 +65,9 @@ export function useBoard() {
 
   async function addTask(newTask) {
     const isTaskTitleEmpty = newTask.title.trim().length < 1;
+    const isTaskStatusEmpty = newTask.status.trim().length < 1;
     if (isTaskTitleEmpty) throw new Error('Task title cannot be empty!');
+    if (isTaskStatusEmpty) throw new Error('Task status cannot be empty!');
     const updatedBoard = {
       ...boardState.currentBoard,
       taskList:
@@ -233,6 +237,8 @@ export function useBoard() {
   }
 
   async function removeColumnList() {
+    const deSelectedColumnList = boardState?.columnList?.filter(({ selected }) => !selected);
+    console.log({ deSelectedColumnList });
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: boardState.columnList
@@ -247,9 +253,8 @@ export function useBoard() {
         .filter(({ selected }) => {
           return !selected;
         }),
-      taskList: boardState.columnList
-        .filter((column) => !column.selected)
-        .map((column) => column.taskList)
+      taskList: deSelectedColumnList
+        .map(({ taskList }) => (taskList.length > 0 ? taskList : []))
         .flat(1)
     };
 

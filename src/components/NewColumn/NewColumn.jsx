@@ -6,19 +6,22 @@ import { useBoard } from './../../api/board';
 import { BoardContext } from './../../context/BoardContext';
 
 function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' }) {
+  const initialColor = '#00FF00';
   const [name, setName] = useState('');
   const [error, setError] = useState(false);
-  const [color, setColor] = useState({ background: '#fff' });
+  const [color, setColor] = useState({ hex: initialColor });
   const { addColumn, updateColumn } = useBoard();
   const { boardState } = useContext(BoardContext);
 
   function resetInputs() {
     setName('');
-    setColor('');
+    setColor({ hex: initialColor });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    console.log({ color, name });
 
     if (type === 'update-column') {
       const selectedColumn = boardState.columnList.find((column) => column.selected);

@@ -6,6 +6,7 @@
     min-width: 300px;
     flex: 1;
     transition: all 200ms ease-out;
+    overflow: auto;
   }
 
   .left--close {

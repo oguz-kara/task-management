@@ -151,6 +151,7 @@ function Board(props) {
             isColumnSelected() ? 'active' : ''
           }`}>
           <Checkbox
+            className="background"
             styles={{
               labelStyles: {
                 fontSize: '12px',
@@ -189,12 +190,14 @@ function Board(props) {
                 className={`column ${
                   Date.now() - column.updatedAt < 3500 && !column?.taskList ? 'deactive' : ''
                 } ${
-                  Date.now() - (column?.updatedAt ? column.updatedAt : 1) > 3500 && !column.taskList
+                  Date.now() - (column?.updatedAt ? column.updatedAt : 1) > 3500 &&
+                  !(column.taskList.length > 0)
                     ? 'none'
                     : ''
                 }`}>
                 <div className="title">
                   <Checkbox
+                    className="background-2"
                     checked={getValueByColumnId(column.id)}
                     onChange={(e) => handleColumnSelectedChange(column.id, e.target.checked)}
                     background={column.color}
@@ -202,9 +205,7 @@ function Board(props) {
                     label={
                       <>
                         {column.name}
-                        {column.taskList && column.taskList?.length > 0
-                          ? `(${column.taskList.length})`
-                          : ''}
+                        {column.taskList.length > 0 ? `(${column.taskList.length})` : ''}
                       </>
                     }
                   />

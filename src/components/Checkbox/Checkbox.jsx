@@ -7,8 +7,9 @@ function Checkbox({
   onChange = undefined,
   name,
   id,
-  background = '#ffffff',
+  className = '',
   labelPosition = 'left',
+  background = null,
   styles = {
     labelStyles: {},
     containerStyles: {},
@@ -39,7 +40,9 @@ function Checkbox({
         </span>
       )}
       <input onChange={getOnChange()} type="checkbox" checked={getChecked()} name={name} id={id} />
-      <span style={{ backgroundColor: background }} className="checkmark"></span>
+      <span
+        className={`${className} checkmark`}
+        style={background ? { backgroundColor: background } : {}}></span>
       {labelPosition === 'right' && (
         <span style={styles.labelStyles || {}} className="checkbox-label label-right">
           {label}
