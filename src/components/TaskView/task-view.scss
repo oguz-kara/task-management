@@ -28,6 +28,11 @@
     margin-bottom: 25px;
     font-size: 14px;
     line-height: 20px;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
   }
 
   .subtasks {

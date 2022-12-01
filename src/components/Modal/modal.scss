@@ -1,3 +1,5 @@
+@import '../../style/abstracts/colors';
+
 .overlay {
   position: absolute;
   top: 0;
@@ -21,9 +23,15 @@
     opacity: 0;
     transform: translateY(50px);
 
-    & > * {
-      border-radius: 10px;
-    }
+    max-height: 80%;
+    display: flex;
+    flex-direction: column-reverse; /* CHANGED */
+    align-items: flex-end;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: red;
+    scrollbar-color: $primary #fff;
   }
 
   .modal--active {
@@ -36,4 +44,9 @@
 .overlay--active {
   opacity: 1;
   pointer-events: all;
+}
+
+.not-rounded {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }

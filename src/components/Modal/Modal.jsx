@@ -18,7 +18,7 @@ function Modal({ isOpen, onAfterOpen, onRequestClose, children }) {
 
   return (
     <div
-      className={`overlay${isOpen ? ' overlay--active' : ''}`}
+      className={`overlay${isOpen ? ' overlay--active' : ''} `}
       onClick={(e) => handleModalClick(e)}>
       <div
         onClick={(e) => e.stopPropagation()}

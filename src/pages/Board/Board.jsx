@@ -13,6 +13,7 @@ import { useBoard } from './../../api/board';
 import { UilPen } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import { getDateOfCreation } from './../../helpers/format-date';
+import Task from '../../components/Task/Task';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -55,14 +56,6 @@ function Board(props) {
 
   function closeDeleteColumnModal() {
     setDeleteColumn(false);
-  }
-
-  function countDoneSubtasks(task) {
-    let counter = 0;
-    task?.subtasks?.forEach((item) => {
-      if (item.done === true) counter++;
-    });
-    return counter;
   }
 
   function openUpdateColumnModal() {
@@ -224,26 +217,7 @@ function Board(props) {
                             Date.now() - column?.taskList[0].createdAt < 3000
                           ))
                       }>
-                      <li
-                        key={task.id}
-                        onClick={() => handleTaskClick(task)}
-                        className={`task text background-2 ${
-                          Date.now() - task.createdAt < 3500 && column?.taskList?.length === 1
-                            ? 'active'
-                            : ''
-                        } ${
-                          Date.now() - column.updatedAt < 3500 && !column?.taskList
-                            ? 'deactive'
-                            : ''
-                        }`}>
-                        <div className="task-header">
-                          <h4>{task.title}</h4>
-                          <h6 className="text-static">{getDateOfCreation(task.createdAt)}</h6>
-                        </div>
-                        <p className="text-static">
-                          {countDoneSubtasks(task)} of {task.subtasks.length} subtasks
-                        </p>
-                      </li>
+                      <Task task={task} onClick={handleTaskClick} />
                     </Fade>
                   ))}
                 </ul>
