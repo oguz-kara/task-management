@@ -197,11 +197,11 @@ export function useBoard() {
       });
   }
 
-  async function updateColumn(updatedColumn) {
+  async function updateColumn(updatedColumn, matter = true) {
     const isColumnExists = boardState.columnList.find(
       (column) => column.name === updatedColumn.name
     );
-    if (isColumnExists) throw new Error('Column name is already exists!');
+    if (isColumnExists && matter) throw new Error('Column name is already exists!');
 
     const updatedBoard = {
       ...boardState.currentBoard,
@@ -227,9 +227,7 @@ export function useBoard() {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
         dispatchBoard({ type: 'BUILD_BOARD' });
-        return {
-          column: newColumn
-        };
+        return updatedColumn;
       })
       .catch((err) => {
         console.log({ err });
@@ -238,7 +236,6 @@ export function useBoard() {
 
   async function removeColumnList() {
     const deSelectedColumnList = boardState?.columnList?.filter(({ selected }) => !selected);
-    console.log({ deSelectedColumnList });
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: boardState.columnList
@@ -358,6 +355,37 @@ export function useBoard() {
       });
   }
 
+  async function updateTaskList(taskList) {
+    const updatedBoard = {
+      ...boardState.currentBoard,
+      taskList: [...taskList]
+    };
+
+    const updatedBoardList = {
+      boardList: [
+        ...user?.userData?.boardList.map((board) => {
+          if (board.id === updatedBoard.id) {
+            return updatedBoard;
+          }
+          return board;
+        })
+      ]
+    };
+
+    return refetchSet(updatedBoardList)
+      .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        dispatchBoard({ type: 'BUILD_BOARD' });
+        return {
+          taskList: taskList
+        };
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return {
     addTask: {
       invoke: addTask,
@@ -395,6 +423,10 @@ export function useBoard() {
     },
     removeBoard: {
       invoke: removeBoard,
+      loading: loadingSet
+    },
+    updateTaskList: {
+      invoke: updateTaskList,
       loading: loadingSet
     }
   };

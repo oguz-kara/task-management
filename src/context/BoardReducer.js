@@ -71,6 +71,7 @@ export const BoardReducer = (state, action) => {
     }
 
     case 'SET_COLUMNS': {
+      console.log({ payload: action.payload });
       return {
         ...state,
         columnList: action.payload

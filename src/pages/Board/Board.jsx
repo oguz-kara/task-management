@@ -22,7 +22,7 @@ function Board(props) {
   const [isAllColumnChecked, setAsAllColumnChecked] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
-  const { removeColumnList } = useBoard();
+  const { removeColumnList, updateTask, updateTaskList } = useBoard();
 
   // Modal state functions
   function openAddColumnModal() {
@@ -119,10 +119,9 @@ function Board(props) {
       const destColumn = columns.find((item) => item.id === destination.droppableId);
       const sourceItems = [...sourceColumn.taskList];
       const destItems = [...destColumn.taskList];
-      console.log({ sourceColumn, destColumn, sourceItems });
       const [removed] = sourceItems.splice(source.index, 1);
       destItems.splice(destination.index, 0, { ...removed, status: destColumn.name });
-      console.log({ destItems, removed });
+
       const updatedColumns = columns.map((item) => {
         if (item.id === destination.droppableId) {
           return {
@@ -137,8 +136,14 @@ function Board(props) {
           };
         return item;
       });
-      console.log({ updatedColumns });
       setColumns({ type: 'SET_COLUMNS', payload: updatedColumns });
+
+      updateTask
+        .invoke({ ...removed, status: destColumn.name })
+        .then(({ task }) => {
+          console.log({ task });
+        })
+        .catch((err) => console.log({ err }));
     } else {
       const column = columns.find((item) => item.id === source.droppableId);
       const copiedItems = [...column.taskList];
@@ -154,6 +159,17 @@ function Board(props) {
       });
 
       setColumns({ type: 'SET_COLUMNS', payload: updatedColumns });
+
+      updateTaskList
+        .invoke(
+          boardState.columnList
+            .map(({ taskList, id }) => {
+              if (id === column.id) return copiedItems;
+              return taskList.length > 0 ? taskList : [];
+            })
+            .flat(1)
+        )
+        .catch((err) => console.log({ err }));
     }
   }
 
@@ -267,27 +283,14 @@ function Board(props) {
                                   padding: '6px 3px',
                                   ...provided.draggableProps.style
                                 }}>
-                                <Fade
-                                  key={task.id}
-                                  delayIndex={index}
-                                  ms={task.id === boardState?.currentTask.id ? 0 : 100}
-                                  active={
-                                    !Object.keys(boardState?.currentTask).length > 0 ||
-                                    (task.id === boardState?.currentTask.id &&
-                                      !(
-                                        taskList?.length === 1 &&
-                                        Date.now() - taskList[0].createdAt < 3000
-                                      ))
-                                  }>
-                                  <Task
-                                    style={{
-                                      backgroundColor: snapshot.isDragging ? 'rgba(0,0,0,0.1)' : '',
-                                      color: 'white'
-                                    }}
-                                    task={task}
-                                    onClick={handleTaskClick}
-                                  />
-                                </Fade>
+                                <Task
+                                  style={{
+                                    backgroundColor: snapshot.isDragging ? 'rgba(0,0,0,0.1)' : '',
+                                    color: 'white'
+                                  }}
+                                  task={task}
+                                  onClick={handleTaskClick}
+                                />
                               </div>
                             )}
                           </Draggable>
