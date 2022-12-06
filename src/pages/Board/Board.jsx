@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useContext, useLayoutEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/Modal/Modal';
@@ -5,7 +6,6 @@ import { BoardContext } from './../../context/BoardContext';
 import TaskView from '../../components/TaskView/TaskView';
 import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
-import Fade from '../../animations/Fade';
 import Checkbox from './../../components/Checkbox/Checkbox';
 import ConfirmAction from '../../components/ConfirmAction/ConfirmAction';
 import { useBoard } from './../../api/board';
@@ -271,29 +271,34 @@ function Board(props) {
                       </div>
                       <ul>
                         {taskList?.map((task, index) => (
-                          <Draggable key={task.id} draggableId={task.id} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                className="task-container"
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                style={{
-                                  userSelect: 'none',
-                                  padding: '6px 3px',
-                                  ...provided.draggableProps.style
-                                }}>
-                                <Task
+                          <AnimatePresence>
+                            <Draggable key={task.id} draggableId={task.id} index={index}>
+                              {(provided, snapshot) => (
+                                <div
+                                  className="task-container"
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
                                   style={{
-                                    backgroundColor: snapshot.isDragging ? 'rgba(0,0,0,0.1)' : '',
-                                    color: 'white'
-                                  }}
-                                  task={task}
-                                  onClick={handleTaskClick}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
+                                    userSelect: 'none',
+                                    padding: '6px 3px',
+                                    ...provided.draggableProps.style
+                                  }}>
+                                  <Item index={index}>
+                                    <Task
+                                      style={{
+                                        backgroundColor: snapshot.isDragging
+                                          ? 'rgba(0,0,0,0.1)'
+                                          : ''
+                                      }}
+                                      task={task}
+                                      onClick={handleTaskClick}
+                                    />
+                                  </Item>
+                                </div>
+                              )}
+                            </Draggable>
+                          </AnimatePresence>
                         ))}
                       </ul>
                       {provided.placeholder}
@@ -308,6 +313,35 @@ function Board(props) {
         </div>
       </div>
     </>
+  );
+}
+
+function Item({ children, index }) {
+  const variants = {
+    hidden: (i) => ({
+      opacity: 0,
+      y: -50 + i
+    }),
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05
+      }
+    }),
+    removed: {
+      opacity: 0
+    }
+  };
+  return (
+    <motion.div
+      variants={variants}
+      initial="hidden"
+      animate="visible"
+      custom={index}
+      exit="removed">
+      {children}
+    </motion.div>
   );
 }
 

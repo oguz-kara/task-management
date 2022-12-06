@@ -1,14 +1,22 @@
+import { motion } from 'framer-motion';
 import './switch.scss';
+
+const spring = {
+  type: 'spring',
+  stiffness: 700,
+  damping: 30
+};
 
 function Switch({ value = true, onChange, ...props }) {
   return (
     <div
+      data-isOn={value}
       className={`switch-container ${!value ? 'justify-start' : 'justify-end'}`}
       onClick={() => {
         onChange();
       }}
       {...props}>
-      <div className="switch-ball"></div>
+      <motion.div className="switch-ball" layout transition={spring} />
     </div>
   );
 }
