@@ -5,7 +5,7 @@ import { SketchPicker } from 'react-color';
 import { useBoard } from './../../api/board';
 import { BoardContext } from './../../context/BoardContext';
 
-function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' }) {
+function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }) {
   const initialColor = '#00FF00';
   const [name, setName] = useState('');
   const [error, setError] = useState(false);
@@ -20,11 +20,8 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    console.log({ color, name });
-
     if (type === 'update-column') {
-      const selectedColumn = boardState.columnList.find((column) => column.selected);
+      const selectedColumn = boardState.currentBoard.columnList.find((column) => column.selected);
       const getSelectedColumn = boardState.currentBoard.columnList.find(
         (column) => column.id === selectedColumn?.id
       );
@@ -36,7 +33,7 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
       updateColumn
         .invoke(updatedColumn)
         .then(() => {
-          error && setError(false);
+          setError(false);
           resetInputs();
           closeModal();
         })
@@ -67,7 +64,7 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
       boardState.currentBoard &&
       Object.keys(boardState.currentBoard).length > 0
     ) {
-      const selectedColumn = boardState.columnList.find((column) => column.selected);
+      const selectedColumn = boardState.currentBoard.columnList.find((column) => column.selected);
       const getSelectedColumn = boardState.currentBoard.columnList.find(
         (column) => column.id === selectedColumn?.id
       );
@@ -97,7 +94,7 @@ function NewColumn({ closeModal, type = 'add-colum', title = 'add new column' })
         <button type="submit" className="submit-form-button">
           create column
         </button>
-        <div className="error-text">{error && error}</div>
+        {error && <div className="error-text">{error}</div>}
       </form>
     </div>
   );

@@ -3,7 +3,6 @@ import { BoardReducer } from './BoardReducer';
 
 const INITIAL_STATE = JSON.parse(localStorage.getItem('currentBoard')) || {
   currentBoard: {},
-  columnList: [],
   currentTask: {}
 };
 

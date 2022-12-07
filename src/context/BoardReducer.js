@@ -8,49 +8,30 @@ export const BoardReducer = (state, action) => {
         currentBoard: action.payload
       };
     }
-    case 'BUILD_BOARD': {
-      if (!state?.currentBoard || !state?.currentBoard.columnList) {
-        return state;
-      }
-      let list = state.currentBoard.columnList.map((column) => {
-        return {
-          ...column,
-          selected: column.selected ? true : false,
-          taskList: []
-        };
-      });
-      state.currentBoard?.taskList?.forEach((task) => {
-        list = list.map((item) => {
-          if (item.name === task.status) {
-            return { ...item, id: uniqid(), taskList: [...item.taskList, task], selected: false };
-          }
-          return item;
-        });
-      });
-
-      return {
-        ...state,
-        columnList: list
-      };
-    }
 
     case 'SET_COLUMN_SELECTED_BY_ID': {
       return {
         ...state,
-        columnList: state.columnList.map((column) => {
-          if (column.id === action.payload.id)
-            return { ...column, selected: action.payload.checked ? true : false };
-          return column;
-        })
+        currentBoard: {
+          ...state.currentBoard,
+          columnList: state.currentBoard.columnList.map((column) => {
+            if (column.id === action.payload.id)
+              return { ...column, selected: action.payload.checked ? true : false };
+            return column;
+          })
+        }
       };
     }
 
     case 'SET_ALL_COLUMN_SELECTED_BY_VALUE': {
       return {
         ...state,
-        columnList: state.columnList.map((column) => {
-          return { ...column, selected: action.payload.checked ? true : false };
-        })
+        currentBoard: {
+          ...state.currentBoard,
+          columnList: state.currentBoard.columnList.map((column) => {
+            return { ...column, selected: action.payload.checked ? true : false };
+          })
+        }
       };
     }
 
@@ -71,10 +52,25 @@ export const BoardReducer = (state, action) => {
     }
 
     case 'SET_COLUMNS': {
-      console.log({ payload: action.payload });
       return {
         ...state,
-        columnList: action.payload
+        currentBoard: {
+          ...state.currentBoard,
+          columnList: action.payload
+        }
+      };
+    }
+
+    case 'DESELECT_COLUMNS': {
+      return {
+        ...state,
+        currentBoard: {
+          ...state.currentBoard,
+          columnList: state.currentBoard.columnList.map((column) => ({
+            ...column,
+            selected: false
+          }))
+        }
       };
     }
 

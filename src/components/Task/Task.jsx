@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { getDateOfCreation } from '../../helpers/format-date';
 import './task.scss';
 
-const Task = forwardRef(({ task, onClick = undefined, ...rest }, ref) => (
+const Task = forwardRef(({ task, onClick = undefined, loading = false, ...rest }, ref) => (
   <li
     ref={ref}
     key={task.id}

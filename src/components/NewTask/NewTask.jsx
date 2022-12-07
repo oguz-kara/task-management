@@ -109,7 +109,10 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           resetState();
           dispatch({ type: 'SET_CURRENT_TASK', payload: task });
         })
-        .catch((err) => setError(err));
+        .catch((err) => {
+          console.log({ err });
+          setError(err);
+        });
     }
   }
 
@@ -190,7 +193,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           onChange={(e) => setStatus(e.target.value)}
           name="status"
           id="status">
-          {boardState?.columnList?.map((column) => (
+          {boardState?.currentBoard?.columnList?.map((column) => (
             <option key={column.id} value={column.name}>
               {column.name}
             </option>

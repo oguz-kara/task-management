@@ -26,12 +26,19 @@ export function useBoard() {
     const isTaskStatusEmpty = updatedTask.status.trim().length < 1;
     if (isTaskTitleEmpty) throw new Error('Task title cannot be empty!');
     if (isTaskStatusEmpty) throw new Error('Task status cannot be empty!');
-    // make ready board object for update the state
+
     const updatedBoard = {
       ...boardState.currentBoard,
-      taskList: boardState?.currentBoard?.taskList.map((task) => {
-        if (task.id === updatedTask.id) return updatedTask;
-        return task;
+      columnList: boardState?.currentBoard?.columnList?.map((column) => {
+        if (column.name === updatedTask.status)
+          return {
+            ...column,
+            taskList: column.taskList.map((task) => {
+              if (task.id === updatedTask.id) return updatedTask;
+              return task;
+            })
+          };
+        return column;
       })
     };
 
@@ -63,18 +70,73 @@ export function useBoard() {
       });
   }
 
+  async function changeTaskStatus(task, prevStatus, newStatus) {
+    console.log({ task, prevStatus, newStatus });
+    const updatedBoard = {
+      ...boardState.currentBoard,
+      columnList: boardState.currentBoard.columnList.map((column) => {
+        if (column.name === prevStatus)
+          return {
+            ...column,
+            taskList: column?.taskList?.filter((item) => item.id !== task.id)
+          };
+        if (column.name === newStatus)
+          return {
+            ...column,
+            taskList: [...column?.taskList, task]
+          };
+        return column;
+      })
+    };
+
+    const updatedBoardList = {
+      boardList: [
+        ...user?.userData?.boardList.map((board) => {
+          if (board.id === updatedBoard.id) {
+            return updatedBoard;
+          }
+          return board;
+        })
+      ]
+    };
+
+    return refetchSet(updatedBoardList)
+      .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        return {
+          task: task,
+          result: resultSet,
+          error: errorSet,
+          loading: loadingSet
+        };
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   async function addTask(newTask) {
     const isTaskTitleEmpty = newTask.title.trim().length < 1;
     const isTaskStatusEmpty = newTask.status.trim().length < 1;
     if (isTaskTitleEmpty) throw new Error('Task title cannot be empty!');
     if (isTaskStatusEmpty) throw new Error('Task status cannot be empty!');
+
     const updatedBoard = {
       ...boardState.currentBoard,
-      taskList:
-        boardState?.currentBoard?.taskList.length > 0
-          ? [...boardState.currentBoard.taskList, { ...newTask, createdAt: Date.now() }]
-          : [{ ...newTask, createdAt: Date.now() }]
+      columnList: boardState?.currentBoard?.columnList?.map((column) => {
+        console.log({ column });
+        if (column.name === newTask.status)
+          return {
+            ...column,
+            taskList: column.taskList
+              ? [...column.taskList, { ...newTask, createdAt: Date.now() }]
+              : [{ ...newTask, createdAt: Date.now() }]
+          };
+        return column;
+      })
     };
+
     const updatedBoardList = {
       boardList: [
         ...user?.userData?.boardList.map((board) => {
@@ -89,7 +151,6 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           task: newTask
         };
@@ -99,25 +160,20 @@ export function useBoard() {
       });
   }
 
-  async function removeTask(taskId) {
-    // make ready board object for update the state
-    const taskToRemove = boardState.currentBoard.taskList.find((task) => {
-      if (task.id === taskId) return true;
-    });
+  async function removeTask(taskToRemove) {
+    console.log({ taskToRemove });
     const updatedBoard = {
       ...boardState.currentBoard,
-      taskList:
-        boardState.currentBoard.taskList.filter((task) => {
-          if (task.id === taskId) return false;
-          return true;
-        }) || [],
       columnList: boardState.currentBoard.columnList.map((column) => {
-        if (column.name === taskToRemove.status) {
+        if (column.name === taskToRemove.status)
           return {
             ...column,
-            updatedAt: Date.now()
+            taskList:
+              column.taskList.filter((task) => {
+                if (task.id === taskToRemove.id) return false;
+                return true;
+              }) || []
           };
-        }
         return column;
       })
     };
@@ -138,7 +194,6 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           result: resultSet,
           error: errorSet,
@@ -153,20 +208,26 @@ export function useBoard() {
   async function getTaskById(taskId) {
     return refetchGet().then((data) => {
       const selectedBoard = data.boardList.find((board) => board.id === boardState.currentBoard.id);
-      return selectedBoard.taskList.find((task) => task.id === taskId);
+      return selectedBoard.columnList
+        .map((column) => column?.taskList)
+        .flat(1)
+        .find((task) => task.id === taskId);
     });
   }
 
   async function getAllTasks() {
     return refetchGet().then((data) => {
       const selectedBoard = data.boardList.find((board) => board.id === boardState.currentBoard.id);
-      return selectedBoard.taskList;
+      return selectedBoard.columnList.map((column) => column?.taskList).flat(1);
     });
   }
 
   async function addColumn(newColumn) {
-    const isColumnExists = boardState.columnList.find((column) => column.name === newColumn.name);
+    const isColumnExists = boardState.currentBoard.columnList.find(
+      (column) => column.name === newColumn.name
+    );
     if (isColumnExists) throw new Error('Column name is already exists!');
+
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: [...boardState?.currentBoard?.columnList, newColumn]
@@ -187,7 +248,6 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           column: newColumn
         };
@@ -197,12 +257,7 @@ export function useBoard() {
       });
   }
 
-  async function updateColumn(updatedColumn, matter = true) {
-    const isColumnExists = boardState.columnList.find(
-      (column) => column.name === updatedColumn.name
-    );
-    if (isColumnExists && matter) throw new Error('Column name is already exists!');
-
+  async function updateColumn(updatedColumn) {
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: boardState?.currentBoard?.columnList.map((column) => {
@@ -226,7 +281,6 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return updatedColumn;
       })
       .catch((err) => {
@@ -234,26 +288,13 @@ export function useBoard() {
       });
   }
 
-  async function removeColumnList() {
-    const deSelectedColumnList = boardState?.columnList?.filter(({ selected }) => !selected);
+  async function updateColumns(columnList) {
     const updatedBoard = {
       ...boardState.currentBoard,
-      columnList: boardState.columnList
-        .map(({ id, name, color, selected }) => {
-          return {
-            id,
-            name,
-            color,
-            selected
-          };
-        })
-        .filter(({ selected }) => {
-          return !selected;
-        }),
-      taskList: deSelectedColumnList
-        .map(({ taskList }) => (taskList.length > 0 ? taskList : []))
-        .flat(1)
+      columnList: columnList
     };
+
+    console.log({ columnList });
 
     const updatedBoardList = {
       boardList: [
@@ -272,7 +313,33 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
+  }
+
+  async function removeColumnList() {
+    const updatedBoard = {
+      ...boardState.currentBoard,
+      columnList: boardState.currentBoard.columnList.filter((column) => !column.selected)
+    };
+
+    const updatedBoardList = {
+      boardList: [
+        ...user?.userData?.boardList.map((board) => {
+          if (board.id === updatedBoard.id) {
+            return updatedBoard;
+          }
+          return board;
+        })
+      ]
+    };
+
+    return refetchSet(updatedBoardList)
+      .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
         return {
           result: resultSet,
           error: errorSet,
@@ -284,6 +351,34 @@ export function useBoard() {
       });
   }
 
+  async function setColumnList(columnList) {
+    const updatedBoard = {
+      ...boardState.currentBoard,
+      columnList: columnList
+    };
+
+    const updatedBoardList = {
+      boardList: [
+        ...user?.userData?.boardList.map((board) => {
+          if (board.id === updatedBoard.id) {
+            return updatedBoard;
+          }
+          return board;
+        })
+      ]
+    };
+
+    return refetchSet(updatedBoardList)
+      .then(() => {
+        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
+        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+        return updatedColumn;
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
+  }
+
   async function addBoard(newBoard) {
     const updatedBoardList = [...user?.userData?.boardList, newBoard];
 
@@ -291,7 +386,6 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: newBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           result: resultSet,
           error: errorSet,
@@ -319,7 +413,6 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: {} });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           result: resultSet,
           error: errorSet,
@@ -343,42 +436,10 @@ export function useBoard() {
       .then(() => {
         dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
         dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
         return {
           result: resultSet,
           error: errorSet,
           loading: loadingSet
-        };
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  async function updateTaskList(taskList) {
-    const updatedBoard = {
-      ...boardState.currentBoard,
-      taskList: [...taskList]
-    };
-
-    const updatedBoardList = {
-      boardList: [
-        ...user?.userData?.boardList.map((board) => {
-          if (board.id === updatedBoard.id) {
-            return updatedBoard;
-          }
-          return board;
-        })
-      ]
-    };
-
-    return refetchSet(updatedBoardList)
-      .then(() => {
-        dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
-        dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
-        dispatchBoard({ type: 'BUILD_BOARD' });
-        return {
-          taskList: taskList
         };
       })
       .catch((err) => {
@@ -425,8 +486,16 @@ export function useBoard() {
       invoke: removeBoard,
       loading: loadingSet
     },
-    updateTaskList: {
-      invoke: updateTaskList,
+    setColumnList: {
+      invoke: setColumnList,
+      loading: loadingSet
+    },
+    updateColumns: {
+      invoke: updateColumns,
+      loading: loadingSet
+    },
+    changeTaskStatus: {
+      invoke: changeTaskStatus,
       loading: loadingSet
     }
   };

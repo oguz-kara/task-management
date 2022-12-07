@@ -129,7 +129,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
                     <SubMenu
                       onRequestClose={onSubMenuClose}
                       onRequestOpenRight={() => onSubMenuOpen(board)}
-                      isOpen={boardActions && boardState.currentBoard.id === board.id}>
+                      isOpen={false}>
                       <SubMenu.Header>
                         <button
                           className={boardState?.currentBoard?.id === board.id ? ' active' : ''}

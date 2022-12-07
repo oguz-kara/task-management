@@ -1,14 +1,12 @@
 .sub-menu {
   position: relative;
-  .header {
-  }
   .body {
     position: absolute;
     top: 20px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
-    z-index: 100 !important;
+    z-index: 999 !important;
   }
 
   .body--active {

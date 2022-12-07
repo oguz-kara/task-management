@@ -37,20 +37,24 @@ function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
           {
             id: 1,
             name: 'todo',
-            color: '#48C0E2'
+            color: '#48C0E2',
+            taskList: []
           },
           {
             id: 2,
             name: 'doing',
-            color: 'rebeccapurple'
+            color: 'rebeccapurple',
+
+            taskList: []
           },
           {
             id: 3,
             name: 'done',
-            color: 'green'
+            color: 'green',
+
+            taskList: []
           }
-        ],
-        taskList: []
+        ]
       };
       addBoard
         .invoke(newBoard)

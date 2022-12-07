@@ -23,7 +23,7 @@ function getSubTaskCount(task) {
 function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
   const { boardState, dispatch } = useContext(BoardContext);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
-  const { updateTask, removeTask } = useBoard();
+  const { updateTask, removeTask, changeTaskStatus } = useBoard();
 
   function handleSubtaskChange(id, checked) {
     const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
@@ -55,8 +55,8 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
       status: value
     };
 
-    updateTask
-      .invoke(updatedCurrentTask)
+    changeTaskStatus
+      .invoke(updatedCurrentTask, boardState.currentTask.status, value)
       .then(({ task }) => {
         dispatch({ type: 'SET_CURRENT_TASK', payload: task });
         closeTaskViewModal();
@@ -71,7 +71,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
 
   function handleRemoveTaskClick() {
     removeTask
-      .invoke(boardState.currentTask.id)
+      .invoke(boardState.currentTask)
       .then(() => {
         closeTaskViewModal();
       })
