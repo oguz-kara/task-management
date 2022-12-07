@@ -14,9 +14,7 @@ function SubMenu({
 
   useEffect(() => {
     const handleClick = (e) => {
-      if (ref?.current?.contains(e.target)) {
-        // ... clicked in sub menu
-      } else {
+      if (!ref?.current?.contains(e.target)) {
         onRequestClose();
       }
     };

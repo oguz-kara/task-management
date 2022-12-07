@@ -10,7 +10,7 @@ const spring = {
 function Switch({ value = true, onChange, ...props }) {
   return (
     <div
-      data-isOn={value}
+      data-ison={value}
       className={`switch-container ${!value ? 'justify-start' : 'justify-end'}`}
       onClick={() => {
         onChange();

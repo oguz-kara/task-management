@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
+import { UilEdit } from '@iconscout/react-unicons';
+import { UilTimesCircle } from '@iconscout/react-unicons';
 import taskManagerLogoLight from '../../assets/images/task_manager_light.png';
 import taskManagerLogoDark from '../../assets/images/task_manager_dark.png';
 import './side-bar.scss';
@@ -13,15 +15,12 @@ import { BoardContext } from './../../context/BoardContext';
 import NewBoard from '../NewBoard/NewBoard';
 import Modal from '../Modal/Modal';
 import { AuthContext } from './../../context/AuthContext';
-import SubMenu from './../SubMenu/SubMenu';
-import List from './../List/List';
 import { useBoard } from './../../api/board';
 import ConfirmAction from './../ConfirmAction/ConfirmAction';
 import Loader from '../Loader/Loader';
 
 function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [boardActions, setBoardActions] = useState(false);
   const [updateBoardModal, setUpdateBoardModal] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
@@ -60,14 +59,6 @@ function Sidebar({ boardList = [], closeSidebar }) {
     }
   }
 
-  function handleListRightClick(board, e) {
-    e.preventDefault();
-    if (e.type === 'contextmenu' && boardState.currentBoard.id !== board.id) {
-      dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
-      setBoardActions(true);
-    }
-  }
-
   function handleUpdateBoardClick() {
     openUpdateBoardModal();
   }
@@ -79,14 +70,6 @@ function Sidebar({ boardList = [], closeSidebar }) {
         closeDeleteBoardModal();
       })
       .then((err) => console.log({ err }));
-  }
-
-  function onSubMenuClose() {
-    setBoardActions(false);
-  }
-
-  function onSubMenuOpen(board) {
-    setBoardActions(true);
   }
 
   return (
@@ -105,18 +88,16 @@ function Sidebar({ boardList = [], closeSidebar }) {
           <span>
             Are you sure to remove
             <b>
-              {` `}
               <u>{boardState?.currentBoard?.name}</u>
             </b>
-            {` `}
             board?
           </span>
         }
       />
-      <aside className="sidebar">
+      <aside className={`sidebar ${dark ? 'line-light' : 'line-dark'}`}>
         <div className="top">
           <img
-            className="logo"
+            className={`logo ${dark ? 'line-light' : 'line-dark'}`}
             src={dark ? taskManagerLogoDark : taskManagerLogoLight}
             alt="task manager"
           />
@@ -126,35 +107,26 @@ function Sidebar({ boardList = [], closeSidebar }) {
               {boardList &&
                 boardList.map((board) => (
                   <li key={board.id} onClick={(e) => handleBoardClick(board)}>
-                    <SubMenu
-                      onRequestClose={onSubMenuClose}
-                      onRequestOpenRight={() => onSubMenuOpen(board)}
-                      isOpen={false}>
-                      <SubMenu.Header>
-                        <button
-                          className={boardState?.currentBoard?.id === board.id ? ' active' : ''}
-                          onContextMenu={(e) => handleListRightClick(board, e)}>
-                          <span className="icon">
-                            {removeBoard.loading && boardState.currentBoard.id === board.id ? (
-                              <Loader type="inline" />
-                            ) : (
-                              <UilClipboardAlt className="list-icon text-static" />
-                            )}
-                          </span>
-                          <span className="board-name text-static">{board.name}</span>
+                    <button className={boardState?.currentBoard?.id === board.id ? ' active' : ''}>
+                      <div className="board-list-left">
+                        <span className="icon">
+                          {removeBoard.loading && boardState.currentBoard.id === board.id ? (
+                            <Loader type="inline" />
+                          ) : (
+                            <UilClipboardAlt className="list-icon text-static" />
+                          )}
+                        </span>
+                        <span className="board-name text-static">{board.name}</span>
+                      </div>
+                      <div className="board-actions">
+                        <button className="text" onClick={handleUpdateBoardClick}>
+                          <UilEdit />
                         </button>
-                      </SubMenu.Header>
-                      <SubMenu.Body>
-                        <List>
-                          <List.Item background="background-2" onClick={handleUpdateBoardClick}>
-                            update
-                          </List.Item>
-                          <List.Item background="background-2" onClick={openDeleteBoardModal}>
-                            delete
-                          </List.Item>
-                        </List>
-                      </SubMenu.Body>
-                    </SubMenu>
+                        <button className="text" onClick={openDeleteBoardModal}>
+                          <UilTimesCircle />
+                        </button>
+                      </div>
+                    </button>
                   </li>
                 ))}
             </ul>

@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useState, useContext, useLayoutEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useState, useContext, useLayoutEffect, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
@@ -13,6 +13,7 @@ import { UilPen } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import Task from '../../components/Task/Task';
 import './board.scss';
+import { ThemeContext } from './../../context/ThemeContext';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -22,7 +23,8 @@ function Board(props) {
   const [isAllColumnChecked, setAsAllColumnChecked] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
-  const { removeColumnList, updateTask, updateColumns } = useBoard();
+  const { removeColumnList, updateColumns } = useBoard();
+  const { dark } = useContext(ThemeContext);
 
   // Modal state functions
   function openAddColumnModal() {
@@ -78,7 +80,7 @@ function Board(props) {
 
   function countSelectedColumn() {
     let counter = 0;
-    boardState?.currentBoard?.columnList.forEach((column) => {
+    boardState?.currentBoard?.columnList?.forEach((column) => {
       if (column.selected) counter++;
     });
     return counter;
@@ -157,6 +159,10 @@ function Board(props) {
     }
   }
 
+  useEffect(() => {
+    console.log({ boardState });
+  }, [boardState]);
+
   return (
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
@@ -180,8 +186,16 @@ function Board(props) {
         onConfirm={handleColumnDelete}
         message="Are you sure to remove column(s)?"
       />
+      <ConfirmAction
+        isOpen={deleteTask}
+        onRequestClose={() => setDeleteTask(false)}
+        onConfirm={handleRemoveTaskClick}
+        message="Are you sure to remove task(s)?"
+      />
       <div className="board text-static" {...props}>
-        <div
+        <motion.div
+          animate={isColumnSelected() ? { scaleY: 1 } : { scaleY: 0 }}
+          transition={{ duration: 0.1 }}
           className={`board-column-actions-container background-2 ${
             isColumnSelected() ? 'active' : ''
           }`}>
@@ -216,7 +230,7 @@ function Board(props) {
               <span>delete</span>
             </button>
           </div>
-        </div>
+        </motion.div>
         <div className="board-content">
           <DragDropContext
             onDragEnd={(result) =>
@@ -224,25 +238,29 @@ function Board(props) {
             }>
             {boardState.currentBoard &&
               boardState.currentBoard?.columnList?.map(({ id, taskList, color, name }) => (
-                <Droppable droppableId={id.toString()} key={id}>
-                  {(provided) => (
-                    <div className="column" {...provided.droppableProps} ref={provided.innerRef}>
-                      <div className="title">
-                        <Checkbox
-                          className="background-2"
-                          checked={getValueByColumnId(id)}
-                          onChange={(e) => handleColumnSelectedChange(id, e.target.checked)}
-                          background={color}
-                          labelPosition="right"
-                          label={
-                            <>
-                              {name}
-                              {taskList?.length > 0 ? `(${taskList?.length})` : ''}
-                            </>
-                          }
-                        />
-                      </div>
-                      <ul>
+                <div className="column">
+                  <div className="title">
+                    <Checkbox
+                      className="background-2"
+                      checked={getValueByColumnId(id)}
+                      onChange={(e) => handleColumnSelectedChange(id, e.target.checked)}
+                      background={color}
+                      labelPosition="right"
+                      label={
+                        <>
+                          {name}
+                          {taskList?.length > 0 ? `(${taskList?.length})` : ''}
+                        </>
+                      }
+                      styles={{ labelStyles: { fontWeight: 600, fontSize: 14 } }}
+                    />
+                  </div>
+                  <Droppable droppableId={id.toString()} key={id}>
+                    {(provided) => (
+                      <ul
+                        className={`${taskList?.length < 1 ? 'empty' : ''}`}
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}>
                         {taskList?.map((task, index) => (
                           <Draggable key={task.id} draggableId={task.id} index={index}>
                             {(provided, snapshot) => (
@@ -269,14 +287,16 @@ function Board(props) {
                             )}
                           </Draggable>
                         ))}
+                        {provided.placeholder}
                       </ul>
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
+                    )}
+                  </Droppable>
+                </div>
               ))}
           </DragDropContext>
-          <button className="create-new-column text background" onClick={openAddColumnModal}>
+          <button
+            className={`create-new-column text background ${dark ? 'dark' : 'light'}`}
+            onClick={openAddColumnModal}>
             + new column
           </button>
         </div>

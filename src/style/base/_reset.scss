@@ -44,6 +44,14 @@
   }
 }
 
+.text-danger {
+  color: $danger !important;
+}
+
+.text-warning {
+  color: $warning !important;
+}
+
 .primary-background {
   background-color: $primary;
 }

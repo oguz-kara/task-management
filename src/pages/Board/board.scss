@@ -13,14 +13,13 @@
     padding: 20px;
   }
   .board-column-actions-container {
-    min-height: 0;
-    opacity: 0;
-    transition: all 150ms ease-in;
+    max-height: 50px;
     overflow: hidden;
+    transition: all 150ms ease-in;
     padding: 10px 20px;
-
     display: flex;
     align-items: center;
+    transform-origin: top;
 
     .action-button {
       display: inline-flex;
@@ -69,12 +68,12 @@
 
   .board-column-actions-container.active {
     min-height: 50px;
-    opacity: 1;
     overflow: auto;
   }
   .column {
-    height: 40rem;
-    min-width: 350px;
+    min-height: 65vh;
+    min-width: 300px;
+    width: 300px;
     transition: width, min-width 400ms ease-in-out;
     .title {
       display: flex;
@@ -95,7 +94,7 @@
         text-transform: uppercase;
         letter-spacing: 2.5px;
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 800 !important;
         min-width: 300px;
       }
     }
@@ -105,11 +104,17 @@
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
+      min-height: 100%;
+      border-radius: 5px;
 
       .task-container {
         display: inline-block;
         width: fit-content;
         height: fit-content;
+      }
+
+      &.empty {
+        border: 2px dashed $text-static;
       }
     }
     &.deactive {
@@ -124,28 +129,28 @@
     padding: 20px;
     min-width: 300px;
     font-weight: 600;
-    border: 1px solid rgba($color: $primary, $alpha: 0.3);
     background: transparent;
+    border: none;
     border-radius: 10px;
     text-transform: capitalize;
     font-size: 18px;
     cursor: pointer;
     color: #fff;
     margin-left: auto;
-  }
-}
+    font-weight: 700;
+    font-size: 24px;
+    &:hover {
+      color: $primary;
+    }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-    overflow: hidden;
-  }
-  to {
-    opacity: 1;
-    pointer-events: all;
-    width: 350px;
-    overflow: auto;
+    &.dark {
+      background: rgb(44, 44, 55);
+      background: linear-gradient(180deg, rgba(44, 44, 55, 1) 50%, rgba(33, 34, 45, 1) 92%);
+    }
+
+    &.light {
+      background: rgb(228, 228, 228);
+      background: linear-gradient(180deg, rgba(228, 228, 228, 1) 50%, rgba(255, 255, 255, 1) 92%);
+    }
   }
 }

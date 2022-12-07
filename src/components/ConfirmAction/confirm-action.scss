@@ -1,13 +1,14 @@
 @import '../../style/abstracts/colors';
 
 .confirm-action {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 25px;
+  padding: 30px;
   min-width: 350px;
   min-height: 120px;
+
+  h5 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
 
   .confirm-message {
     margin-bottom: 25px;

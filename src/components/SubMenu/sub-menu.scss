@@ -2,11 +2,12 @@
   position: relative;
   .body {
     position: absolute;
-    top: 20px;
+    top: 30px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 200ms ease;
     z-index: 999 !important;
+    min-width: 150px;
   }
 
   .body--active {

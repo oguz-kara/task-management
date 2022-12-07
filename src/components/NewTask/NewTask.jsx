@@ -1,5 +1,5 @@
 import uniqid from 'uniqid';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { UilMultiply } from '@iconscout/react-unicons';
 import './new-task.scss';
 
@@ -115,6 +115,14 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
         });
     }
   }
+
+  const reset = useCallback(() => {
+    setTitle('');
+    setDesc('');
+    setSubtaskList([]);
+    setStatus('');
+    setError(false);
+  }, []);
 
   useEffect(() => {
     if (

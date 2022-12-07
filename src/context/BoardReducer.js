@@ -14,7 +14,7 @@ export const BoardReducer = (state, action) => {
         ...state,
         currentBoard: {
           ...state.currentBoard,
-          columnList: state.currentBoard.columnList.map((column) => {
+          columnList: state?.currentBoard?.columnList?.map((column) => {
             if (column.id === action.payload.id)
               return { ...column, selected: action.payload.checked ? true : false };
             return column;

@@ -27,8 +27,6 @@
     display: flex;
     flex-direction: column-reverse; /* CHANGED */
     align-items: flex-end;
-    overflow-y: auto;
-    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: red;
     scrollbar-color: $primary #fff;

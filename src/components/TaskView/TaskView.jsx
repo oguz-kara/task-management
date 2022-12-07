@@ -1,12 +1,13 @@
-import { UilEllipsisV } from '@iconscout/react-unicons';
 import React, { useContext, useState } from 'react';
+import { UilEllipsisV } from '@iconscout/react-unicons';
 import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
 import { BoardContext } from './../../context/BoardContext';
-import './task-view.scss';
 import { useBoard } from '../../api/board';
 import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
+import './task-view.scss';
+import ConfirmAction from './../ConfirmAction/ConfirmAction';
 
 function countDoneSubtasks(task) {
   let counter = 0;
@@ -24,6 +25,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
   const { boardState, dispatch } = useContext(BoardContext);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const { updateTask, removeTask, changeTaskStatus } = useBoard();
+  const [deleteTask, setDeleteTask] = useState(false);
 
   function handleSubtaskChange(id, checked) {
     const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
@@ -93,9 +95,9 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
           </SubMenu.Header>
           <SubMenu.Body>
             <List>
-              <List.Item onClick={handleUpdateTaskClick}>update</List.Item>
-              <List.Item onClick={handleRemoveTaskClick} className="hover-danger">
-                delete
+              <List.Item onClick={handleUpdateTaskClick}>Edit task</List.Item>
+              <List.Item onClick={() => setDeleteTask(true)} className="text-danger">
+                Delete task
               </List.Item>
             </List>
           </SubMenu.Body>
@@ -112,13 +114,6 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
         <ul className="subtask-list">
           {boardState?.currentTask?.subtasks?.map((task) => (
             <li key={task.id} className="background text">
-              {/* <input
-                id={task.id}
-                name={task.id}
-                type="checkbox"
-                checked={task.done}
-                onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
-              /> */}
               <Checkbox
                 className="background-2"
                 id={task.id}
