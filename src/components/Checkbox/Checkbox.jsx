@@ -1,5 +1,7 @@
 import './checkbox.scss';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { UilCheck } from '@iconscout/react-unicons';
 
 function Checkbox({
   label,
@@ -40,13 +42,19 @@ function Checkbox({
         </span>
       )}
       <input onChange={getOnChange()} type="checkbox" checked={getChecked()} name={name} id={id} />
-      <span
-        className={`${className} checkmark`}
-        style={
-          background
-            ? { backgroundColor: background, ...styles.checkboxStyles }
-            : styles.checkboxStyles
-        }></span>
+
+      <div
+        className="checkmark"
+        style={{ backgroundColor: background ? background : '', ...styles.checkboxStyles }}>
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
+          exit={{ scale: 0, opacity: 1 }}
+          className="checkmark-item">
+          <UilCheck />
+        </motion.div>
+      </div>
+
       {labelPosition === 'right' && (
         <span
           style={styles.labelStyles ? styles.labelStyles : {}}
