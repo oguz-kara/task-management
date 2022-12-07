@@ -1,8 +1,11 @@
+@import '../../style/abstracts/colors';
+
 .task-details {
-  min-width: 400px;
+  min-width: 350px;
   padding: 30px;
-  max-width: 500px;
+  max-width: 450px;
   position: relative;
+  border-radius: 10px;
   .title {
     display: flex;
     align-items: center;
@@ -58,11 +61,18 @@
           text-decoration: line-through;
         }
         label {
+          cursor: pointer;
           -ms-word-break: break-all;
           word-break: break-all;
           -webkit-hyphens: auto;
           -moz-hyphens: auto;
           hyphens: auto;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        &:hover {
+          background-color: $primary-light;
         }
       }
     }

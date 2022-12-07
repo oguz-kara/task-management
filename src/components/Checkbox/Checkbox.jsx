@@ -42,9 +42,15 @@ function Checkbox({
       <input onChange={getOnChange()} type="checkbox" checked={getChecked()} name={name} id={id} />
       <span
         className={`${className} checkmark`}
-        style={background ? { backgroundColor: background } : {}}></span>
+        style={
+          background
+            ? { backgroundColor: background, ...styles.checkboxStyles }
+            : styles.checkboxStyles
+        }></span>
       {labelPosition === 'right' && (
-        <span style={styles.labelStyles || {}} className="checkbox-label label-right">
+        <span
+          style={styles.labelStyles ? styles.labelStyles : {}}
+          className="checkbox-label label-right">
           {label}
         </span>
       )}

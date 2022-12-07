@@ -1,8 +1,12 @@
 .task {
-  cursor: pointer;
+  cursor: hand;
   padding: 25px 15px;
   border-radius: 10px;
   width: 300px;
+
+  &:hover {
+    opacity: 0.5;
+  }
 
   .task-header {
     display: flex;

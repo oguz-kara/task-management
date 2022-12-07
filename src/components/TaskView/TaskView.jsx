@@ -8,6 +8,7 @@ import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
 import './task-view.scss';
 import ConfirmAction from './../ConfirmAction/ConfirmAction';
+import { ConfirmContext } from './../../context/ConfirmContext';
 
 function countDoneSubtasks(task) {
   let counter = 0;
@@ -23,9 +24,10 @@ function getSubTaskCount(task) {
 
 function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
   const { boardState, dispatch } = useContext(BoardContext);
+  const { dispatch: confirmDispath } = useContext(ConfirmContext);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const { updateTask, removeTask, changeTaskStatus } = useBoard();
-  const [deleteTask, setDeleteTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(true);
 
   function handleSubtaskChange(id, checked) {
     const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
@@ -71,6 +73,38 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
     closeTaskViewModal();
   }
 
+  function handleCancelRemoveTaskClick() {
+    setDeleteTask(false);
+  }
+
+  function handleDeleteTaskButtonClick() {
+    const confirmData = {
+      isOpen: true,
+      title: {
+        text: 'Delete this task?',
+        color: '#ea5555'
+      },
+      message:
+        "Are you sure you want to delete the 'Review early feedback and plan next steps for roadmap' board? This action will remove all columns and tasks and cannot be reversed. ",
+      onRequestClose: handleCancelRemoveTaskClick,
+      onConfirm: handleRemoveTaskClick,
+      buttons: {
+        approve: {
+          text: 'Delete',
+          className: 'bg-danger text',
+          style: { color: '#fff' }
+        },
+        reject: {
+          text: 'Cancel',
+          backgroundColor: null,
+          className: 'primary-color'
+        }
+      }
+    };
+    confirmDispath({ type: 'CONFIRM', payload: confirmData });
+    closeTaskViewModal();
+  }
+
   function handleRemoveTaskClick() {
     removeTask
       .invoke(boardState.currentTask)
@@ -96,7 +130,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
           <SubMenu.Body>
             <List>
               <List.Item onClick={handleUpdateTaskClick}>Edit task</List.Item>
-              <List.Item onClick={() => setDeleteTask(true)} className="text-danger">
+              <List.Item onClick={handleDeleteTaskButtonClick} className="text-danger">
                 Delete task
               </List.Item>
             </List>
@@ -120,6 +154,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
                 name={task.id}
                 checked={task.done}
                 onChange={(e) => handleSubtaskChange(task.id, e.target.checked)}
+                styles={{ checkboxStyles: { width: 20, height: 20 } }}
               />
               <label htmlFor={task.id} className={`${task.done && 'subtask-done text-static'}`}>
                 {task.description}

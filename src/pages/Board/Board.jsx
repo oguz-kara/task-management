@@ -186,12 +186,6 @@ function Board(props) {
         onConfirm={handleColumnDelete}
         message="Are you sure to remove column(s)?"
       />
-      <ConfirmAction
-        isOpen={deleteTask}
-        onRequestClose={() => setDeleteTask(false)}
-        onConfirm={handleRemoveTaskClick}
-        message="Are you sure to remove task(s)?"
-      />
       <div className="board text-static" {...props}>
         <motion.div
           animate={isColumnSelected() ? { scaleY: 1 } : { scaleY: 0 }}

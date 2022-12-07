@@ -14,11 +14,11 @@
   }
 
   .background {
-    background-color: $background-light;
+    background-color: $background-light-2;
   }
 
   .background-2 {
-    background-color: $background-light-2;
+    background-color: $background-light;
   }
 
   .text-static {
@@ -57,7 +57,7 @@
 }
 
 .primary-color {
-  color: $primary;
+  color: $primary !important;
 }
 
 .hover--bg-danger {
