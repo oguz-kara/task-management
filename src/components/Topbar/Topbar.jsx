@@ -32,7 +32,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
               <UilBars size={40} />
             </button>
           )}
-          Platform Launch
+          {boardState?.currentBoard?.name ? boardState.currentBoard.name : ''}
         </h2>
         <div className="actions">
           <button
