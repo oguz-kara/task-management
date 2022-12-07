@@ -155,7 +155,6 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           type="text"
           name="title"
           id="title"
-          placeholder="e.g. Take coffee break"
         />
       </div>
       <div className="input-container">
@@ -166,7 +165,6 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           type="text"
           name="description"
           id="description"
-          placeholder="e.g. its always good to take a breakfeast..."
         />
       </div>
       <div className="input-container">
@@ -180,7 +178,6 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
                     value={subtask.description}
                     onChange={(e) => handleSubtaskChange(subtask.id, e.target.value)}
                     type="text"
-                    placeholder="e.g very nice subtask"
                   />
                   <button type="button" onClick={() => removeSubtask(subtask.id)}>
                     <UilMultiply />

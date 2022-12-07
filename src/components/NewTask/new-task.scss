@@ -2,11 +2,12 @@
 
 .add-new-task-form {
   position: relative;
-  min-width: 400px;
-  padding: 20px;
+  min-width: 480px;
+  border-radius: 10px;
+  padding: 30px;
   h3 {
     text-transform: capitalize;
-    font-size: 16px;
+    font-size: 18px;
   }
 
   & > * {
@@ -27,5 +28,9 @@
     font-weight: 600;
     cursor: pointer;
     width: 100%;
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 }

@@ -14,6 +14,7 @@ import { UilTimesCircle } from '@iconscout/react-unicons';
 import Task from '../../components/Task/Task';
 import './board.scss';
 import { ThemeContext } from './../../context/ThemeContext';
+import { ConfirmContext } from './../../context/ConfirmContext';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -23,8 +24,9 @@ function Board(props) {
   const [isAllColumnChecked, setAsAllColumnChecked] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
-  const { removeColumnList, updateColumns } = useBoard();
   const { dark } = useContext(ThemeContext);
+  const { dispatch: confirmDispatch } = useContext(ConfirmContext);
+  const { removeColumnList, updateColumns } = useBoard();
 
   // Modal state functions
   function openAddColumnModal() {
@@ -51,8 +53,40 @@ function Board(props) {
     setTaskUpdateModalOpen(false);
   }
 
+  function getColumnNames(columnList) {
+    let result = '';
+    columnList.forEach((item, i) => {
+      if (item.selected) result = `${result} ${item.name}`;
+    });
+    return result.trim().split(' ').join(', ');
+  }
+
   function openDeleteColumnModal() {
-    setDeleteColumn(true);
+    const confirmData = {
+      isOpen: true,
+      title: {
+        text: 'Delete this task?',
+        color: '#ea5555'
+      },
+      message: `Are you sure you want to delete the '${getColumnNames(
+        boardState?.currentBoard?.columnList
+      )}' column(s)? This action will remove these columns and tasks and cannot be reversed. `,
+      onRequestClose: () => confirmDispatch({ type: 'RESET' }),
+      onConfirm: handleColumnDelete,
+      buttons: {
+        approve: {
+          text: 'Delete',
+          className: 'bg-danger text',
+          style: { color: '#fff' }
+        },
+        reject: {
+          text: 'Cancel',
+          backgroundColor: null,
+          className: 'primary-color'
+        }
+      }
+    };
+    confirmDispatch({ type: 'CONFIRM', payload: confirmData });
   }
 
   function closeDeleteColumnModal() {
@@ -188,7 +222,9 @@ function Board(props) {
       />
       <div className="board text-static" {...props}>
         <motion.div
-          animate={isColumnSelected() ? { scaleY: 1 } : { scaleY: 0 }}
+          animate={
+            isColumnSelected() ? { display: 'flex', opacity: 1 } : { display: 'none', opacity: 0 }
+          }
           transition={{ duration: 0.1 }}
           className={`board-column-actions-container background-2 ${
             isColumnSelected() ? 'active' : ''
@@ -288,11 +324,13 @@ function Board(props) {
                 </div>
               ))}
           </DragDropContext>
-          <button
-            className={`create-new-column text background ${dark ? 'dark' : 'light'}`}
-            onClick={openAddColumnModal}>
-            + new column
-          </button>
+          {boardState.currentBoard.columnList && (
+            <button
+              className={`create-new-column text background ${dark ? 'dark' : 'light'}`}
+              onClick={openAddColumnModal}>
+              + new column
+            </button>
+          )}
         </div>
       </div>
     </>

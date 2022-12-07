@@ -28,7 +28,7 @@ body {
 
   label {
     font-size: 14px;
-    margin-bottom: 7px;
+    margin-bottom: 10px;
     text-transform: capitalize;
     font-size: 12px;
     font-weight: 500;
@@ -41,47 +41,55 @@ body {
 
   input {
     background-color: transparent;
-    border: 1px solid rgba(150, 150, 150, 0.5) !important;
+    outline: 2px solid #4e5362 !important;
+    border: none;
     padding: 10px;
     color: $text-static;
     width: 100%;
     font-size: 14px;
     border-radius: 5px;
+    transition: outline 500 ease-in;
 
     &::placeholder {
       color: #656875;
     }
 
     &:focus {
-      outline: none;
+      outline: 2px solid rgba($color: $primary, $alpha: 0.7) !important;
     }
   }
 
   textarea {
     background-color: transparent;
-    border: 1px solid rgba(150, 150, 150, 0.5) !important;
+    outline: 2px solid #4e5362 !important;
+    border: none;
     padding: 10px;
     color: $text-static;
     font-size: 14px;
     border-radius: 5px;
     resize: none;
-    height: 150px;
+    min-height: 80px;
 
     &::placeholder {
       color: #656875;
     }
-
     &:focus {
-      outline: none;
+      outline: 2px solid rgba($color: $primary, $alpha: 0.7) !important;
     }
   }
 
   select {
     background-color: transparent;
-    border: 1px solid rgba(150, 150, 150, 0.5) !important;
+    outline: 2px solid #4e5362 !important;
+    border: none;
     padding: 5px;
     color: $text-static;
     font-size: 14px;
+    border-radius: 5px;
+    padding: 10px;
+    &:focus {
+      outline: 2px solid rgba($color: $primary, $alpha: 0.7) !important;
+    }
   }
 
   button {

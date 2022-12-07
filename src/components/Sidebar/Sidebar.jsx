@@ -18,14 +18,16 @@ import { AuthContext } from './../../context/AuthContext';
 import { useBoard } from './../../api/board';
 import ConfirmAction from './../ConfirmAction/ConfirmAction';
 import Loader from '../Loader/Loader';
+import { ConfirmContext } from './../../context/ConfirmContext';
 
 function Sidebar({ boardList = [], closeSidebar }) {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [updateBoardModal, setUpdateBoardModal] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
-  const [deleteBoard, setDeleteBoard] = useState(false);
   const { user } = useContext(AuthContext);
+  const { dispatch: confirmDispatch } = useContext(ConfirmContext);
+  const [deleteBoard, setDeleteBoard] = useState(false);
   const { removeBoard } = useBoard();
 
   function openModal() {
@@ -72,6 +74,32 @@ function Sidebar({ boardList = [], closeSidebar }) {
       .then((err) => console.log({ err }));
   }
 
+  function handleDeleteBoardButtonClick() {
+    const confirmData = {
+      isOpen: true,
+      title: {
+        text: 'Delete this board?',
+        color: '#ea5555'
+      },
+      message: `Are you sure you want to delete the '${boardState.currentBoard.name}' board? This action will remove all columns and tasks and cannot be reversed. `,
+      onConfirm: handleRemoveBoardClick,
+      onRequestClose: () => confirmDispatch({ type: 'RESET' }),
+      buttons: {
+        approve: {
+          text: 'Delete',
+          className: 'bg-danger text',
+          style: { color: '#fff' }
+        },
+        reject: {
+          text: 'Cancel',
+          backgroundColor: null,
+          className: 'primary-color'
+        }
+      }
+    };
+    confirmDispatch({ type: 'CONFIRM', payload: confirmData });
+  }
+
   return (
     <>
       <Modal type="add-board" isOpen={modalIsOpen} onRequestClose={closeModal}>
@@ -80,20 +108,6 @@ function Sidebar({ boardList = [], closeSidebar }) {
       <Modal isOpen={updateBoardModal} onRequestClose={closeUpdateBoardModal}>
         <NewBoard type="update-board" title="update board" closeModal={closeUpdateBoardModal} />
       </Modal>
-      <ConfirmAction
-        isOpen={deleteBoard}
-        onRequestClose={closeDeleteBoardModal}
-        onConfirm={handleRemoveBoardClick}
-        message={
-          <span>
-            Are you sure to remove
-            <b>
-              <u>{boardState?.currentBoard?.name}</u>
-            </b>
-            board?
-          </span>
-        }
-      />
       <aside className={`sidebar ${dark ? 'line-light' : 'line-dark'}`}>
         <div className="top">
           <img
@@ -122,7 +136,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
                         <button className="text" onClick={handleUpdateBoardClick}>
                           <UilEdit />
                         </button>
-                        <button className="text" onClick={openDeleteBoardModal}>
+                        <button className="text" onClick={handleDeleteBoardButtonClick}>
                           <UilTimesCircle />
                         </button>
                       </div>

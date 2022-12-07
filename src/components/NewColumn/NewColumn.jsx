@@ -45,7 +45,8 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
         id: uniqid(),
         name,
         color: color.hex,
-        selected: false
+        selected: false,
+        taskList: []
       };
       addColumn
         .invoke(newColumn)

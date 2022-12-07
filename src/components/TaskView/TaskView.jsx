@@ -73,10 +73,6 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
     closeTaskViewModal();
   }
 
-  function handleCancelRemoveTaskClick() {
-    setDeleteTask(false);
-  }
-
   function handleDeleteTaskButtonClick() {
     const confirmData = {
       isOpen: true,
@@ -84,9 +80,8 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
         text: 'Delete this task?',
         color: '#ea5555'
       },
-      message:
-        "Are you sure you want to delete the 'Review early feedback and plan next steps for roadmap' board? This action will remove all columns and tasks and cannot be reversed. ",
-      onRequestClose: handleCancelRemoveTaskClick,
+      message: `Are you sure you want to delete the '${boardState?.currentTask?.title}' task? This action will remove all data and subtasks and cannot be reversed. `,
+      onRequestClose: () => confirmDispath({ type: 'RESET' }),
       onConfirm: handleRemoveTaskClick,
       buttons: {
         approve: {
