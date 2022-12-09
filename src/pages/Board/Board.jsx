@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState, useContext, useLayoutEffect, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
@@ -12,9 +12,9 @@ import { useBoard } from './../../api/board';
 import { UilPen } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import Task from '../../components/Task/Task';
-import './board.scss';
 import { ThemeContext } from './../../context/ThemeContext';
 import { ConfirmContext } from './../../context/ConfirmContext';
+import './board.scss';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -23,10 +23,24 @@ function Board(props) {
   const [updateColumnModalOpen, setUpdateColumnModalOpen] = useState(false);
   const [isAllColumnChecked, setAsAllColumnChecked] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark } = useContext(ThemeContext);
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const { removeColumnList, updateColumns } = useBoard();
+  const hasRenderedTaskListRef = useRef(false);
+
+  function eventControl(event, info) {
+    if (event.type === 'mousemove' || event.type === 'touchmove') {
+      setIsDragging(true);
+    }
+
+    if (event.type === 'mouseup' || event.type === 'touchend') {
+      setTimeout(() => {
+        setIsDragging(false);
+      }, 100);
+    }
+  }
 
   // Modal state functions
   function openAddColumnModal() {
@@ -193,6 +207,14 @@ function Board(props) {
     }
   }
 
+  useEffect(() => {
+    hasRenderedTaskListRef.current = false;
+    const timeout = setTimeout(() => {
+      hasRenderedTaskListRef.current = true;
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [boardState.currentBoard.columnList]);
+
   return (
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
@@ -288,7 +310,13 @@ function Board(props) {
                         {...provided.droppableProps}
                         ref={provided.innerRef}>
                         {taskList?.map((task, index) => (
-                          <Draggable key={task.id} draggableId={task.id} index={index}>
+                          <Draggable
+                            bounds="parent"
+                            key={task.id}
+                            draggableId={task.id}
+                            index={index}
+                            onDrag={eventControl}
+                            onStop={eventControl}>
                             {(provided, snapshot) => (
                               <div
                                 className="task-container"
@@ -297,13 +325,17 @@ function Board(props) {
                                 {...provided.dragHandleProps}
                                 style={{
                                   userSelect: 'none',
-                                  padding: '6px 3px',
+                                  padding: '5px 5px 0 0',
                                   ...provided.draggableProps.style
                                 }}>
-                                <Item index={index}>
+                                <Item index={index} hasRenderedTaskListRef={hasRenderedTaskListRef}>
                                   <Task
+                                    dark={dark}
                                     style={{
-                                      backgroundColor: snapshot.isDragging ? 'rgba(0,0,0,0.1)' : ''
+                                      transform:
+                                        snapshot.isDragging && !snapshot.dropAnimation
+                                          ? 'rotate(3deg)'
+                                          : 'rotate(0)'
                                     }}
                                     task={task}
                                     onClick={handleTaskClick}
@@ -333,7 +365,7 @@ function Board(props) {
   );
 }
 
-function Item({ children, index }) {
+function Item({ children, index, hasRenderedTaskListRef }) {
   const variants = {
     hidden: (i) => ({
       opacity: 0,
@@ -353,7 +385,7 @@ function Item({ children, index }) {
   return (
     <motion.div
       variants={variants}
-      initial="hidden"
+      initial={hasRenderedTaskListRef.current ? 'visible' : 'hidden'}
       animate="visible"
       custom={index}
       exit="removed">

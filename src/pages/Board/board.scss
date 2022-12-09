@@ -9,8 +9,7 @@
   min-height: calc(100vh - 101.2px);
   .board-content {
     display: flex;
-    gap: 20px;
-    padding: 30px;
+    padding: 10px;
   }
   .board-column-actions-container {
     max-height: 50px;
@@ -72,8 +71,7 @@
   }
   .column {
     min-height: 65vh;
-    min-width: 300px;
-    width: 300px;
+    min-width: 350px;
     transition: width, min-width 400ms ease-in-out;
     .title {
       display: flex;
@@ -106,12 +104,6 @@
       margin-bottom: 20px;
       min-height: 100%;
       border-radius: 5px;
-
-      .task-container {
-        display: inline-block;
-        width: fit-content;
-        height: fit-content;
-      }
 
       &.empty {
         border: 2px dashed $text-static;
