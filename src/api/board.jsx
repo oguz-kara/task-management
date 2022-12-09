@@ -3,7 +3,6 @@ import { BoardContext } from '../context/BoardContext';
 import { AuthContext } from '../context/AuthContext';
 import { useSetDoc } from '../hooks/useSetDoc';
 import { useGetDoc } from '../hooks/useGetDoc';
-import { serverTimestamp } from 'firebase/firestore';
 
 export function useBoard() {
   const { boardState, dispatch: dispatchBoard } = useContext(BoardContext);
@@ -258,13 +257,16 @@ export function useBoard() {
   }
 
   async function updateColumn(updatedColumn) {
+    console.log({ updatedColumn });
     const updatedBoard = {
       ...boardState.currentBoard,
       columnList: boardState?.currentBoard?.columnList.map((column) => {
-        if (column.id === updatedColumn.id) return updatedColumn;
+        if (column.id === updatedColumn.id) return { ...updatedColumn, selected: false };
         return column;
       })
     };
+
+    console.log({ updatedBoard });
 
     const updatedBoardList = {
       boardList: [
@@ -276,6 +278,8 @@ export function useBoard() {
         })
       ]
     };
+
+    console.log({ updatedBoardList });
 
     return refetchSet(updatedBoardList)
       .then(() => {

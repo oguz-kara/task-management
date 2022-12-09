@@ -193,10 +193,6 @@ function Board(props) {
     }
   }
 
-  useEffect(() => {
-    console.log({ boardState });
-  }, [boardState]);
-
   return (
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
@@ -264,9 +260,9 @@ function Board(props) {
         <div className="board-content">
           <DragDropContext
             onDragEnd={(result) =>
-              onDragEnd(result, boardState?.currentBoard.columnList, dispatch)
+              onDragEnd(result, boardState?.currentBoard?.columnList, dispatch)
             }>
-            {boardState.currentBoard &&
+            {boardState?.currentBoard &&
               boardState.currentBoard?.columnList?.map(({ id, taskList, color, name }) => (
                 <div className="column">
                   <div className="title">
@@ -324,7 +320,7 @@ function Board(props) {
                 </div>
               ))}
           </DragDropContext>
-          {boardState.currentBoard.columnList && (
+          {boardState?.currentBoard?.columnList && (
             <button
               className={`create-new-column text background ${dark ? 'dark' : 'light'}`}
               onClick={openAddColumnModal}>

@@ -22,14 +22,12 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
     e.preventDefault();
     if (type === 'update-column') {
       const selectedColumn = boardState.currentBoard.columnList.find((column) => column.selected);
-      const getSelectedColumn = boardState.currentBoard.columnList.find(
-        (column) => column.id === selectedColumn?.id
-      );
       const updatedColumn = {
-        ...getSelectedColumn,
+        ...selectedColumn,
         name: name,
-        color: color.hex
+        color: { hex: color }
       };
+
       updateColumn
         .invoke(updatedColumn)
         .then(() => {
@@ -40,7 +38,7 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
         .catch((err) => setError(err.message));
     }
 
-    if ('add-column') {
+    if (type === 'add-column') {
       const newColumn = {
         id: uniqid(),
         name,
@@ -70,7 +68,7 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
         (column) => column.id === selectedColumn?.id
       );
       setName(getSelectedColumn?.name);
-      setColor(getSelectedColumn?.color);
+      setColor({ hex: getSelectedColumn?.color });
     }
   }, [boardState]);
 

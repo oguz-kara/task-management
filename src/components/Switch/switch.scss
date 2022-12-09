@@ -19,7 +19,7 @@
 
 .switch-container[data-ison='true'] {
   justify-content: flex-end;
-  background-color: black;
+  background-color: $primary;
   .switch-ball {
     background-color: white;
   }
