@@ -6,10 +6,8 @@ import { BoardContext } from './../../context/BoardContext';
 import { useBoard } from '../../api/board';
 import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
-import Select from '../../components/Select/Select';
 import { ConfirmContext } from './../../context/ConfirmContext';
 import './task-view.scss';
-import { convertToSelectData } from './../../helpers/convert-to-format';
 
 function countDoneSubtasks(task) {
   let counter = 0;

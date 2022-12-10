@@ -1,13 +1,10 @@
 import uniqid from 'uniqid';
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { UilMultiply } from '@iconscout/react-unicons';
-import './new-task.scss';
-
 import { useBoard } from '../../api/board';
 import { BoardContext } from './../../context/BoardContext';
 import Loader from './../Loader/Loader';
-import Select from './../Select/Select';
-import { convertToSelectData } from './../../helpers/convert-to-format';
+import './new-task.scss';
 
 function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
