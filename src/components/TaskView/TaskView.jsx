@@ -6,9 +6,10 @@ import { BoardContext } from './../../context/BoardContext';
 import { useBoard } from '../../api/board';
 import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
-import './task-view.scss';
-import ConfirmAction from './../ConfirmAction/ConfirmAction';
+import Select from '../../components/Select/Select';
 import { ConfirmContext } from './../../context/ConfirmContext';
+import './task-view.scss';
+import { convertToSelectData } from './../../helpers/convert-to-format';
 
 function countDoneSubtasks(task) {
   let counter = 0;
@@ -64,6 +65,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
       .then(({ task }) => {
         dispatch({ type: 'SET_CURRENT_TASK', payload: task });
         closeTaskViewModal();
+        console.log({ task });
       })
       .catch((err) => console.log(err));
   }
@@ -163,13 +165,11 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
         <select
           name="status"
           id="status"
-          value={boardState?.currentTask.status}
-          onChange={(e) => handleStatusChange(e.target.value)}
+          value={boardState?.currentTask?.status}
+          onChange={({ target: { value } }) => handleStatusChange(value)}
           className="text-static">
-          {boardState.currentBoard?.columnList?.map((column) => (
-            <option key={column.id} value={column.name}>
-              {column.name}
-            </option>
+          {boardState?.currentBoard?.columnList.map((item) => (
+            <option value={item.name}>{item.name}</option>
           ))}
         </select>
       </div>

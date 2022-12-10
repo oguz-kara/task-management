@@ -298,8 +298,6 @@ export function useBoard() {
       columnList: columnList
     };
 
-    console.log({ columnList });
-
     const updatedBoardList = {
       boardList: [
         ...user?.userData?.boardList.map((board) => {
@@ -310,8 +308,6 @@ export function useBoard() {
         })
       ]
     };
-
-    console.log({ updatedBoardList });
 
     return refetchSet(updatedBoardList)
       .then(() => {

@@ -16,7 +16,6 @@ import NewBoard from '../NewBoard/NewBoard';
 import Modal from '../Modal/Modal';
 import { AuthContext } from './../../context/AuthContext';
 import { useBoard } from './../../api/board';
-import ConfirmAction from './../ConfirmAction/ConfirmAction';
 import Loader from '../Loader/Loader';
 import { ConfirmContext } from './../../context/ConfirmContext';
 

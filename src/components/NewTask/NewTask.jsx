@@ -6,6 +6,8 @@ import './new-task.scss';
 import { useBoard } from '../../api/board';
 import { BoardContext } from './../../context/BoardContext';
 import Loader from './../Loader/Loader';
+import Select from './../Select/Select';
+import { convertToSelectData } from './../../helpers/convert-to-format';
 
 function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const [title, setTitle] = useState('');
@@ -194,14 +196,12 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       <div className="input-container">
         <label htmlFor="status">Status</label>
         <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          id="status"
           name="status"
-          id="status">
-          {boardState?.currentBoard?.columnList?.map((column) => (
-            <option key={column.id} value={column.name}>
-              {column.name}
-            </option>
+          value={status}
+          onChange={({ target: { value } }) => setStatus(value)}>
+          {boardState?.currentBoard?.columnList.map((item) => (
+            <option value={item.name}>{item.name}</option>
           ))}
         </select>
       </div>

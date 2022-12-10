@@ -1,0 +1,12 @@
+.react-select {
+  input {
+    outline: none !important;
+    &:focus {
+      outline: none !important;
+    }
+
+    & * {
+      color: black !important;
+    }
+  }
+}

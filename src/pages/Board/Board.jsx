@@ -23,24 +23,11 @@ function Board(props) {
   const [updateColumnModalOpen, setUpdateColumnModalOpen] = useState(false);
   const [isAllColumnChecked, setAsAllColumnChecked] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark } = useContext(ThemeContext);
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const { removeColumnList, updateColumns } = useBoard();
   const hasRenderedTaskListRef = useRef(false);
-
-  function eventControl(event, info) {
-    if (event.type === 'mousemove' || event.type === 'touchmove') {
-      setIsDragging(true);
-    }
-
-    if (event.type === 'mouseup' || event.type === 'touchend') {
-      setTimeout(() => {
-        setIsDragging(false);
-      }, 100);
-    }
-  }
 
   // Modal state functions
   function openAddColumnModal() {
@@ -207,13 +194,21 @@ function Board(props) {
     }
   }
 
+  function onDragStart(result) {
+    if (!(Object.keys(boardState?.currentTask).length > 0)) {
+      const task = boardState?.currentBoard.columnList
+        ?.map(({ taskList }) => taskList)
+        .flat(1)
+        .find((task) => task.id === result.draggableId);
+      console.log({ task });
+
+      if (task) dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+    }
+  }
+
   useEffect(() => {
-    hasRenderedTaskListRef.current = false;
-    const timeout = setTimeout(() => {
-      hasRenderedTaskListRef.current = true;
-    }, 100);
-    return () => clearTimeout(timeout);
-  }, [boardState.currentBoard.columnList]);
+    console.log({ currentTask: boardState.currentTask });
+  }, [boardState.currentTask, boardState.currentBoard]);
 
   return (
     <>
@@ -281,6 +276,7 @@ function Board(props) {
         </motion.div>
         <div className="board-content">
           <DragDropContext
+            onDragStart={onDragStart}
             onDragEnd={(result) =>
               onDragEnd(result, boardState?.currentBoard?.columnList, dispatch)
             }>
@@ -314,9 +310,7 @@ function Board(props) {
                             bounds="parent"
                             key={task.id}
                             draggableId={task.id}
-                            index={index}
-                            onDrag={eventControl}
-                            onStop={eventControl}>
+                            index={index}>
                             {(provided, snapshot) => (
                               <div
                                 className="task-container"
@@ -325,10 +319,12 @@ function Board(props) {
                                 {...provided.dragHandleProps}
                                 style={{
                                   userSelect: 'none',
-                                  padding: '5px 5px 0 0',
+                                  paddingTop: '5px',
                                   ...provided.draggableProps.style
                                 }}>
-                                <Item index={index} hasRenderedTaskListRef={hasRenderedTaskListRef}>
+                                <Item
+                                  index={index}
+                                  condition={Object.keys(boardState?.currentTask).length > 0}>
                                   <Task
                                     dark={dark}
                                     style={{
@@ -365,7 +361,7 @@ function Board(props) {
   );
 }
 
-function Item({ children, index, hasRenderedTaskListRef }) {
+function Item({ children, index, condition }) {
   const variants = {
     hidden: (i) => ({
       opacity: 0,
@@ -385,8 +381,8 @@ function Item({ children, index, hasRenderedTaskListRef }) {
   return (
     <motion.div
       variants={variants}
-      initial={hasRenderedTaskListRef.current ? 'visible' : 'hidden'}
-      animate="visible"
+      initial={condition ? '' : 'hidden'}
+      animate={condition ? '' : 'visible'}
       custom={index}
       exit="removed">
       {children}

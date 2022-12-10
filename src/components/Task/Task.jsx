@@ -7,8 +7,7 @@ const Task = forwardRef(
     <li
       ref={ref}
       key={task.id}
-      // onClick={() => onClick && onClick(task)}
-      onDoubleClick={() => onClick && onClick(task)}
+      onClick={() => onClick && onClick(task)}
       className={`task text background-2 ${dark ? 'light-shadow' : 'dark-shadow'}`}
       {...rest}>
       <div className="task-header">
