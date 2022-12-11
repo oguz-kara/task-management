@@ -166,7 +166,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
           value={boardState?.currentTask?.status}
           onChange={({ target: { value } }) => handleStatusChange(value)}
           className="text-static">
-          {boardState?.currentBoard?.columnList.map((item) => (
+          {boardState?.currentBoard?.columnList?.map((item) => (
             <option value={item.name}>{item.name}</option>
           ))}
         </select>

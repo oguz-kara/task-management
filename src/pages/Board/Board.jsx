@@ -15,7 +15,6 @@ import Task from '../../components/Task/Task';
 import { ThemeContext } from './../../context/ThemeContext';
 import { ConfirmContext } from './../../context/ConfirmContext';
 import './board.scss';
-import useScrollPos from './../../hooks/useScrollPos';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -29,7 +28,6 @@ function Board(props) {
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const { removeColumnList, updateColumns } = useBoard();
   const boardRef = useRef(null);
-  const { scrollPos, setElement } = useScrollPos(boardRef);
 
   // Modal state functions
   function openAddColumnModal() {
@@ -209,10 +207,6 @@ function Board(props) {
     }
   }
 
-  useEffect(() => {
-    setElement(boardRef);
-  }, [boardRef]);
-
   return (
     <>
       <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
@@ -283,7 +277,7 @@ function Board(props) {
               onDragEnd(result, boardState?.currentBoard?.columnList, dispatch)
             }>
             {boardState?.currentBoard &&
-              boardState.currentBoard?.columnList?.map(({ id, taskList, color, name }) => (
+              boardState?.currentBoard?.columnList?.map(({ id, taskList, color, name }) => (
                 <div className="column">
                   <div className="title">
                     <Checkbox

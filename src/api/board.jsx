@@ -73,7 +73,7 @@ export function useBoard() {
     console.log({ task, prevStatus, newStatus });
     const updatedBoard = {
       ...boardState.currentBoard,
-      columnList: boardState.currentBoard.columnList.map((column) => {
+      columnList: boardState?.currentBoard?.columnList?.map((column) => {
         if (column.name === prevStatus)
           return {
             ...column,
@@ -163,7 +163,7 @@ export function useBoard() {
     console.log({ taskToRemove });
     const updatedBoard = {
       ...boardState.currentBoard,
-      columnList: boardState.currentBoard.columnList.map((column) => {
+      columnList: boardState?.currentBoard?.columnList?.map((column) => {
         if (column.name === taskToRemove.status)
           return {
             ...column,
@@ -222,7 +222,7 @@ export function useBoard() {
   }
 
   async function addColumn(newColumn) {
-    const isColumnExists = boardState.currentBoard.columnList.find(
+    const isColumnExists = boardState?.currentBoard?.columnList?.find(
       (column) => column.name === newColumn.name
     );
     if (isColumnExists) throw new Error('Column name is already exists!');
@@ -260,7 +260,7 @@ export function useBoard() {
     console.log({ updatedColumn });
     const updatedBoard = {
       ...boardState.currentBoard,
-      columnList: boardState?.currentBoard?.columnList.map((column) => {
+      columnList: boardState?.currentBoard?.columnList?.map((column) => {
         if (column.id === updatedColumn.id) return { ...updatedColumn, selected: false };
         return column;
       })
@@ -322,7 +322,7 @@ export function useBoard() {
   async function removeColumnList() {
     const updatedBoard = {
       ...boardState.currentBoard,
-      columnList: boardState.currentBoard.columnList.filter((column) => !column.selected)
+      columnList: boardState?.currentBoard?.columnList?.filter((column) => !column.selected)
     };
 
     const updatedBoardList = {
@@ -400,8 +400,8 @@ export function useBoard() {
   async function removeBoard(boardId) {
     const updatedBoardList = {
       boardList: [
-        ...user?.userData?.boardList.filter((board) => {
-          if (board.id === boardId) {
+        ...user?.userData?.boardList.filter(({ id }) => {
+          if (id === boardId) {
             return false;
           }
           return true;

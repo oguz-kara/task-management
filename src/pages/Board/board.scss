@@ -74,6 +74,7 @@
 
   .column {
     min-height: 65vh;
+    max-width: 350px;
     min-width: 350px;
     transition: width, min-width 400ms ease-in-out;
     .title {

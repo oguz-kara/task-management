@@ -21,7 +21,9 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
   function handleSubmit(e) {
     e.preventDefault();
     if (type === 'update-column') {
-      const selectedColumn = boardState.currentBoard.columnList.find((column) => column.selected);
+      const selectedColumn = boardState?.currentBoard?.columnList?.find(
+        (column) => column.selected
+      );
       const updatedColumn = {
         ...selectedColumn,
         name: name,
@@ -63,7 +65,9 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
       boardState.currentBoard &&
       Object.keys(boardState.currentBoard).length > 0
     ) {
-      const selectedColumn = boardState.currentBoard.columnList.find((column) => column.selected);
+      const selectedColumn = boardState?.currentBoard?.columnList?.find(
+        (column) => column.selected
+      );
       const getSelectedColumn = boardState.currentBoard.columnList.find(
         (column) => column.id === selectedColumn?.id
       );

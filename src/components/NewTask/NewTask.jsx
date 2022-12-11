@@ -197,7 +197,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           name="status"
           value={status}
           onChange={({ target: { value } }) => setStatus(value)}>
-          {boardState?.currentBoard?.columnList.map((item) => (
+          {boardState?.currentBoard?.columnList?.map((item) => (
             <option value={item.name}>{item.name}</option>
           ))}
         </select>

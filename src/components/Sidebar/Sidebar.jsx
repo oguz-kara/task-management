@@ -70,7 +70,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
       .then(() => {
         closeDeleteBoardModal();
       })
-      .then((err) => console.log({ err }));
+      .then((err) => console.log(err));
   }
 
   function handleDeleteBoardButtonClick() {
@@ -177,9 +177,5 @@ function Sidebar({ boardList = [], closeSidebar }) {
     </>
   );
 }
-
-Sidebar.propTypes = {
-  boardList: PropTypes.array
-};
 
 export default Sidebar;
