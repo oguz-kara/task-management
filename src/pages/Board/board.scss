@@ -7,16 +7,12 @@
   position: relative;
   overflow: auto;
   min-height: calc(100vh - 101.2px);
-  .board-content {
-    display: flex;
-    padding: 10px;
-    column-gap: 5px;
-  }
+
   .board-column-actions-container {
     max-height: 50px;
-    overflow: hidden;
+    overflow: hidden !important;
     transition: all 150ms ease-in;
-    padding: 10px 20px;
+    padding: 10px;
     display: flex;
     align-items: center;
     transform-origin: top;
@@ -68,8 +64,14 @@
 
   .board-column-actions-container.active {
     min-height: 50px;
-    overflow: auto;
   }
+
+  .board-content {
+    display: flex;
+    padding: 10px;
+    column-gap: 5px;
+  }
+
   .column {
     min-height: 65vh;
     min-width: 350px;

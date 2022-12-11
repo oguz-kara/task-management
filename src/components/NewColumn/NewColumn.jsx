@@ -25,7 +25,7 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
       const updatedColumn = {
         ...selectedColumn,
         name: name,
-        color: { hex: color }
+        color: color.hex
       };
 
       updateColumn

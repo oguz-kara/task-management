@@ -37,7 +37,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
         <div className="actions">
           <button
             onClick={openModal}
-            className="new-task-button primary-background"
+            className="new-task-button bg-primary"
             disabled={!(Object.keys(boardState?.currentBoard || {}).length > 0)}>
             + add new task
           </button>

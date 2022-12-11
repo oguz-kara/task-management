@@ -14,11 +14,11 @@
   }
 
   .background {
-    background-color: $background-light-2;
+    background-color: $background-light-2 !important;
   }
 
   .background-2 {
-    background-color: $background-light;
+    background-color: $background-light !important;
   }
 
   .text-static {
@@ -52,7 +52,7 @@
   color: $warning !important;
 }
 
-.primary-background {
+.bg-primary {
   background-color: $primary;
 }
 

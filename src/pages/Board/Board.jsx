@@ -15,6 +15,7 @@ import Task from '../../components/Task/Task';
 import { ThemeContext } from './../../context/ThemeContext';
 import { ConfirmContext } from './../../context/ConfirmContext';
 import './board.scss';
+import useScrollPos from './../../hooks/useScrollPos';
 
 function Board(props) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
@@ -27,7 +28,8 @@ function Board(props) {
   const { dark } = useContext(ThemeContext);
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const { removeColumnList, updateColumns } = useBoard();
-  const hasRenderedTaskListRef = useRef(false);
+  const boardRef = useRef(null);
+  const { scrollPos, setElement } = useScrollPos(boardRef);
 
   // Modal state functions
   function openAddColumnModal() {
@@ -131,6 +133,7 @@ function Board(props) {
   }
 
   function handleAllColumnChecked(e) {
+    console.log({ checked: e.target.checked });
     setAsAllColumnChecked(e.target.checked);
     dispatch({
       type: 'SET_ALL_COLUMN_SELECTED_BY_VALUE',
@@ -207,8 +210,8 @@ function Board(props) {
   }
 
   useEffect(() => {
-    console.log({ currentTask: boardState.currentTask });
-  }, [boardState.currentTask, boardState.currentBoard]);
+    setElement(boardRef);
+  }, [boardRef]);
 
   return (
     <>
@@ -233,7 +236,7 @@ function Board(props) {
         onConfirm={handleColumnDelete}
         message="Are you sure to remove column(s)?"
       />
-      <div className="board text-static" {...props}>
+      <div ref={boardRef} className="board text-static" {...props}>
         <motion.div
           animate={
             isColumnSelected() ? { display: 'flex', opacity: 1 } : { display: 'none', opacity: 0 }
@@ -243,7 +246,6 @@ function Board(props) {
             isColumnSelected() ? 'active' : ''
           }`}>
           <Checkbox
-            className="background"
             styles={{
               labelStyles: {
                 fontSize: '12px',
