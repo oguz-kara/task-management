@@ -31,6 +31,19 @@ function Board(props) {
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const boardRef = useRef(null);
 
+  const getValueByColumnId = (columnList, id) => {
+    const column = columnList?.find((column) => column.id === id);
+    return column ? column.selected : false;
+  };
+
+  const isColumnSelected = (columnList) => {
+    return columnList?.find((column) => column.selected) || false;
+  };
+
+  const countSelectedColumn = (columnList) => {
+    return columnList?.filter(({ selected }) => selected).length || 0;
+  };
+
   const handleTaskClick = (task) => {
     setTaskViewModalOpen(true);
     dispatch({ type: 'SET_CURRENT_TASK', payload: task });
@@ -278,24 +291,6 @@ function Board(props) {
       </div>
     </>
   );
-}
-
-function getValueByColumnId(columnList, id) {
-  const column = columnList?.find((column) => column.id === id);
-  if (column) return column.selected;
-  return false;
-}
-
-function isColumnSelected(columnList) {
-  return columnList?.find((column) => column.selected) || false;
-}
-
-function countSelectedColumn(columnList) {
-  let counter = 0;
-  columnList?.forEach((column) => {
-    if (column.selected) counter++;
-  });
-  return counter;
 }
 
 export default Board;

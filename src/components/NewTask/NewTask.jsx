@@ -16,11 +16,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const { boardState, dispatch } = useContext(BoardContext);
 
   const isNewSubtaskAddable = () => {
-    let addable = true;
-    subtaskList.forEach((subtask) => {
-      if (subtask.description === '') addable = false;
-    });
-    return addable;
+    return !subtaskList.some(({ description }) => description === '');
   };
 
   const handleAddSubtask = () => {

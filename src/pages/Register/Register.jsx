@@ -12,14 +12,13 @@ function Register() {
   const [passwordAgain, setPasswordAgain] = useState('');
 
   function isPasswordValid() {
-    let isValid = true;
     if (password !== '' && passwordAgain !== '') {
       if (password !== passwordAgain) {
-        isValid = false;
         setError('Passwords do not match!');
+        return false;
       }
     }
-    return isValid;
+    return true;
   }
 
   function isEmailAlreadyInUse(message) {

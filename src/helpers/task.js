@@ -1,7 +1,3 @@
 export const countDoneSubtasks = (task) => {
-  let counter = 0;
-  task?.subtasks?.forEach((item) => {
-    if (item.done === true) counter++;
-  });
-  return counter;
+  return task?.subtasks?.filter(({ done }) => done).length || 0;
 };

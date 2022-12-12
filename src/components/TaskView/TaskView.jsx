@@ -7,15 +7,8 @@ import { useBoard } from '../../hooks/useBoard';
 import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
 import { ConfirmContext } from './../../context/ConfirmContext';
+import { countDoneSubtasks } from './../../helpers/task';
 import './task-view.scss';
-
-function countDoneSubtasks(task) {
-  let counter = 0;
-  task?.subtasks?.forEach((item) => {
-    if (item.done === true) counter++;
-  });
-  return counter;
-}
 
 function getSubTaskCount(task) {
   return task?.subtasks?.length;
@@ -135,7 +128,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
       </div>
       <p className="text-static">{boardState.currentTask?.description}</p>
       <div className="subtasks">
-        {getSubTaskCount() && (
+        {getSubTaskCount(boardState?.currentTask) && (
           <h4>
             Subtasks ({countDoneSubtasks(boardState?.currentTask)} of{' '}
             {getSubTaskCount(boardState?.currentTask)})
