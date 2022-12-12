@@ -1,5 +1,6 @@
+import { countDoneSubtasks } from '../../helpers/task';
 import { forwardRef } from 'react';
-import { getDateOfCreation } from '../../helpers/format-date';
+import { getDateOfCreation } from '../../helpers/formatDate';
 import './task.scss';
 
 const Task = forwardRef(
@@ -20,13 +21,5 @@ const Task = forwardRef(
     </li>
   )
 );
-
-function countDoneSubtasks(task) {
-  let counter = 0;
-  task?.subtasks?.forEach((item) => {
-    if (item.done === true) counter++;
-  });
-  return counter;
-}
 
 export default Task;

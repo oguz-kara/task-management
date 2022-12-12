@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import './modal.scss';
+import { useCallback } from 'react';
 import { motion } from 'framer-motion';
+import './modal.scss';
 
-function Modal({ isOpen, onAfterOpen, onRequestClose, children }) {
+function Modal({ isOpen, onRequestClose, children }) {
   const opened = {
     opacity: 1,
     translateY: 0,
@@ -15,19 +15,9 @@ function Modal({ isOpen, onAfterOpen, onRequestClose, children }) {
     pointerEvents: 'none'
   };
 
-  function handleModalClick(e) {
+  const handleModalClick = useCallback(() => {
     onRequestClose();
-  }
-
-  function checkChildren(children) {
-    if (React.Children.count(children) > 1 || React.Children.count(children) < 1) {
-      throw new Error('Modal cannot take more then one children');
-    }
-  }
-
-  useEffect(() => {
-    checkChildren(children);
-  }, [children]);
+  }, []);
 
   return (
     <div

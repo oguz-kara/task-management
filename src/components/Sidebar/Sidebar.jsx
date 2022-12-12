@@ -1,10 +1,8 @@
-import PropTypes from 'prop-types';
-import { useContext, useState } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { UilEdit } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import taskManagerLogoLight from '../../assets/images/task_manager_light.png';
 import taskManagerLogoDark from '../../assets/images/task_manager_dark.png';
-import './side-bar.scss';
 import Switch from '../Switch/Switch';
 import { UilClipboardAlt } from '@iconscout/react-unicons';
 import { UilBrightnessHalf } from '@iconscout/react-unicons';
@@ -18,94 +16,78 @@ import { AuthContext } from './../../context/AuthContext';
 import { useBoard } from './../../api/board';
 import Loader from '../Loader/Loader';
 import { ConfirmContext } from './../../context/ConfirmContext';
+import './side-bar.scss';
 
 function Sidebar({ boardList = [], closeSidebar }) {
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [newBoardModal, setNewBoardModal] = useState(false);
   const [updateBoardModal, setUpdateBoardModal] = useState(false);
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark, dispatch: themeDispatch } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
-  const [deleteBoard, setDeleteBoard] = useState(false);
   const { removeBoard } = useBoard();
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openUpdateBoardModal() {
-    setUpdateBoardModal(true);
-  }
-
-  function closeUpdateBoardModal() {
-    setUpdateBoardModal(false);
-  }
-
-  function openDeleteBoardModal() {
-    setDeleteBoard(true);
-  }
-
-  function closeDeleteBoardModal() {
-    setDeleteBoard(false);
-  }
-
-  function handleBoardClick(board) {
-    if (boardState.currentBoard.id !== board.id) {
-      dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
-      dispatch({ type: 'SET_CURRENT_TASK', payload: {} });
-    }
-  }
-
-  function handleUpdateBoardClick() {
-    openUpdateBoardModal();
-  }
-
-  function handleRemoveBoardClick() {
-    removeBoard
-      .invoke(boardState.currentBoard.id)
-      .then(() => {
-        closeDeleteBoardModal();
-      })
-      .then((err) => console.log(err));
-  }
-
-  function handleDeleteBoardButtonClick() {
-    const confirmData = {
-      isOpen: true,
-      title: {
-        text: 'Delete this board?',
-        color: '#ea5555'
-      },
-      message: `Are you sure you want to delete the '${boardState.currentBoard.name}' board? This action will remove all columns and tasks and cannot be reversed. `,
-      onConfirm: handleRemoveBoardClick,
-      onRequestClose: () => confirmDispatch({ type: 'RESET' }),
-      buttons: {
-        approve: {
-          text: 'Delete',
-          className: 'bg-danger text',
-          style: { color: '#fff' }
-        },
-        reject: {
-          text: 'Cancel',
-          backgroundColor: null,
-          className: 'primary-color'
-        }
+  const handleBoardClick = useCallback(
+    (board) => {
+      if (boardState.currentBoard.id !== board.id) {
+        dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
+        dispatch({ type: 'SET_CURRENT_TASK', payload: {} });
       }
-    };
-    confirmDispatch({ type: 'CONFIRM', payload: confirmData });
-  }
+    },
+    [boardState.currentBoard]
+  );
+
+  const handleRemoveBoardClick = useCallback(
+    async (board) => {
+      try {
+        await removeBoard.invoke(board.id);
+      } catch (err) {
+        console.log({ err });
+      }
+    },
+    [boardState.currentBoard]
+  );
+
+  const handleDeleteBoardButtonClick = useCallback(
+    (board) => {
+      const confirmData = {
+        isOpen: true,
+        title: {
+          text: 'Delete this board?',
+          color: '#ea5555'
+        },
+        message: `Are you sure you want to delete the '${board.name}' board? This action will remove all columns and tasks and cannot be reversed. `,
+        onConfirm: () => handleRemoveBoardClick(board),
+        onRequestClose: () => confirmDispatch({ type: 'RESET' }),
+        buttons: {
+          approve: {
+            text: 'Delete',
+            className: 'bg-danger text',
+            style: { color: '#fff' }
+          },
+          reject: {
+            text: 'Cancel',
+            backgroundColor: null,
+            className: 'primary-color'
+          }
+        }
+      };
+      confirmDispatch({ type: 'CONFIRM', payload: confirmData });
+    },
+    [boardState.currentBoard]
+  );
 
   return (
     <>
-      <Modal type="add-board" isOpen={modalIsOpen} onRequestClose={closeModal}>
-        <NewBoard closeModal={closeModal} />
+      <Modal type="add-board" isOpen={newBoardModal} onRequestClose={() => setNewBoardModal(false)}>
+        <NewBoard closeModal={() => setNewBoardModal(false)} />
       </Modal>
-      <Modal isOpen={updateBoardModal} onRequestClose={closeUpdateBoardModal}>
-        <NewBoard type="update-board" title="update board" closeModal={closeUpdateBoardModal} />
+      <Modal isOpen={updateBoardModal} onRequestClose={() => setUpdateBoardModal(false)}>
+        <NewBoard
+          type="update-board"
+          title="update board"
+          closeModal={() => setUpdateBoardModal(false)}
+        />
       </Modal>
       <aside className={`sidebar ${dark ? 'line-light' : 'line-dark'}`}>
         <div className="top">
@@ -132,10 +114,12 @@ function Sidebar({ boardList = [], closeSidebar }) {
                         <span className="board-name text-static">{board.name}</span>
                       </div>
                       <div className="board-actions">
-                        <button className="text" onClick={handleUpdateBoardClick}>
+                        <button className="text" onClick={() => setUpdateBoardModal(true)}>
                           <UilEdit />
                         </button>
-                        <button className="text" onClick={handleDeleteBoardButtonClick}>
+                        <button
+                          className="text"
+                          onClick={() => handleDeleteBoardButtonClick(board)}>
                           <UilTimesCircle />
                         </button>
                       </div>
@@ -143,7 +127,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
                   </li>
                 ))}
             </ul>
-            <button onClick={openModal}>
+            <button onClick={() => setNewBoardModal(true)}>
               <span className="icon">
                 <UilClipboardAlt className="text-static" />
               </span>

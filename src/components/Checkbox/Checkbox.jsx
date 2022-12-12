@@ -1,8 +1,7 @@
 import './checkbox.scss';
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { UilCheck } from '@iconscout/react-unicons';
-import { UilMinus } from '@iconscout/react-unicons';
 
 function Checkbox({
   label,
@@ -21,19 +20,19 @@ function Checkbox({
 }) {
   const [innerState, setInnerState] = useState(false);
 
-  const toggleCheckbox = () => {
+  const toggleCheckbox = useCallback(() => {
     setInnerState((prev) => !prev);
-  };
+  }, []);
 
-  const getChecked = () => {
+  const getChecked = useCallback(() => {
     if (checked === undefined) return innerState;
     return checked;
-  };
+  }, [checked]);
 
-  const getOnChange = () => {
+  const getOnChange = useCallback(() => {
     if (onChange === undefined) return toggleCheckbox;
     return onChange;
-  };
+  }, [onChange]);
 
   return (
     <label style={styles.containerStyles || {}} className="container" name={name} htmlFor={name}>

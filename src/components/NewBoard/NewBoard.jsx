@@ -1,70 +1,43 @@
-import PropTypes from 'prop-types';
-import uniqid from 'uniqid';
-import { doc, setDoc } from 'firebase/firestore';
-import { useState, useContext, useEffect } from 'react';
-import './new-board.scss';
-import { AuthContext } from '../../context/AuthContext';
-import { db } from '../../firebase';
-import { useGetDoc } from './../../hooks/useGetDoc';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { BoardContext } from './../../context/BoardContext';
 import { useBoard } from './../../api/board';
 import Loader from './../Loader/Loader';
+import { newBoardSkeleton } from '../../data/newBoardSkeleton';
+import './new-board.scss';
 
 function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
   const [name, setName] = useState('');
   const { boardState } = useContext(BoardContext);
   const { addBoard, updateBoard } = useBoard();
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (type === 'update-board') {
-      const updatedBoard = {
-        ...boardState.currentBoard,
-        name: name
-      };
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (type === 'update-board') {
+        const updatedBoard = {
+          ...boardState.currentBoard,
+          name: name
+        };
 
-      updateBoard
-        .invoke(updatedBoard)
-        .then(() => {
+        try {
+          await updateBoard.invoke(updatedBoard);
           closeModal();
-        })
-        .catch((err) => console.log({ err }));
-    } else {
-      const newBoard = {
-        id: uniqid(),
-        name,
-        columnList: [
-          {
-            id: 1,
-            name: 'todo',
-            color: '#48C0E2',
-            taskList: []
-          },
-          {
-            id: 2,
-            name: 'doing',
-            color: 'rebeccapurple',
-
-            taskList: []
-          },
-          {
-            id: 3,
-            name: 'done',
-            color: 'green',
-
-            taskList: []
-          }
-        ]
-      };
-      addBoard
-        .invoke(newBoard)
-        .then(() => {
+        } catch (err) {
+          console.log({ err });
+        }
+      } else {
+        try {
+          const newBoard = newBoardSkeleton(name);
+          await addBoard.invoke(newBoard);
           setName('');
           closeModal();
-        })
-        .catch((err) => console.log({ err }));
-    }
-  }
+        } catch (err) {
+          console.log({ err });
+        }
+      }
+    },
+    [name]
+  );
 
   useEffect(() => {
     if (
@@ -100,9 +73,5 @@ function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
     </form>
   );
 }
-
-NewBoard.propTypes = {
-  closeModal: PropTypes.func
-};
 
 export default NewBoard;

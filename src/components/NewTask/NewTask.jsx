@@ -15,17 +15,15 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const { addTask, updateTask } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
 
-  function isNewSubtaskAddable() {
+  const isNewSubtaskAddable = useCallback(() => {
     let addable = true;
-
     subtaskList.forEach((subtask) => {
       if (subtask.description === '') addable = false;
     });
-
     return addable;
-  }
+  }, [subtaskList]);
 
-  function handleAddSubtask() {
+  const handleAddSubtask = useCallback(() => {
     const blr = {
       id: uniqid(),
       description: '',
@@ -34,94 +32,93 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
     if (isNewSubtaskAddable()) {
       setSubtaskList([...subtaskList, blr]);
     }
-  }
+  }, [subtaskList]);
 
-  function handleSubtaskChange(id, value) {
-    setSubtaskList([
-      ...subtaskList.map((subtask) => {
-        if (subtask.id === id) return { ...subtask, description: value };
-        return subtask;
-      })
-    ]);
-  }
+  const handleSubtaskChange = useCallback(
+    (id, value) => {
+      setSubtaskList((prev) => [
+        ...prev.map((subtask) => {
+          if (subtask.id === id) return { ...subtask, description: value };
+          return subtask;
+        })
+      ]);
+    },
+    [subtaskList]
+  );
 
-  function removeSubtask(id) {
-    const newSubtaskList = [
-      ...subtaskList.filter((subtask) => {
-        if (subtask.id === id) return false;
+  const removeSubtask = useCallback(
+    (id) => {
+      setSubtaskList((prev) => [
+        ...prev.filter((subtask) => {
+          if (subtask.id === id) return false;
+          return true;
+        })
+      ]);
+    },
+    [subtaskList]
+  );
+
+  const removeEmptySubtasks = useCallback(
+    (subtaskList) => {
+      return subtaskList.filter((subtask) => {
+        if (subtask.description === '') return false;
         return true;
-      })
-    ];
+      });
+    },
+    [subtaskList]
+  );
 
-    setSubtaskList(newSubtaskList);
-  }
-
-  function removeEmptySubtasks(subtaskList) {
-    return subtaskList.filter((subtask) => {
-      if (subtask.description === '') return false;
-      return true;
-    });
-  }
-
-  function resetState() {
+  const resetState = useCallback(() => {
     setTitle('');
     setDesc('');
     setSubtaskList([]);
     setStatus('');
-  }
+  }, []);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (type === 'update-task') {
-      const updatedTask = {
-        ...boardState.currentTask,
-        title,
-        description: desc,
-        subtasks: removeEmptySubtasks(subtaskList),
-        status
-      };
-
-      updateTask
-        .invoke(updatedTask)
-        .then(({ task }) => {
+      if (type === 'update-task') {
+        try {
+          const updatedTask = {
+            ...boardState.currentTask,
+            title,
+            description: desc,
+            subtasks: removeEmptySubtasks(subtaskList),
+            status
+          };
+          const { task } = await updateTask.invoke(updatedTask);
           if (error) setError(false);
           dispatch({ type: 'SET_CURRENT_TASK', payload: task });
           closeModal();
           resetState();
-        })
-        .catch((err) => setError(err));
-    } else {
-      const newTask = {
-        id: uniqid(),
-        title,
-        description: desc,
-        subtasks: removeEmptySubtasks(subtaskList),
-        status
-      };
-
-      addTask
-        .invoke(newTask)
-        .then(({ task }) => {
-          if (error) setError(false);
-          closeModal();
-          resetState();
-          dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-        })
-        .catch((err) => {
+        } catch (err) {
           console.log({ err });
           setError(err);
-        });
-    }
-  }
-
-  const reset = useCallback(() => {
-    setTitle('');
-    setDesc('');
-    setSubtaskList([]);
-    setStatus('');
-    setError(false);
-  }, []);
+        }
+      } else {
+        try {
+          const newTask = {
+            id: uniqid(),
+            title,
+            description: desc,
+            subtasks: removeEmptySubtasks(subtaskList),
+            status
+          };
+          const { task } = await addTask.invoke(newTask);
+          if (error) setError(false);
+          closeModal();
+          resetState();
+          dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+        } catch (err) {
+          console.log({ err });
+          setError(err);
+        }
+      }
+    },
+    [title, desc, subtaskList, status]
+  );
 
   useEffect(() => {
     if (
@@ -135,10 +132,6 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       setStatus(boardState.currentTask.status);
     }
   }, [boardState.currentTask]);
-
-  useEffect(() => {
-    setStatus(boardState?.currentBoard?.columnList[0]?.name);
-  }, [title]);
 
   return (
     <form

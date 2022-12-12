@@ -1,5 +1,6 @@
+import { Item } from '../../motion/Item';
 import { motion } from 'framer-motion';
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useRef, useCallback, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
@@ -14,6 +15,7 @@ import { UilTimesCircle } from '@iconscout/react-unicons';
 import Task from '../../components/Task/Task';
 import { ThemeContext } from './../../context/ThemeContext';
 import { ConfirmContext } from './../../context/ConfirmContext';
+import { openConfirmModal } from '../../helpers/confirmModal';
 import './board.scss';
 
 function Board(props) {
@@ -23,132 +25,39 @@ function Board(props) {
   const [updateColumnModalOpen, setUpdateColumnModalOpen] = useState(false);
   const [isAllColumnChecked, setAsAllColumnChecked] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
+  const { removeColumnList, updateColumns } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
   const { dark } = useContext(ThemeContext);
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
-  const { removeColumnList, updateColumns } = useBoard();
   const boardRef = useRef(null);
 
-  // Modal state functions
-  function openAddColumnModal() {
-    setAddColumnModalOpen(true);
-  }
-
-  function closeAddColumnModal() {
-    setAddColumnModalOpen(false);
-  }
-
-  function openTaskViewModal() {
+  const handleTaskClick = useCallback((task) => {
     setTaskViewModalOpen(true);
-  }
-
-  function closeTaskViewModal() {
-    setTaskViewModalOpen(false);
-  }
-
-  function openTaskUpdateModal() {
-    setTaskUpdateModalOpen(true);
-  }
-
-  function closeTaskUpdateModal() {
-    setTaskUpdateModalOpen(false);
-  }
-
-  function getColumnNames(columnList) {
-    let result = '';
-    columnList.forEach((item, i) => {
-      if (item.selected) result = `${result} ${item.name}`;
-    });
-    return result.trim().split(' ').join(', ');
-  }
-
-  function openDeleteColumnModal() {
-    const confirmData = {
-      isOpen: true,
-      title: {
-        text: 'Delete this task?',
-        color: '#ea5555'
-      },
-      message: `Are you sure you want to delete the '${getColumnNames(
-        boardState?.currentBoard?.columnList
-      )}' column(s)? This action will remove these columns and tasks and cannot be reversed. `,
-      onRequestClose: () => confirmDispatch({ type: 'RESET' }),
-      onConfirm: handleColumnDelete,
-      buttons: {
-        approve: {
-          text: 'Delete',
-          className: 'bg-danger text',
-          style: { color: '#fff' }
-        },
-        reject: {
-          text: 'Cancel',
-          backgroundColor: null,
-          className: 'primary-color'
-        }
-      }
-    };
-    confirmDispatch({ type: 'CONFIRM', payload: confirmData });
-  }
-
-  function closeDeleteColumnModal() {
-    setDeleteColumn(false);
-  }
-
-  function openUpdateColumnModal() {
-    setUpdateColumnModalOpen(true);
-  }
-
-  function closeUpdateColumnModal() {
-    setUpdateColumnModalOpen(false);
-  }
-
-  // column functions
-  function getValueByColumnId(id) {
-    const column = boardState?.currentBoard?.columnList.find((column) => column.id === id);
-    if (column) return column.selected;
-    return false;
-  }
-
-  function isColumnSelected() {
-    return boardState?.currentBoard?.columnList?.find((column) => column.selected) || false;
-  }
-
-  function countSelectedColumn() {
-    let counter = 0;
-    boardState?.currentBoard?.columnList?.forEach((column) => {
-      if (column.selected) counter++;
-    });
-    return counter;
-  }
-
-  function handleTaskClick(task) {
-    openTaskViewModal();
     dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-  }
+  }, []);
 
-  function handleColumnSelectedChange(id, checked) {
+  const handleColumnSelectedChange = useCallback((id, checked) => {
     dispatch({ type: 'SET_COLUMN_SELECTED_BY_ID', payload: { id, checked } });
-  }
+  }, []);
 
-  function handleAllColumnChecked(e) {
-    console.log({ checked: e.target.checked });
+  const handleAllColumnChecked = useCallback((e) => {
     setAsAllColumnChecked(e.target.checked);
     dispatch({
       type: 'SET_ALL_COLUMN_SELECTED_BY_VALUE',
       payload: { checked: e.target.checked }
     });
-  }
+  }, []);
 
-  function handleColumnDelete() {
+  const handleColumnDelete = useCallback(() => {
     removeColumnList
       .invoke()
       .then(() => {
-        closeDeleteColumnModal();
+        setDeleteColumn(false);
       })
       .catch((err) => console.log({ err }));
-  }
+  }, [boardState?.currentBoard?.columnList]);
 
-  function onDragEnd(result, columns, setColumns) {
+  const onDragEnd = useCallback((result, columns, setColumns) => {
     const { source, destination } = result;
     if (!destination) return;
     if (source.droppableId != destination.droppableId) {
@@ -193,9 +102,9 @@ function Board(props) {
       setColumns({ type: 'SET_COLUMNS', payload: updatedColumns });
       updateColumns.invoke(updatedColumns).catch((err) => console.log({ err }));
     }
-  }
+  }, []);
 
-  function onDragStart(result) {
+  const onDragStart = useCallback(() => {
     if (!(Object.keys(boardState?.currentTask).length > 0)) {
       const task = boardState?.currentBoard.columnList
         ?.map(({ taskList }) => taskList)
@@ -205,39 +114,49 @@ function Board(props) {
 
       if (task) dispatch({ type: 'SET_CURRENT_TASK', payload: task });
     }
-  }
+  }, []);
 
   return (
     <>
-      <Modal isOpen={taskUpdateModalOpen} onRequestClose={closeTaskUpdateModal}>
-        <NewTask type="update-task" heading="update task" closeModal={closeTaskUpdateModal} />
+      <Modal isOpen={taskUpdateModalOpen} onRequestClose={() => setTaskUpdateModalOpen(false)}>
+        <NewTask
+          type="update-task"
+          heading="update task"
+          closeModal={() => setTaskUpdateModalOpen(false)}
+        />
       </Modal>
-      <Modal isOpen={addColumnModalOpen} onRequestClose={closeAddColumnModal}>
-        <NewColumn closeModal={closeAddColumnModal} />
+      <Modal isOpen={addColumnModalOpen} onRequestClose={() => setAddColumnModalOpen(false)}>
+        <NewColumn closeModal={() => setAddColumnModalOpen(false)} />
       </Modal>
-      <Modal isOpen={updateColumnModalOpen} onRequestClose={closeUpdateColumnModal}>
-        <NewColumn title="update column" type="update-column" closeModal={closeUpdateColumnModal} />
+      <Modal isOpen={updateColumnModalOpen} onRequestClose={() => setUpdateColumnModalOpen(false)}>
+        <NewColumn
+          title="update column"
+          type="update-column"
+          closeModal={() => setUpdateColumnModalOpen(false)}
+        />
       </Modal>
-      <Modal isOpen={taskViewModalOpen} onRequestClose={closeTaskViewModal}>
+      <Modal isOpen={taskViewModalOpen} onRequestClose={() => setTaskViewModalOpen(false)}>
         <TaskView
-          openTaskUpdateModal={openTaskUpdateModal}
-          closeTaskViewModal={closeTaskViewModal}
+          openTaskUpdateModal={() => setTaskUpdateModalOpen(true)}
+          closeTaskViewModal={() => setTaskViewModalOpen(false)}
         />
       </Modal>
       <ConfirmAction
         isOpen={deleteColumn}
-        onRequestClose={closeDeleteColumnModal}
+        onRequestClose={() => setDeleteColumn(false)}
         onConfirm={handleColumnDelete}
         message="Are you sure to remove column(s)?"
       />
       <div ref={boardRef} className="board text-static" {...props}>
         <motion.div
           animate={
-            isColumnSelected() ? { display: 'flex', opacity: 1 } : { display: 'none', opacity: 0 }
+            isColumnSelected(boardState?.currentBoard?.columnList)
+              ? { display: 'flex', opacity: 1 }
+              : { display: 'none', opacity: 0 }
           }
           transition={{ duration: 0.1 }}
           className={`board-column-actions-container background-2 ${
-            isColumnSelected() ? 'active' : ''
+            isColumnSelected(boardState?.currentBoard?.columnList) ? 'active' : ''
           }`}>
           <Checkbox
             styles={{
@@ -254,15 +173,19 @@ function Board(props) {
             onChange={handleAllColumnChecked}
           />
           <div className="column-actions">
-            {countSelectedColumn() === 1 && (
-              <button onClick={openUpdateColumnModal} className="update-column action-button">
+            {countSelectedColumn(boardState?.currentBoard?.columnList) === 1 && (
+              <button
+                onClick={() => setUpdateColumnModalOpen(true)}
+                className="update-column action-button">
                 <span>
                   <UilPen />
                 </span>
                 <span>update</span>
               </button>
             )}
-            <button onClick={openDeleteColumnModal} className="delete-column action-button">
+            <button
+              onClick={() => openConfirmModal({ confirmDispatch, onConfirm: handleColumnDelete })}
+              className="delete-column action-button">
               <span>
                 <UilTimesCircle />
               </span>
@@ -282,7 +205,7 @@ function Board(props) {
                   <div className="title">
                     <Checkbox
                       className="background-2"
-                      checked={getValueByColumnId(id)}
+                      checked={getValueByColumnId(boardState?.currentBoard?.columnList, id)}
                       onChange={(e) => handleColumnSelectedChange(id, e.target.checked)}
                       background={color}
                       labelPosition="right"
@@ -347,7 +270,7 @@ function Board(props) {
           {boardState?.currentBoard?.columnList && (
             <button
               className={`create-new-column text background ${dark ? 'dark' : 'light'}`}
-              onClick={openAddColumnModal}>
+              onClick={() => setAddColumnModalOpen(true)}>
               + new column
             </button>
           )}
@@ -357,33 +280,22 @@ function Board(props) {
   );
 }
 
-function Item({ children, index, condition }) {
-  const variants = {
-    hidden: (i) => ({
-      opacity: 0,
-      y: -50 + i
-    }),
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.05
-      }
-    }),
-    removed: {
-      opacity: 0
-    }
-  };
-  return (
-    <motion.div
-      variants={variants}
-      initial={condition ? '' : 'hidden'}
-      animate={condition ? '' : 'visible'}
-      custom={index}
-      exit="removed">
-      {children}
-    </motion.div>
-  );
+function getValueByColumnId(columnList, id) {
+  const column = columnList?.find((column) => column.id === id);
+  if (column) return column.selected;
+  return false;
+}
+
+function isColumnSelected(columnList) {
+  return columnList?.find((column) => column.selected) || false;
+}
+
+function countSelectedColumn(columnList) {
+  let counter = 0;
+  columnList?.forEach((column) => {
+    if (column.selected) counter++;
+  });
+  return counter;
 }
 
 export default Board;

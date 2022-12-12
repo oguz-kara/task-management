@@ -1,5 +1,5 @@
 import './sub-menu.scss';
-import React, { Children, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRef } from 'react';
 
 function SubMenu({
