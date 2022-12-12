@@ -3,7 +3,7 @@ import { UilEllipsisV } from '@iconscout/react-unicons';
 import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
 import { BoardContext } from './../../context/BoardContext';
-import { useBoard } from '../../api/board';
+import { useBoard } from '../../hooks/useBoard';
 import Loader from './../Loader/Loader';
 import Checkbox from '../Checkbox/Checkbox';
 import { ConfirmContext } from './../../context/ConfirmContext';

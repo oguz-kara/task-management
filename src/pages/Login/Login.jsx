@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { AuthContext } from './../../context/AuthContext';
 import { auth, db } from '../../firebase';
 import './login.scss';
+import { getUserData } from './../../api/user';
 
 function Login() {
   const [error, setError] = useState(false);
@@ -13,28 +14,21 @@ function Login() {
   const navigate = useNavigate();
   const { dispatch } = useContext(AuthContext);
 
-  async function getUserData(userId) {
-    const docRef = doc(db, 'users', userId);
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) return docSnap.data();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   async function handleLogin(e) {
     e.preventDefault();
-
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    const userData = await getUserData(user.uid);
-    const userWithUserData = {
-      ...user,
-      userData
-    };
-    dispatch({ type: 'LOGIN', payload: userWithUserData });
-    navigate('/');
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const userData = await getUserData(user.uid);
+      const userWithUserData = {
+        ...user,
+        userData
+      };
+      dispatch({ type: 'LOGIN', payload: userWithUserData });
+      navigate('/');
+    } catch (err) {
+      console.log({ err });
+    }
   }
 
   return (

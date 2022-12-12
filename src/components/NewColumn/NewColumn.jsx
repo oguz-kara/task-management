@@ -1,7 +1,7 @@
 import uniqid from 'uniqid';
 import React, { useState, useEffect, useContext } from 'react';
 import { SketchPicker } from 'react-color';
-import { useBoard } from './../../api/board';
+import { useBoard } from './../../hooks/useBoard';
 import { BoardContext } from './../../context/BoardContext';
 import './new-column.scss';
 

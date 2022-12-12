@@ -13,7 +13,7 @@ import { BoardContext } from './../../context/BoardContext';
 import NewBoard from '../NewBoard/NewBoard';
 import Modal from '../Modal/Modal';
 import { AuthContext } from './../../context/AuthContext';
-import { useBoard } from './../../api/board';
+import { useBoard } from './../../hooks/useBoard';
 import Loader from '../Loader/Loader';
 import { ConfirmContext } from './../../context/ConfirmContext';
 import './side-bar.scss';

@@ -1,7 +1,7 @@
 import uniqid from 'uniqid';
 import { useState, useEffect, useContext } from 'react';
 import { UilMultiply } from '@iconscout/react-unicons';
-import { useBoard } from '../../api/board';
+import { useBoard } from './../../hooks/useBoard';
 import { BoardContext } from './../../context/BoardContext';
 import Loader from './../Loader/Loader';
 import './new-task.scss';
@@ -69,6 +69,8 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log({ title, desc, subtaskList, status });
+
     if (type === 'update-task') {
       try {
         const updatedTask = {
@@ -120,6 +122,13 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
       setStatus(boardState.currentTask.status);
     }
   }, [boardState.currentTask]);
+
+  useEffect(() => {
+    console.log({ status });
+    if (status === '' && type === 'new-task') {
+      setStatus(boardState?.currentBoard?.columnList[0].name || '-');
+    }
+  }, [boardState?.currentBoard]);
 
   return (
     <form
@@ -177,7 +186,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
           id="status"
           name="status"
           value={status}
-          onChange={({ target: { value } }) => setStatus(value)}>
+          onChange={(e) => setStatus(e.target.value)}>
           {boardState?.currentBoard?.columnList?.map((item) => (
             <option value={item.name}>{item.name}</option>
           ))}

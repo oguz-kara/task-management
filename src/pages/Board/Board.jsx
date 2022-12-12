@@ -9,7 +9,7 @@ import NewTask from './../../components/NewTask/NewTask';
 import NewColumn from '../../components/NewColumn/NewColumn';
 import Checkbox from './../../components/Checkbox/Checkbox';
 import ConfirmAction from '../../components/ConfirmAction/ConfirmAction';
-import { useBoard } from './../../api/board';
+import { useBoard } from './../../hooks/useBoard';
 import { UilPen } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import Task from '../../components/Task/Task';
