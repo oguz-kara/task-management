@@ -1,5 +1,5 @@
 import uniqid from 'uniqid';
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { SketchPicker } from 'react-color';
 import { useBoard } from './../../api/board';
 import { BoardContext } from './../../context/BoardContext';
@@ -13,54 +13,51 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
   const { addColumn, updateColumn } = useBoard();
   const { boardState } = useContext(BoardContext);
 
-  const resetInputs = useCallback(() => {
+  const resetInputs = () => {
     setName('');
     setColor({ hex: initialColor });
-  }, []);
+  };
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (type === 'update-column') {
-        const selectedColumn = boardState?.currentBoard?.columnList?.find(
-          (column) => column.selected
-        );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (type === 'update-column') {
+      const selectedColumn = boardState?.currentBoard?.columnList?.find(
+        (column) => column.selected
+      );
 
-        try {
-          const updatedColumn = {
-            ...selectedColumn,
-            name: name,
-            color: color.hex
-          };
-          await updateColumn.invoke(updatedColumn);
-          if (error) setError(false);
-          resetInputs();
-          closeModal();
-        } catch (err) {
-          setError(err.message);
-        }
+      try {
+        const updatedColumn = {
+          ...selectedColumn,
+          name: name,
+          color: color.hex
+        };
+        await updateColumn.invoke(updatedColumn);
+        if (error) setError(false);
+        resetInputs();
+        closeModal();
+      } catch (err) {
+        setError(err.message);
       }
+    }
 
-      if (type === 'add-column') {
-        try {
-          const newColumn = {
-            id: uniqid(),
-            name,
-            color: color.hex,
-            selected: false,
-            taskList: []
-          };
-          await addColumn.invoke(newColumn);
-          if (error) setError(false);
-          resetInputs();
-          closeModal();
-        } catch (err) {
-          setError(err.message);
-        }
+    if (type === 'add-column') {
+      try {
+        const newColumn = {
+          id: uniqid(),
+          name,
+          color: color.hex,
+          selected: false,
+          taskList: []
+        };
+        await addColumn.invoke(newColumn);
+        if (error) setError(false);
+        resetInputs();
+        closeModal();
+      } catch (err) {
+        setError(err.message);
       }
-    },
-    [name, color]
-  );
+    }
+  };
 
   useEffect(() => {
     if (

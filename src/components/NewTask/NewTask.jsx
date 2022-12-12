@@ -1,5 +1,5 @@
 import uniqid from 'uniqid';
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { UilMultiply } from '@iconscout/react-unicons';
 import { useBoard } from '../../api/board';
 import { BoardContext } from './../../context/BoardContext';
@@ -15,15 +15,15 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const { addTask, updateTask } = useBoard();
   const { boardState, dispatch } = useContext(BoardContext);
 
-  const isNewSubtaskAddable = useCallback(() => {
+  const isNewSubtaskAddable = () => {
     let addable = true;
     subtaskList.forEach((subtask) => {
       if (subtask.description === '') addable = false;
     });
     return addable;
-  }, [subtaskList]);
+  };
 
-  const handleAddSubtask = useCallback(() => {
+  const handleAddSubtask = () => {
     const blr = {
       id: uniqid(),
       description: '',
@@ -32,93 +32,81 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
     if (isNewSubtaskAddable()) {
       setSubtaskList([...subtaskList, blr]);
     }
-  }, [subtaskList]);
+  };
 
-  const handleSubtaskChange = useCallback(
-    (id, value) => {
-      setSubtaskList((prev) => [
-        ...prev.map((subtask) => {
-          if (subtask.id === id) return { ...subtask, description: value };
-          return subtask;
-        })
-      ]);
-    },
-    [subtaskList]
-  );
+  const handleSubtaskChange = (id, value) => {
+    setSubtaskList((prev) => [
+      ...prev.map((subtask) => {
+        if (subtask.id === id) return { ...subtask, description: value };
+        return subtask;
+      })
+    ]);
+  };
 
-  const removeSubtask = useCallback(
-    (id) => {
-      setSubtaskList((prev) => [
-        ...prev.filter((subtask) => {
-          if (subtask.id === id) return false;
-          return true;
-        })
-      ]);
-    },
-    [subtaskList]
-  );
-
-  const removeEmptySubtasks = useCallback(
-    (subtaskList) => {
-      return subtaskList.filter((subtask) => {
-        if (subtask.description === '') return false;
+  const removeSubtask = (id) => {
+    setSubtaskList((prev) => [
+      ...prev.filter((subtask) => {
+        if (subtask.id === id) return false;
         return true;
-      });
-    },
-    [subtaskList]
-  );
+      })
+    ]);
+  };
 
-  const resetState = useCallback(() => {
+  const removeEmptySubtasks = (subtaskList) => {
+    return subtaskList.filter((subtask) => {
+      if (subtask.description === '') return false;
+      return true;
+    });
+  };
+
+  const resetState = () => {
     setTitle('');
     setDesc('');
     setSubtaskList([]);
     setStatus('');
-  }, []);
+  };
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      if (type === 'update-task') {
-        try {
-          const updatedTask = {
-            ...boardState.currentTask,
-            title,
-            description: desc,
-            subtasks: removeEmptySubtasks(subtaskList),
-            status
-          };
-          const { task } = await updateTask.invoke(updatedTask);
-          if (error) setError(false);
-          dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-          closeModal();
-          resetState();
-        } catch (err) {
-          console.log({ err });
-          setError(err);
-        }
-      } else {
-        try {
-          const newTask = {
-            id: uniqid(),
-            title,
-            description: desc,
-            subtasks: removeEmptySubtasks(subtaskList),
-            status
-          };
-          const { task } = await addTask.invoke(newTask);
-          if (error) setError(false);
-          closeModal();
-          resetState();
-          dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-        } catch (err) {
-          console.log({ err });
-          setError(err);
-        }
+    if (type === 'update-task') {
+      try {
+        const updatedTask = {
+          ...boardState.currentTask,
+          title,
+          description: desc,
+          subtasks: removeEmptySubtasks(subtaskList),
+          status
+        };
+        const { task } = await updateTask.invoke(updatedTask);
+        if (error) setError(false);
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+        closeModal();
+        resetState();
+      } catch (err) {
+        console.log({ err });
+        setError(err);
       }
-    },
-    [title, desc, subtaskList, status]
-  );
+    } else {
+      try {
+        const newTask = {
+          id: uniqid(),
+          title,
+          description: desc,
+          subtasks: removeEmptySubtasks(subtaskList),
+          status
+        };
+        const { task } = await addTask.invoke(newTask);
+        if (error) setError(false);
+        closeModal();
+        resetState();
+        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+      } catch (err) {
+        console.log({ err });
+        setError(err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (

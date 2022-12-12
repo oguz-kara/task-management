@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import './modal.scss';
 
@@ -15,9 +14,9 @@ function Modal({ isOpen, onRequestClose, children }) {
     pointerEvents: 'none'
   };
 
-  const handleModalClick = useCallback(() => {
+  const handleModalClick = () => {
     onRequestClose();
-  }, []);
+  };
 
   return (
     <div

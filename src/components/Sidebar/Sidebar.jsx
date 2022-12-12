@@ -1,4 +1,4 @@
-import { useContext, useState, useCallback } from 'react';
+import { useContext, useState } from 'react';
 import { UilEdit } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import taskManagerLogoLight from '../../assets/images/task_manager_light.png';
@@ -27,55 +27,46 @@ function Sidebar({ boardList = [], closeSidebar }) {
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const { removeBoard } = useBoard();
 
-  const handleBoardClick = useCallback(
-    (board) => {
-      if (boardState.currentBoard.id !== board.id) {
-        dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
-        dispatch({ type: 'SET_CURRENT_TASK', payload: {} });
-      }
-    },
-    [boardState.currentBoard]
-  );
+  const handleBoardClick = (board) => {
+    if (boardState.currentBoard.id !== board.id) {
+      dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
+      dispatch({ type: 'SET_CURRENT_TASK', payload: {} });
+    }
+  };
 
-  const handleRemoveBoardClick = useCallback(
-    async (board) => {
-      try {
-        await removeBoard.invoke(board.id);
-      } catch (err) {
-        console.log({ err });
-      }
-    },
-    [boardState.currentBoard]
-  );
+  const handleRemoveBoardClick = async (board) => {
+    try {
+      await removeBoard.invoke(board.id);
+    } catch (err) {
+      console.log({ err });
+    }
+  };
 
-  const handleDeleteBoardButtonClick = useCallback(
-    (board) => {
-      const confirmData = {
-        isOpen: true,
-        title: {
-          text: 'Delete this board?',
-          color: '#ea5555'
+  const handleDeleteBoardButtonClick = (board) => {
+    const confirmData = {
+      isOpen: true,
+      title: {
+        text: 'Delete this board?',
+        color: '#ea5555'
+      },
+      message: `Are you sure you want to delete the '${board.name}' board? This action will remove all columns and tasks and cannot be reversed. `,
+      onConfirm: () => handleRemoveBoardClick(board),
+      onRequestClose: () => confirmDispatch({ type: 'RESET' }),
+      buttons: {
+        approve: {
+          text: 'Delete',
+          className: 'bg-danger text',
+          style: { color: '#fff' }
         },
-        message: `Are you sure you want to delete the '${board.name}' board? This action will remove all columns and tasks and cannot be reversed. `,
-        onConfirm: () => handleRemoveBoardClick(board),
-        onRequestClose: () => confirmDispatch({ type: 'RESET' }),
-        buttons: {
-          approve: {
-            text: 'Delete',
-            className: 'bg-danger text',
-            style: { color: '#fff' }
-          },
-          reject: {
-            text: 'Cancel',
-            backgroundColor: null,
-            className: 'primary-color'
-          }
+        reject: {
+          text: 'Cancel',
+          backgroundColor: null,
+          className: 'primary-color'
         }
-      };
-      confirmDispatch({ type: 'CONFIRM', payload: confirmData });
-    },
-    [boardState.currentBoard]
-  );
+      }
+    };
+    confirmDispatch({ type: 'CONFIRM', payload: confirmData });
+  };
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useState } from 'react';
 import { UilEllipsisV } from '@iconscout/react-unicons';
 import SubMenu from './../SubMenu/SubMenu';
 import List from './../List/List';
@@ -27,60 +27,54 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const { updateTask, removeTask, changeTaskStatus } = useBoard();
 
-  const handleSubtaskChange = useCallback(
-    async (id, checked) => {
-      const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
-        if (task.id === id) {
-          return {
-            ...task,
-            done: checked
-          };
-        }
-        return task;
-      });
+  const handleSubtaskChange = async (id, checked) => {
+    const updatedSubtasks = boardState.currentTask?.subtasks?.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          done: checked
+        };
+      }
+      return task;
+    });
 
+    const updatedCurrentTask = {
+      ...boardState.currentTask,
+      subtasks: updatedSubtasks
+    };
+
+    try {
+      const { task } = await updateTask.invoke(updatedCurrentTask);
+      dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+    } catch (err) {
+      console.log({ err });
+    }
+  };
+
+  const handleStatusChange = async (value) => {
+    try {
       const updatedCurrentTask = {
         ...boardState.currentTask,
-        subtasks: updatedSubtasks
+        status: value
       };
+      const { task } = await changeTaskStatus.invoke(
+        updatedCurrentTask,
+        boardState.currentTask.status,
+        value
+      );
+      dispatch({ type: 'SET_CURRENT_TASK', payload: task });
+      closeTaskViewModal();
+    } catch (err) {
+      console.log({ err });
+    }
+  };
 
-      try {
-        const { task } = await updateTask.invoke(updatedCurrentTask);
-        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-      } catch (err) {
-        console.log({ err });
-      }
-    },
-    [boardState?.currentTask]
-  );
-
-  const handleStatusChange = useCallback(
-    async (value) => {
-      try {
-        const updatedCurrentTask = {
-          ...boardState.currentTask,
-          status: value
-        };
-        const { task } = await changeTaskStatus.invoke(
-          updatedCurrentTask,
-          boardState.currentTask.status,
-          value
-        );
-        dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-        closeTaskViewModal();
-      } catch (err) {
-        console.log({ err });
-      }
-    },
-    [boardState.currentTask]
-  );
-
-  const handleUpdateTaskClick = useCallback(() => {
+  const handleUpdateTaskClick = () => {
     openTaskUpdateModal();
     closeTaskViewModal();
-  }, []);
+  };
 
-  const handleDeleteTaskButtonClick = useCallback(() => {
+  const handleDeleteTaskButtonClick = () => {
     const confirmData = {
       isOpen: true,
       title: {
@@ -105,16 +99,16 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
     };
     confirmDispath({ type: 'CONFIRM', payload: confirmData });
     closeTaskViewModal();
-  }, []);
+  };
 
-  const handleRemoveTaskClick = useCallback(() => {
+  const handleRemoveTaskClick = () => {
     removeTask
       .invoke(boardState.currentTask)
       .then(() => {
         closeTaskViewModal();
       })
       .catch((err) => console.log(err));
-  }, [boardState.currentTask]);
+  };
 
   return (
     <div className="task-details text background-2">

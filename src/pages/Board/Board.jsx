@@ -1,6 +1,6 @@
 import { Item } from '../../motion/Item';
 import { motion } from 'framer-motion';
-import { useState, useContext, useRef, useCallback, useEffect } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Modal from '../../components/Modal/Modal';
 import { BoardContext } from './../../context/BoardContext';
@@ -31,33 +31,33 @@ function Board(props) {
   const { dispatch: confirmDispatch } = useContext(ConfirmContext);
   const boardRef = useRef(null);
 
-  const handleTaskClick = useCallback((task) => {
+  const handleTaskClick = (task) => {
     setTaskViewModalOpen(true);
     dispatch({ type: 'SET_CURRENT_TASK', payload: task });
-  }, []);
+  };
 
-  const handleColumnSelectedChange = useCallback((id, checked) => {
+  const handleColumnSelectedChange = (id, checked) => {
     dispatch({ type: 'SET_COLUMN_SELECTED_BY_ID', payload: { id, checked } });
-  }, []);
+  };
 
-  const handleAllColumnChecked = useCallback((e) => {
+  const handleAllColumnChecked = (e) => {
     setAsAllColumnChecked(e.target.checked);
     dispatch({
       type: 'SET_ALL_COLUMN_SELECTED_BY_VALUE',
       payload: { checked: e.target.checked }
     });
-  }, []);
+  };
 
-  const handleColumnDelete = useCallback(() => {
+  const handleColumnDelete = () => {
     removeColumnList
       .invoke()
       .then(() => {
         setDeleteColumn(false);
       })
       .catch((err) => console.log({ err }));
-  }, [boardState?.currentBoard?.columnList]);
+  };
 
-  const onDragEnd = useCallback((result, columns, setColumns) => {
+  const onDragEnd = (result, columns, setColumns) => {
     const { source, destination } = result;
     if (!destination) return;
     if (source.droppableId != destination.droppableId) {
@@ -102,9 +102,9 @@ function Board(props) {
       setColumns({ type: 'SET_COLUMNS', payload: updatedColumns });
       updateColumns.invoke(updatedColumns).catch((err) => console.log({ err }));
     }
-  }, []);
+  };
 
-  const onDragStart = useCallback(() => {
+  const onDragStart = () => {
     if (!(Object.keys(boardState?.currentTask).length > 0)) {
       const task = boardState?.currentBoard.columnList
         ?.map(({ taskList }) => taskList)
@@ -114,7 +114,7 @@ function Board(props) {
 
       if (task) dispatch({ type: 'SET_CURRENT_TASK', payload: task });
     }
-  }, []);
+  };
 
   return (
     <>

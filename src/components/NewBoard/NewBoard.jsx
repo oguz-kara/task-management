@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { BoardContext } from './../../context/BoardContext';
 import { useBoard } from './../../api/board';
 import Loader from './../Loader/Loader';
@@ -10,34 +10,31 @@ function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {
   const { boardState } = useContext(BoardContext);
   const { addBoard, updateBoard } = useBoard();
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (type === 'update-board') {
-        const updatedBoard = {
-          ...boardState.currentBoard,
-          name: name
-        };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (type === 'update-board') {
+      const updatedBoard = {
+        ...boardState.currentBoard,
+        name: name
+      };
 
-        try {
-          await updateBoard.invoke(updatedBoard);
-          closeModal();
-        } catch (err) {
-          console.log({ err });
-        }
-      } else {
-        try {
-          const newBoard = newBoardSkeleton(name);
-          await addBoard.invoke(newBoard);
-          setName('');
-          closeModal();
-        } catch (err) {
-          console.log({ err });
-        }
+      try {
+        await updateBoard.invoke(updatedBoard);
+        closeModal();
+      } catch (err) {
+        console.log({ err });
       }
-    },
-    [name]
-  );
+    } else {
+      try {
+        const newBoard = newBoardSkeleton(name);
+        await addBoard.invoke(newBoard);
+        setName('');
+        closeModal();
+      } catch (err) {
+        console.log({ err });
+      }
+    }
+  };
 
   useEffect(() => {
     if (
