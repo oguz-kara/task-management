@@ -1,5 +1,8 @@
 .sub-menu {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   .body {
     position: absolute;
     top: 30px;

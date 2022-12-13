@@ -8,10 +8,6 @@
   border-bottom: 1px solid rgba($color: $background-dark-2, $alpha: 0.1);
 }
 
-// .topbar.full-width {
-//   max-width: 100% !important;
-// }
-
 .topbar {
   display: inline-flex;
   align-items: center;
@@ -57,6 +53,19 @@
 
     .menu-icon {
       background-color: transparent;
+    }
+
+    .icon-link-container {
+      display: flex;
+      align-items: center;
+      background-color: transparent;
+      text-transform: capitalize !important;
+      font-size: 16px;
+      font-weight: 600;
+
+      span {
+        margin-left: 15px;
+      }
     }
   }
 }

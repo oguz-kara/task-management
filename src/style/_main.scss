@@ -12,7 +12,13 @@ body {
 }
 
 .error-text {
-  color: red;
+  color: $danger;
+  font-size: 14px;
+  padding: 10px 0;
+}
+
+.success-text {
+  color: #4bb543;
   font-size: 14px;
   padding: 10px 0;
 }

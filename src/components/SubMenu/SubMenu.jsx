@@ -39,8 +39,8 @@ function Header({ children, ...props }) {
   return <div {...props}>{children}</div>;
 }
 
-function Body({ children }) {
-  return <div>{children}</div>;
+function Body({ children, ...rest }) {
+  return <div {...rest}>{children}</div>;
 }
 
 SubMenu.Header = Header;

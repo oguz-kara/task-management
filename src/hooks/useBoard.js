@@ -115,7 +115,6 @@ export function useBoard() {
       const updatedBoard = {
         ...boardState.currentBoard,
         columnList: boardState?.currentBoard?.columnList?.map((column) => {
-          console.log({ column });
           if (column.name === newTask.status)
             return {
               ...column,

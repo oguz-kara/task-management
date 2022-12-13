@@ -1,86 +1,63 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { doc, setDoc } from 'firebase/firestore';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { db, auth } from '../../firebase';
 import './register.scss';
+import { register } from '../../api/auth';
+import Loader from './../../components/Loader/Loader';
 
 function Register() {
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
-  const [passwordAgain, setPasswordAgain] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  function isPasswordValid() {
-    if (password !== '' && passwordAgain !== '') {
-      if (password !== passwordAgain) {
+  const isPasswordValid = (password, confirmPassword) => {
+    if (password !== '' && confirmPassword !== '') {
+      if (password !== confirmPassword) {
         setError('Passwords do not match!');
         return false;
       }
     }
     return true;
-  }
+  };
 
-  function isEmailAlreadyInUse(message) {
+  const isEmailAlreadyInUse = (message) => {
     return message === 'Firebase: Error (auth/email-already-in-use).';
-  }
+  };
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    error && setError('');
+    if (error) setError('');
+    if (message !== '') setMessage('');
 
-    if (isPasswordValid()) {
+    if (isPasswordValid(password, confirmPassword)) {
+      setLoading(true);
       try {
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        await setDoc(doc(db, 'users', res.user.uid), {
-          boardList: [
-            {
-              id: 1,
-              name: 'Starter',
-              columnList: [
-                {
-                  id: 1,
-                  name: 'todo',
-                  color: '#48C0E2',
-                  selected: false,
-                  taskList: []
-                },
-                {
-                  id: 2,
-                  name: 'doing',
-                  color: 'rebeccapurple',
-                  selected: false,
-                  taskList: []
-                },
-                {
-                  id: 3,
-                  name: 'done',
-                  color: 'green',
-                  selected: false,
-                  taskList: []
-                }
-              ]
-            }
-          ]
-        });
+        await register({ email, password });
+        setMessage('Successfully registered, you can login to your acoount.');
       } catch (err) {
         if (isEmailAlreadyInUse(err.message)) {
           setError('Email already in use!');
         }
+      } finally {
+        setLoading(false);
       }
+    } else {
+      setError('Password do not match!');
     }
-
     setEmail('');
     setPassword('');
-    setPasswordAgain('');
-  }
+    setConfirmPassword('');
+  };
 
   return (
-    <div className="register">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="register background">
+      <form className="background-2" onSubmit={handleSubmit}>
+        <h2 className="text">Register</h2>
         <div className="input-container">
           <input
+            className="background"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email"
@@ -91,6 +68,7 @@ function Register() {
         </div>
         <div className="input-container">
           <input
+            className="background"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
@@ -101,20 +79,30 @@ function Register() {
         </div>
         <div className="input-container">
           <input
-            value={passwordAgain}
-            onChange={(e) => setPasswordAgain(e.target.value)}
+            className="background"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="password again"
             type="text"
             name="password-again"
             id="password-again"
           />
         </div>
-        <Link to="/login" className="link">
+        <Link to="/login" className="link text">
           Do you have an account?
         </Link>
         <button type="submit">register</button>
+        {loading ? <Loader /> : ''}
+        {error && <p className="error-text">{error}</p>}
+        {message !== '' && (
+          <p className="success-text">
+            {message}{' '}
+            <Link className="text" to="/login">
+              Login
+            </Link>
+          </p>
+        )}
       </form>
-      {error && <p className="error-text">{error}</p>}
     </div>
   );
 }

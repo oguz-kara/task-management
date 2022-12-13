@@ -26,14 +26,6 @@ function App() {
   const { data, dispatch: confirmDispatch } = useContext(ConfirmContext);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  function openSidebar() {
-    if (!sidebarOpen) setSidebarOpen(true);
-  }
-
-  function closeSidebar() {
-    if (sidebarOpen) setSidebarOpen(false);
-  }
-
   useEffect(() => {
     if (!(boardState.currentBoard && Object.keys(boardState.currentBoard).length > 0))
       dispatch({ type: 'SET_CURRENT_BOARD', payload: user?.userData?.boardList[0] });
@@ -52,8 +44,13 @@ function App() {
       path: '/',
       element: (
         <MainLayout
-          left={<Sidebar closeSidebar={closeSidebar} boardList={user && user.userData.boardList} />}
-          top={<Topbar openSidebar={openSidebar} hideMenuIcon={!sidebarOpen} />}
+          left={
+            <Sidebar
+              closeSidebar={() => setSidebarOpen(false)}
+              boardList={user?.userData?.boardList}
+            />
+          }
+          top={<Topbar openSidebar={() => setSidebarOpen(true)} hideMenuIcon={!sidebarOpen} />}
           main={Main}
           leftOpen={sidebarOpen}
         />

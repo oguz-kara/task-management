@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { BoardContext } from './../../context/BoardContext';
 import { useBoard } from './../../hooks/useBoard';
 import Loader from './../Loader/Loader';
-import { newBoardSkeleton } from '../../data/newBoardSkeleton';
+import { newBoardSkeleton } from '../../data/skeleton';
 import './new-board.scss';
 
 function NewBoard({ closeModal, type = 'add-board', title = 'add new board' }) {

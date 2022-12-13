@@ -123,8 +123,6 @@ function Board(props) {
         ?.map(({ taskList }) => taskList)
         .flat(1)
         .find((task) => task.id === result.draggableId);
-      console.log({ task });
-
       if (task) dispatch({ type: 'SET_CURRENT_TASK', payload: task });
     }
   };
@@ -145,7 +143,7 @@ function Board(props) {
         <NewColumn
           title="update column"
           type="update-column"
-          data={boardState?.currentBoard?.columnList.find(({ selected }) => selected)}
+          data={boardState?.currentBoard?.columnList?.find(({ selected }) => selected)}
           closeModal={() => setUpdateColumnModalOpen(false)}
         />
       </Modal>

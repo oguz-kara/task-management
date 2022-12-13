@@ -1,42 +1,46 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { login } from '../../api/auth';
 import { AuthContext } from './../../context/AuthContext';
-import { auth, db } from '../../firebase';
+import Loader from './../../components/Loader/Loader';
 import './login.scss';
-import { getUserData } from './../../api/user';
+import { getLoginErrorMessage } from '../../error/firebaseError';
 
 function Login() {
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { dispatch } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
 
   async function handleLogin(e) {
     e.preventDefault();
+    setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const userData = await getUserData(user.uid);
-      const userWithUserData = {
-        ...user,
-        userData
-      };
-      dispatch({ type: 'LOGIN', payload: userWithUserData });
-      navigate('/');
+      const user = await login({ email, password });
+      dispatch({ type: 'LOGIN', payload: user });
     } catch (err) {
-      console.log({ err });
+      setLoading(false);
+      setError(getLoginErrorMessage(err));
+    } finally {
+      setLoading(false);
     }
   }
 
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user]);
+
   return (
-    <div className="login">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
+    <div className="login background text">
+      <form onSubmit={handleLogin} className="background-2">
+        <h2 className="text">Login</h2>
         <div className="input-container">
           <input
+            className="background"
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email"
             type="text"
@@ -46,6 +50,7 @@ function Login() {
         </div>
         <div className="input-container">
           <input
+            className="background"
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
             type="password"
@@ -53,12 +58,13 @@ function Login() {
             id="password"
           />
         </div>
-        <Link to="/register" className="link">
+        <Link to="/register" className="text link">
           Don't you have an account?
         </Link>
         <button>login</button>
+        {loading ? <Loader /> : ''}
+        {error.length > 0 && <p className="error-text">{error}</p>}
       </form>
-      {error && <p className="error-text">Wrong password or email!</p>}
     </div>
   );
 }

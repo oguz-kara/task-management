@@ -65,8 +65,6 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log({ title, desc, subtaskList, status });
-
     if (type === 'update-task') {
       try {
         const updatedTask = {
@@ -120,9 +118,8 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   }, [boardState.currentTask]);
 
   useEffect(() => {
-    console.log({ status });
     if (status === '' && type === 'new-task') {
-      setStatus(boardState?.currentBoard?.columnList[0].name || '-');
+      setStatus(boardState?.currentBoard?.columnList[0]?.name || '-');
     }
   }, [boardState?.currentBoard]);
 

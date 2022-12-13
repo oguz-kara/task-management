@@ -1,7 +1,6 @@
 export const openConfirmModal = ({ confirmDispatch, options = {}, onConfirm }) => {
   if (!onConfirm)
     throw new Error('you must provide a onConfirm method to the openConfirmModal function!');
-  console.log({ confirmDispatch, options });
   const confirmData = {
     isOpen: true,
     title: {
