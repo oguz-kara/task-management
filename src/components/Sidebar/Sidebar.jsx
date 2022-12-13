@@ -93,7 +93,12 @@ function Sidebar({ boardList = [], closeSidebar }) {
               {boardList &&
                 boardList.map((board) => (
                   <li key={board.id} onClick={(e) => handleBoardClick(board)}>
-                    <button className={boardState?.currentBoard?.id === board.id ? ' active' : ''}>
+                    <div
+                      className={
+                        boardState?.currentBoard?.id === board.id
+                          ? 'board-list-item active'
+                          : 'board-list-item'
+                      }>
                       <div className="board-list-left">
                         <span className="icon">
                           {removeBoard.loading && boardState.currentBoard.id === board.id ? (
@@ -114,7 +119,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
                           <UilTimesCircle />
                         </button>
                       </div>
-                    </button>
+                    </div>
                   </li>
                 ))}
             </ul>

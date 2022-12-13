@@ -5,7 +5,7 @@ import { useBoard } from './../../hooks/useBoard';
 import { BoardContext } from './../../context/BoardContext';
 import './new-column.scss';
 
-function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }) {
+function NewColumn({ closeModal, type = 'add-column', title = 'add new column', data = {} }) {
   const initialColor = '#00FF00';
   const [name, setName] = useState('');
   const [error, setError] = useState(false);
@@ -60,21 +60,11 @@ function NewColumn({ closeModal, type = 'add-column', title = 'add new column' }
   };
 
   useEffect(() => {
-    if (
-      type === 'update-column' &&
-      boardState.currentBoard &&
-      Object.keys(boardState.currentBoard).length > 0
-    ) {
-      const selectedColumn = boardState?.currentBoard?.columnList?.find(
-        (column) => column.selected
-      );
-      const getSelectedColumn = boardState.currentBoard.columnList.find(
-        (column) => column.id === selectedColumn?.id
-      );
-      setName(getSelectedColumn?.name);
-      setColor({ hex: getSelectedColumn?.color });
+    if (data && Object.keys(data).length > 0) {
+      setName(data.name);
+      setColor({ hex: data.color });
     }
-  }, [boardState]);
+  }, [data]);
 
   return (
     <div className={`new-column background-2 text ${error ? 'flash-error' : ''}`}>

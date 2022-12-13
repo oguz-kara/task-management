@@ -145,6 +145,7 @@ function Board(props) {
         <NewColumn
           title="update column"
           type="update-column"
+          data={boardState?.currentBoard?.columnList.find(({ selected }) => selected)}
           closeModal={() => setUpdateColumnModalOpen(false)}
         />
       </Modal>
@@ -214,7 +215,7 @@ function Board(props) {
             }>
             {boardState?.currentBoard &&
               boardState?.currentBoard?.columnList?.map(({ id, taskList, color, name }) => (
-                <div className="column">
+                <div className="column" key={id}>
                   <div className="title">
                     <Checkbox
                       className="background-2"
