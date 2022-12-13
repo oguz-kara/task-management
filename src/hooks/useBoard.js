@@ -91,7 +91,7 @@ export function useBoard() {
         ]
       };
 
-      await refetch(updateBoardList);
+      await refetch(updatedBoardList);
       dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: updatedBoard });
       dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
       return {

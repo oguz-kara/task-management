@@ -6,7 +6,7 @@ import { BoardContext } from './../../context/BoardContext';
 import Loader from './../Loader/Loader';
 import './new-task.scss';
 
-function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
+function NewTask({ closeModal, heading = 'add new task', type = 'new-task', data = {} }) {
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [subtaskList, setSubtaskList] = useState([]);
@@ -105,21 +105,18 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task' }) {
   };
 
   useEffect(() => {
-    if (
-      type === 'update-task' &&
-      boardState.currentTask &&
-      Object.keys(boardState.currentTask).length > 0
-    ) {
+    if (data && Object.keys(data).length > 0) {
       setTitle(boardState.currentTask.title);
       setDesc(boardState.currentTask.description);
       setSubtaskList(boardState.currentTask.subtasks);
       setStatus(boardState.currentTask.status);
     }
-  }, [boardState.currentTask]);
+  }, [data]);
 
   useEffect(() => {
     if (status === '' && type === 'new-task') {
-      setStatus(boardState?.currentBoard?.columnList[0]?.name || '-');
+      if (boardState?.currentBoard?.columnList?.length > 0)
+        setStatus(boardState.currentBoard.columnList[0].name || '-');
     }
   }, [boardState?.currentBoard]);
 

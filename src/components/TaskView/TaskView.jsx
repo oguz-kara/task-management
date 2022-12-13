@@ -126,9 +126,13 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
           </SubMenu.Body>
         </SubMenu>
       </div>
-      <p className="text-static">{boardState.currentTask?.description}</p>
+      <p className="text-static">
+        {boardState?.currentTask?.description?.length > 0
+          ? boardState.currentTask.description
+          : 'No description'}
+      </p>
       <div className="subtasks">
-        {getSubTaskCount(boardState?.currentTask) && (
+        {getSubTaskCount(boardState?.currentTask) > 0 && (
           <h4>
             Subtasks ({countDoneSubtasks(boardState?.currentTask)} of{' '}
             {getSubTaskCount(boardState?.currentTask)})

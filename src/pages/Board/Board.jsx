@@ -117,7 +117,7 @@ function Board(props) {
     }
   };
 
-  const onDragStart = () => {
+  const onDragStart = (result) => {
     if (!(Object.keys(boardState?.currentTask).length > 0)) {
       const task = boardState?.currentBoard.columnList
         ?.map(({ taskList }) => taskList)
@@ -134,6 +134,7 @@ function Board(props) {
           type="update-task"
           heading="update task"
           closeModal={() => setTaskUpdateModalOpen(false)}
+          data={boardState?.currentTask}
         />
       </Modal>
       <Modal isOpen={addColumnModalOpen} onRequestClose={() => setAddColumnModalOpen(false)}>
@@ -207,7 +208,7 @@ function Board(props) {
         </motion.div>
         <div className="board-content">
           <DragDropContext
-            onDragStart={onDragStart}
+            onDragStart={(result) => onDragStart(result)}
             onDragEnd={(result) =>
               onDragEnd(result, boardState?.currentBoard?.columnList, dispatch)
             }>
@@ -250,7 +251,7 @@ function Board(props) {
                                 {...provided.dragHandleProps}
                                 style={{
                                   userSelect: 'none',
-                                  paddingTop: '5px',
+                                  paddingTop: '10px',
                                   ...provided.draggableProps.style
                                 }}>
                                 <Item

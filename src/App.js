@@ -1,5 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Board from './pages/Board/Board';
 import MainLayout from './components/MainLayout/MainLayout';
 import Register from './pages/Register/Register';
@@ -13,11 +14,7 @@ import { BoardContext } from './context/BoardContext';
 import { motion } from 'framer-motion';
 import ConfirmAction from './components/ConfirmAction/ConfirmAction';
 import { ConfirmContext } from './context/ConfirmContext';
-
-const RequireAuth = ({ children }) => {
-  const { user } = useContext(AuthContext);
-  return user ? children : <Navigate to="/login" />;
-};
+import { RequireAuth } from './components/RequiredAuth/RequiredAuth';
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -33,27 +30,24 @@ function App() {
 
   const router = createBrowserRouter([
     {
-      path: 'login',
-      element: <Login />
-    },
-    {
-      path: 'register',
-      element: <Register />
-    },
-    {
       path: '/',
       element: (
-        <MainLayout
-          left={
+        <MainLayout leftOpen={sidebarOpen}>
+          <MainLayout.Top>
+            <Topbar openSidebar={() => setSidebarOpen(true)} hideMenuIcon={!sidebarOpen} />
+          </MainLayout.Top>
+          <MainLayout.Left>
             <Sidebar
               closeSidebar={() => setSidebarOpen(false)}
               boardList={user?.userData?.boardList}
             />
-          }
-          top={<Topbar openSidebar={() => setSidebarOpen(true)} hideMenuIcon={!sidebarOpen} />}
-          main={Main}
-          leftOpen={sidebarOpen}
-        />
+          </MainLayout.Left>
+          <MainLayout.Main>
+            <Main>
+              <Outlet />
+            </Main>
+          </MainLayout.Main>
+        </MainLayout>
       ),
       children: [
         {
@@ -65,8 +59,17 @@ function App() {
           )
         }
       ]
+    },
+    {
+      path: 'login',
+      element: <Login />
+    },
+    {
+      path: 'register',
+      element: <Register />
     }
   ]);
+
   return (
     <div className={dark ? 'App dark' : 'App light'}>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

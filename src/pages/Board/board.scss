@@ -6,7 +6,8 @@
 .board {
   position: relative;
   overflow: auto;
-  min-height: calc(100vh - 101.2px);
+  height: calc(100vh - 100px);
+  width: calc(100vw - 300px);
 
   .board-column-actions-container {
     max-height: 50px;
@@ -69,7 +70,7 @@
   .board-content {
     display: flex;
     padding: 10px;
-    column-gap: 5px;
+    column-gap: 10px;
   }
 
   .column {
@@ -82,6 +83,11 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 20px;
+      height: max-content;
+
+      label.container {
+        min-height: 40px;
+      }
 
       button.circle {
         position: relative;
@@ -103,16 +109,17 @@
 
     ul {
       list-style: none;
-      display: flex;
-      flex-direction: column;
       margin-bottom: 20px;
       min-height: 100%;
       border-radius: 5px;
 
       &.empty {
         border: 2px dashed $text-static;
+        min-height: initial;
+        height: 70vh;
       }
     }
+
     &.deactive {
       max-width: 0 !important;
       width: 0 !important;
@@ -121,9 +128,10 @@
   }
 
   .create-new-column {
-    margin-top: 35px;
+    margin-top: 55px;
     padding: 20px;
     min-width: 300px;
+    height: 70vh;
     font-weight: 600;
     background: transparent;
     border: none;

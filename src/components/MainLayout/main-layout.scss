@@ -6,7 +6,6 @@
     min-width: 300px;
     flex: 1;
     transition: all 200ms ease-out;
-    overflow: auto;
   }
 
   .left--close {
@@ -17,8 +16,6 @@
   }
 
   .right {
-    min-height: 100vh;
     flex: 5;
-    overflow: hidden;
   }
 }

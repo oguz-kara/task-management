@@ -19,6 +19,7 @@ function Login() {
     setLoading(true);
     try {
       const user = await login({ email, password });
+      if (user instanceof Error) throw user;
       dispatch({ type: 'LOGIN', payload: user });
     } catch (err) {
       setLoading(false);

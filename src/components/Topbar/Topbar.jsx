@@ -9,10 +9,10 @@ import { UilBars } from '@iconscout/react-unicons';
 import NewTask from '../NewTask/NewTask';
 import { ThemeContext } from './../../context/ThemeContext';
 import { BoardContext } from './../../context/BoardContext';
-import './topbar.scss';
 import List from './../List/List';
 import { logout } from './../../api/auth';
 import { AuthContext } from './../../context/AuthContext';
+import './topbar.scss';
 
 function Topbar({ openSidebar, hideMenuIcon = true }) {
   const [newTaskModalOpen, setNewTaskModalOpen] = useState(false);
