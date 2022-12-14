@@ -2,7 +2,9 @@
 
 ## It is an application where we can create, delete and update the record of tasks in order to better manage the process while developing a project.
 
-#### Register and Login to see live demo. ![Livedemo](https://habus.netlify.app)
+#### Register and Login to see live demo.
+
+![Livedemo](https://habus.netlify.app)
 
 # TOOLS
 
