@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { UilEdit } from '@iconscout/react-unicons';
 import { UilTimesCircle } from '@iconscout/react-unicons';
 import taskManagerLogoLight from '../../assets/images/task_manager_light.png';
@@ -28,7 +28,7 @@ function Sidebar({ boardList = [], closeSidebar }) {
   const { removeBoard } = useBoard();
 
   const handleBoardClick = (board) => {
-    if (boardState.currentBoard.id !== board.id) {
+    if (boardState?.currentBoard?.id !== board.id) {
       dispatch({ type: 'SET_CURRENT_BOARD', payload: board });
       dispatch({ type: 'SET_CURRENT_TASK', payload: {} });
     }
@@ -88,40 +88,37 @@ function Sidebar({ boardList = [], closeSidebar }) {
             alt="task manager"
           />
           <div className="board-list">
-            <h5 className="text">all boards ({user?.userData?.boardList.length})</h5>
+            <h5 className="text">all boards ({user?.userData?.boardList?.length})</h5>
             <ul>
-              {boardList &&
-                boardList.map((board) => (
-                  <li key={board.id} onClick={(e) => handleBoardClick(board)}>
-                    <div
-                      className={
-                        boardState?.currentBoard?.id === board.id
-                          ? 'board-list-item active'
-                          : 'board-list-item'
-                      }>
-                      <div className="board-list-left">
-                        <span className="icon">
-                          {removeBoard.loading && boardState.currentBoard.id === board.id ? (
-                            <Loader type="inline" />
-                          ) : (
-                            <UilClipboardAlt className="list-icon text-static" />
-                          )}
-                        </span>
-                        <span className="board-name text-static">{board.name}</span>
-                      </div>
-                      <div className="board-actions">
-                        <button className="text" onClick={() => setUpdateBoardModal(true)}>
-                          <UilEdit />
-                        </button>
-                        <button
-                          className="text"
-                          onClick={() => handleDeleteBoardButtonClick(board)}>
-                          <UilTimesCircle />
-                        </button>
-                      </div>
+              {boardList?.map((board) => (
+                <li key={board.id} onClick={(e) => handleBoardClick(board)}>
+                  <div
+                    className={
+                      boardState?.currentBoard?.id === board.id
+                        ? 'board-list-item active'
+                        : 'board-list-item'
+                    }>
+                    <div className="board-list-left">
+                      <span className="icon">
+                        {removeBoard.loading && boardState.currentBoard.id === board.id ? (
+                          <Loader type="inline" />
+                        ) : (
+                          <UilClipboardAlt className="list-icon text-static" />
+                        )}
+                      </span>
+                      <span className="board-name text-static">{board.name}</span>
                     </div>
-                  </li>
-                ))}
+                    <div className="board-actions">
+                      <button className="text" onClick={() => setUpdateBoardModal(true)}>
+                        <UilEdit />
+                      </button>
+                      <button className="text" onClick={() => handleDeleteBoardButtonClick(board)}>
+                        <UilTimesCircle />
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
             </ul>
             <button onClick={() => setNewBoardModal(true)}>
               <span className="icon">

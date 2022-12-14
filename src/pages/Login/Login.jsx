@@ -22,8 +22,9 @@ function Login() {
       if (user instanceof Error) throw user;
       dispatch({ type: 'LOGIN', payload: user });
     } catch (err) {
+      console.log({ err });
       setLoading(false);
-      setError(getLoginErrorMessage(err));
+      setError(getLoginErrorMessage(err) || 'an error occured!');
     } finally {
       setLoading(false);
     }

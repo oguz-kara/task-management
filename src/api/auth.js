@@ -20,7 +20,9 @@ export const login = async ({ email, password }) => {
     const userData = await getUserData(user.uid);
     return {
       ...user,
-      userData
+      userData: {
+        boardList: userData?.boardList
+      }
     };
   } catch (err) {
     return err;

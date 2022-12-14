@@ -118,6 +118,7 @@ function NewTask({ closeModal, heading = 'add new task', type = 'new-task', data
       if (boardState?.currentBoard?.columnList?.length > 0)
         setStatus(boardState.currentBoard.columnList[0].name || '-');
     }
+    console.log('here');
   }, [boardState?.currentBoard]);
 
   return (

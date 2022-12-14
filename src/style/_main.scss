@@ -7,8 +7,9 @@ html {
   font-family: 'Inter', sans-serif;
 }
 
+html,
 body {
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
 .error-text {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import './main-layout.scss';
 
 function MainLayout({ leftOpen = true, children }) {
@@ -8,6 +7,7 @@ function MainLayout({ leftOpen = true, children }) {
       <div className={`left background-2 ${!leftOpen && 'left--close'}`}>
         {children.find(({ type }) => type === Left)}
       </div>
+
       <div className="right background">
         {children.find(({ type }) => type === Top)}
         {children.find(({ type }) => type === Main)}
@@ -24,8 +24,13 @@ function Top({ children }) {
   return <div className="main-layout-top">{children}</div>;
 }
 
-function Main({ children }) {
-  return <div className="main-layout-main">{children}</div>;
+function Main({ children, closeSidebar, sidebarOpen }) {
+  return (
+    <>
+      <div className="main-layout-main">{children}</div>
+      {sidebarOpen && <div className="main-overlay" onClick={closeSidebar}></div>}
+    </>
+  );
 }
 
 MainLayout.Left = Left;

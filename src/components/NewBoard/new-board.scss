@@ -1,7 +1,8 @@
 @import '../../style/abstracts/colors';
 
 .new-board {
-  min-width: 400px;
+  max-width: 90vw;
+  width: 400px;
   padding: 20px;
   h3 {
     text-transform: capitalize;

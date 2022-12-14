@@ -3,11 +3,19 @@
 .board::after {
   content: '';
 }
+.board-side-open {
+  width: calc(100vw - 300px);
+}
+
+.board-side-close {
+  width: 100vw;
+}
+
 .board {
   position: relative;
-  overflow: auto;
   height: calc(100vh - 100px);
-  width: calc(100vw - 300px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 
   .board-column-actions-container {
     max-height: 50px;
@@ -112,18 +120,11 @@
       margin-bottom: 20px;
       min-height: 100%;
       border-radius: 5px;
-
       &.empty {
         border: 2px dashed $text-static;
         min-height: initial;
         height: 70vh;
       }
-    }
-
-    &.deactive {
-      max-width: 0 !important;
-      width: 0 !important;
-      overflow: hidden !important;
     }
   }
 
@@ -156,5 +157,11 @@
       background: rgb(255, 255, 255);
       background: linear-gradient(180deg, rgba(255, 255, 255, 1) 50%, rgba(244, 247, 253, 1) 92%);
     }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .board {
+    min-width: 100vw;
   }
 }

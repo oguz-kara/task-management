@@ -18,7 +18,7 @@ import { ConfirmContext } from './../../context/ConfirmContext';
 import { openConfirmModal } from '../../helpers/confirmModal';
 import './board.scss';
 
-function Board(props) {
+function Board({ sidebarOpen, ...props }) {
   const [taskViewModalOpen, setTaskViewModalOpen] = useState(false);
   const [taskUpdateModalOpen, setTaskUpdateModalOpen] = useState(false);
   const [addColumnModalOpen, setAddColumnModalOpen] = useState(false);
@@ -160,7 +160,10 @@ function Board(props) {
         onConfirm={handleColumnDelete}
         message="Are you sure to remove column(s)?"
       />
-      <div ref={boardRef} className="board text-static" {...props}>
+      <div
+        ref={boardRef}
+        className={`${sidebarOpen ? 'board-side-open' : 'board-side-close'} board text-static`}
+        {...props}>
         <motion.div
           animate={
             isColumnSelected(boardState?.currentBoard?.columnList)

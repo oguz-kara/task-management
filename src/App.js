@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import Board from './pages/Board/Board';
 import MainLayout from './components/MainLayout/MainLayout';
@@ -25,7 +25,10 @@ function App() {
 
   useEffect(() => {
     if (!(boardState.currentBoard && Object.keys(boardState.currentBoard).length > 0))
-      dispatch({ type: 'SET_CURRENT_BOARD', payload: user?.userData?.boardList[0] });
+      dispatch({
+        type: 'SET_CURRENT_BOARD',
+        payload: user?.userData?.boardList ? user.userData.boardList : []
+      });
   }, []);
 
   const router = createBrowserRouter([
@@ -39,10 +42,10 @@ function App() {
           <MainLayout.Left>
             <Sidebar
               closeSidebar={() => setSidebarOpen(false)}
-              boardList={user?.userData?.boardList}
+              boardList={user?.userData?.boardList || []}
             />
           </MainLayout.Left>
-          <MainLayout.Main>
+          <MainLayout.Main closeSidebar={() => setSidebarOpen(false)} sidebarOpen={sidebarOpen}>
             <Main>
               <Outlet />
             </Main>
@@ -54,7 +57,7 @@ function App() {
           path: '/',
           element: (
             <RequireAuth>
-              <Board board={boardState.currentBoard} />
+              <Board sidebarOpen={sidebarOpen} board={boardState?.currentBoard} />
             </RequireAuth>
           )
         }
@@ -71,7 +74,7 @@ function App() {
   ]);
 
   return (
-    <div className={dark ? 'App dark' : 'App light'}>
+    <div className={`${dark ? 'App dark' : 'App light'} background`}>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         {Object.keys(data).length > 0 && (
           <ConfirmAction

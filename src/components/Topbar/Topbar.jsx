@@ -19,7 +19,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const { dark } = useContext(ThemeContext);
   const { boardState } = useContext(BoardContext);
-  const { dispatch } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const logoutUser = () => {
@@ -47,7 +47,8 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
             onClick={() => setNewTaskModalOpen(true)}
             className="new-task-button bg-primary"
             disabled={!(Object.keys(boardState?.currentBoard || {}).length > 0)}>
-            + add new task
+            <span className="new-task-wide">+ add new task</span>
+            <span className="new-task-small">+</span>
           </button>
           <SubMenu
             bodyPosition="left-align-out"
@@ -64,7 +65,7 @@ function Topbar({ openSidebar, hideMenuIcon = true }) {
                 <List.Item onClick={() => {}}>
                   <button className="icon-link-container text">
                     <UilUser />
-                    <span>Account</span>
+                    <span>{user?.email}</span>
                   </button>
                 </List.Item>
                 <List.Item onClick={() => {}}>

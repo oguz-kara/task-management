@@ -108,6 +108,7 @@ function TaskView({ openTaskUpdateModal, closeTaskViewModal }) {
       <div className="title">
         <h3>{boardState?.currentTask?.title}</h3>
         <SubMenu
+          bodyPosition="left-align-out"
           onRequestClose={() => setSubMenuOpen(false)}
           onRequestOpen={() => setSubMenuOpen(true)}
           isOpen={subMenuOpen}>

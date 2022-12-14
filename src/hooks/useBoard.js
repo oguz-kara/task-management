@@ -359,8 +359,16 @@ export function useBoard() {
 
   async function addBoard(newBoard) {
     try {
-      const updatedBoardList = [...user?.userData?.boardList, newBoard];
-      await refetch(updatedBoardList);
+      const updatedBoardList =
+        user?.userData?.boardList === undefined
+          ? [newBoard]
+          : [...user?.userData?.boardList, newBoard];
+
+      const updatedData = {
+        boardList: updatedBoardList
+      };
+
+      await refetch(updatedData);
       dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: newBoard });
       dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList });
       return {
@@ -387,7 +395,10 @@ export function useBoard() {
       };
       await refetch(updatedBoardList);
       dispatchBoard({ type: 'SET_CURRENT_BOARD', payload: {} });
-      dispatchAuth({ type: 'SET_BOARD_LIST', payload: updatedBoardList.boardList });
+      dispatchAuth({
+        type: 'SET_BOARD_LIST',
+        payload: updatedBoardList.boardList ? updatedBoardList.boardList : []
+      });
       return {
         result: result,
         error: error,

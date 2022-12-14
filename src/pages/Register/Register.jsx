@@ -72,7 +72,7 @@ function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="password"
-            type="text"
+            type="password"
             name="password"
             id="password"
           />
@@ -83,7 +83,7 @@ function Register() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="password again"
-            type="text"
+            type="password"
             name="password-again"
             id="password-again"
           />

@@ -1,7 +1,7 @@
 import uniqid from 'uniqid';
 
 export const newBoardSkeleton = (name) => ({
-  id: 1,
+  id: uniqid(),
   name: name,
   columnList: [
     {
